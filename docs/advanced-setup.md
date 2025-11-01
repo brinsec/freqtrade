@@ -1,28 +1,28 @@
-# Advanced Post-installation Tasks
+# 高级安装后任务
 
-This page explains some advanced tasks and configuration options that can be performed after the bot installation and may be uselful in some environments.
+本页解释一些可以在机器人安装后执行的高级任务和配置选项，在某些环境中可能很有用。
 
-If you do not know what things mentioned here mean, you probably do not need it.
+如果您不知道这里提到的内容是什么意思，您可能不需要它。
 
-## Running multiple instances of Freqtrade
+## 运行多个 Freqtrade 实例
 
-This section will show you how to run multiple bots at the same time, on the same machine.
+本节将向您展示如何在同一台机器上同时运行多个机器人。
 
-### Things to consider
+### 需要考虑的事项
 
-* Use different database files.
-* Use different Telegram bots (requires multiple different configuration files; applies only when Telegram is enabled).
-* Use different ports (applies only when Freqtrade REST API webserver is enabled).
+* 使用不同的数据库文件。
+* 使用不同的 Telegram 机器人（需要多个不同的配置文件；仅在启用 Telegram 时适用）。
+* 使用不同的端口（仅在启用 Freqtrade REST API Web 服务器时适用）。
 
-### Different database files
+### 不同的数据库文件
 
-In order to keep track of your trades, profits, etc., freqtrade is using a SQLite database where it stores various types of information such as the trades you performed in the past and the current position(s) you are holding at any time. This allows you to keep track of your profits, but most importantly, keep track of ongoing activity if the bot process would be restarted or would be terminated unexpectedly.
+为了跟踪您的交易、利润等，freqtrade 使用 SQLite 数据库，其中存储各种类型的信息，例如您过去执行的交易以及您随时持有的当前头寸。这允许您跟踪您的利润，但最重要的是，如果机器人进程重新启动或意外终止，跟踪正在进行的活动。
 
-Freqtrade will, by default, use separate database files for dry-run and live bots (this assumes no database-url is given in either configuration nor via command line argument).
-For live trading mode, the default database will be `tradesv3.sqlite` and for dry-run it will be `tradesv3.dryrun.sqlite`.
+默认情况下，Freqtrade 将为模拟运行和实盘机器人使用单独的数据库文件（这假设在配置中或通过命令行参数都没有给出数据库 URL）。
+对于实盘交易模式，默认数据库将是 `tradesv3.sqlite`，对于模拟运行，它将是 `tradesv3.dryrun.sqlite`。
 
-The optional argument to the trade command used to specify the path of these files is `--db-url`, which requires a valid SQLAlchemy url.
-So when you are starting a bot with only the config and strategy arguments in dry-run mode, the following 2 commands would have the same outcome.
+用于指定这些文件路径的交易命令的可选参数是 `--db-url`，它需要有效的 SQLAlchemy URL。
+因此，当您在模拟运行模式下仅使用配置和策略参数启动机器人时，以下 2 个命令将产生相同的结果。
 
 ``` bash
 freqtrade trade -c MyConfig.json -s MyStrategy

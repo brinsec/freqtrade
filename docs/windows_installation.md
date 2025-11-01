@@ -1,27 +1,27 @@
-# Windows installation
+# Windows 安装
 
-We **strongly** recommend that Windows users use [Docker](docker_quickstart.md) as this will work much easier and smoother (also more secure).
+我们**强烈**建议 Windows 用户使用 [Docker](docker_quickstart.md)，因为这将更加容易和顺畅（也更安全）。
 
-If that is not possible, try using the Windows Linux subsystem (WSL) - for which the Ubuntu instructions should work.
-Otherwise, please follow the instructions below.
+如果不可能，请尝试使用 Windows Linux 子系统（WSL）- Ubuntu 说明应该可以工作。
+否则，请按照下面的说明操作。
 
-All instructions assume that python 3.11+ is installed and available.
+所有说明都假定已安装并可用 python 3.11+。
 
-## Clone the git repository
+## 克隆 git 仓库
 
-First of all clone the repository by running:
+首先通过运行以下命令克隆仓库：
 
 ``` powershell
 git clone https://github.com/freqtrade/freqtrade.git
 ```
 
-Now, choose your installation method, either automatically via script (recommended) or manually following the corresponding instructions.
+现在，选择您的安装方法，通过脚本自动安装（推荐）或按照相应说明手动安装。
 
-## Install freqtrade automatically
+## 自动安装 freqtrade
 
-### Run the installation script
+### 运行安装脚本
 
-The script will ask you a few questions to determine which parts should be installed.
+脚本将询问您一些问题以确定应安装哪些部分。
 
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy Bypass
@@ -29,25 +29,24 @@ cd freqtrade
 . .\setup.ps1
 ```
 
-## Install freqtrade manually
+## 手动安装 freqtrade
 
-!!! Note "64bit Python version"
-    Please make sure to use 64bit Windows and 64bit Python to avoid problems with backtesting or hyperopt due to the memory constraints 32bit applications have under Windows.
-    32bit python versions are no longer supported under Windows.
+!!! Note "64 位 Python 版本"
+    请确保使用 64 位 Windows 和 64 位 Python，以避免由于 32 位应用程序在 Windows 下的内存限制而导致回测或超参数优化问题。
+    32 位 python 版本在 Windows 下不再受支持。
 
-!!! Hint
-    Using the [Anaconda Distribution](https://www.anaconda.com/distribution/) under Windows can greatly help with installation problems. Check out the [Anaconda installation section](installation.md#installation-with-conda) in the documentation for more information.
+!!! Hint "提示"
+    在 Windows 下使用 [Anaconda 发行版](https://www.anaconda.com/distribution/) 可以大大帮助解决安装问题。查看文档中的 [Anaconda 安装部分](installation.md#installation-with-conda) 了解更多信息。
 
-
-### Error during installation on Windows
+### Windows 安装期间的错误
 
 ``` bash
 error: Microsoft Visual C++ 14.0 is required. Get it with "Microsoft Visual C++ Build Tools": http://landinghub.visualstudio.com/visual-cpp-build-tools
 ```
 
-Unfortunately, many packages requiring compilation don't provide a pre-built wheel. It is therefore mandatory to have a C/C++ compiler installed and available for your python environment to use.
+不幸的是，许多需要编译的包不提供预构建的 wheel。因此，必须为您的 python 环境安装并提供 C/C++ 编译器。
 
-You can download the Visual C++ build tools from [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and install "Desktop development with C++" in it's default configuration. Unfortunately, this is a heavy download / dependency so you might want to consider WSL2 or [docker compose](docker_quickstart.md) first.
+您可以从[这里](https://visualstudio.microsoft.com/visual-cpp-build-tools/)下载 Visual C++ 构建工具，并在其默认配置中安装"使用 C++ 的桌面开发"。不幸的是，这是一个大型下载/依赖项，因此您可能想首先考虑 WSL2 或 [docker compose](docker_quickstart.md)。
 
 ![Windows installation](assets/windows_install.png)
 

@@ -32,7 +32,7 @@ def background_job_list():
 @router.get("/background/{jobid}", response_model=BackgroundTaskStatus, tags=["webserver"])
 def background_job(jobid: str):
     if not (job := ApiBG.jobs.get(jobid)):
-        raise HTTPException(status_code=404, detail="Job not found.")
+        raise HTTPException(status_code=404, detail="任务未找到。")
 
     return {
         "job_id": jobid,

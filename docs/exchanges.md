@@ -1,26 +1,25 @@
-# Exchange-specific Notes
+# 交易所特定说明
 
-This page combines common gotchas and Information which are exchange-specific and most likely don't apply to other exchanges.
+本页结合了特定于交易所的常见问题和信息，这些信息很可能不适用于其他交易所。
 
-## Quick overview of supported exchange features
+## 支持的交易所功能快速概览
 
 --8<-- "includes/exchange-features.md"
 
-## Exchange configuration
+## 交易所配置
 
-Freqtrade is based on [CCXT library](https://github.com/ccxt/ccxt) that supports over 100 cryptocurrency
-exchange markets and trading APIs. The complete up-to-date list can be found in the
-[CCXT repo homepage](https://github.com/ccxt/ccxt/tree/master/python).
-However, the bot was tested by the development team with only a few exchanges.
-A current list of these can be found in the "Home" section of this documentation.
+Freqtrade 基于支持 100 多个加密货币交易所市场和交易 API 的 [CCXT 库](https://github.com/ccxt/ccxt)。完整的最新列表可以在
+[CCXT 仓库主页](https://github.com/ccxt/ccxt/tree/master/python)找到。
+但是，机器人仅由开发团队在少数几个交易所进行了测试。
+这些交易所的当前列表可以在本文档的"主页"部分找到。
 
-Feel free to test other exchanges and submit your feedback or PR to improve the bot or confirm exchanges that work flawlessly..
+欢迎测试其他交易所并提交您的反馈或 PR 以改进机器人或确认完美运行的交易所。
 
-Some exchanges require special configuration, which can be found below.
+某些交易所需要特殊配置，可以在下面找到。
 
-### Sample exchange configuration
+### 示例交易所配置
 
-A exchange configuration for "binance" would look as follows:
+"binance" 的交易所配置如下所示：
 
 ```json
 "exchange": {
@@ -29,13 +28,13 @@ A exchange configuration for "binance" would look as follows:
     "secret": "your_exchange_secret",
     "ccxt_config": {},
     "ccxt_async_config": {},
-    // ... 
+    // ...
 ```
 
-### Setting rate limits
+### 设置速率限制
 
-Usually, rate limits set by CCXT are reliable and work well.
-In case of problems related to rate-limits (usually DDOS Exceptions in your logs), it's easy to change rateLimit settings to other values.
+通常，CCXT 设置的速率限制是可靠的并且工作良好。
+如果遇到与速率限制相关的问题（通常是日志中的 DDOS 异常），很容易将 rateLimit 设置更改为其他值。
 
 ```json
 "exchange": {
@@ -49,49 +48,49 @@ In case of problems related to rate-limits (usually DDOS Exceptions in your logs
     },
 ```
 
-This configuration enables kraken, as well as rate-limiting to avoid bans from the exchange.
-`"rateLimit": 3100` defines a wait-event of 3.1s between each call. This can also be completely disabled by setting `"enableRateLimit"` to false.
+此配置启用 kraken，以及速率限制以避免被交易所封禁。
+`"rateLimit": 3100` 定义每次调用之间等待 3.1 秒的事件。也可以通过将 `"enableRateLimit"` 设置为 false 来完全禁用它。
 
-!!! Note
-    Optimal settings for rate-limiting depend on the exchange and the size of the whitelist, so an ideal parameter will vary on many other settings.
-    We try to provide sensible defaults per exchange where possible, if you encounter bans please make sure that `"enableRateLimit"` is enabled and increase the `"rateLimit"` parameter step by step.
+!!! Note "注意"
+    速率限制的最佳设置取决于交易所和白名单的大小，因此理想参数会根据许多其他设置而变化。
+    我们尽可能为每个交易所提供合理的默认值，如果您遇到封禁，请确保启用了 `"enableRateLimit"` 并逐步增加 `"rateLimit"` 参数。
 
-## Binance
+## Binance（币安）
 
-!!! Warning "Server location and geo-ip restrictions"
-    Please be aware that Binance restricts API access regarding the server country. The current and non-exhaustive countries blocked are Canada, Malaysia, Netherlands and United States. Please go to [binance terms > b. Eligibility](https://www.binance.com/en/terms) to find up to date list.
+!!! Warning "服务器位置和地理位置 IP 限制"
+    请注意，Binance 根据服务器国家/地区限制 API 访问。当前和非详尽的被阻止国家/地区包括加拿大、马来西亚、荷兰和美国。请访问 [binance 条款 > b. 资格](https://www.binance.com/en/terms) 查找最新列表。
 
-Binance supports [time_in_force](configuration.md#understand-order_time_in_force).
+Binance 支持 [time_in_force](configuration.md#understand-order_time_in_force)。
 
-!!! Tip "Stoploss on Exchange"
-    Binance supports `stoploss_on_exchange` and uses `stop-loss-limit` orders. It provides great advantages, so we recommend to benefit from it by enabling stoploss on exchange.
-    On futures, Binance supports both `stop-limit` as well as `stop-market` orders. You can use either `"limit"` or `"market"` in the `order_types.stoploss` configuration setting to decide which type to use.
+!!! Tip "交易所止损"
+    Binance 支持 `stoploss_on_exchange` 并使用 `stop-loss-limit` 订单。它提供了巨大的优势，因此我们建议通过在交易所启用止损来从中受益。
+    在期货上，Binance 同时支持 `stop-limit` 和 `stop-market` 订单。您可以在 `order_types.stoploss` 配置设置中使用 `"limit"` 或 `"market"` 来决定使用哪种类型。
 
-### Binance Blacklist recommendation
+### Binance 黑名单建议
 
-For Binance, it is suggested to add `"BNB/<STAKE>"` to your blacklist to avoid issues, unless you are willing to maintain enough extra `BNB` on the account or unless you're willing to disable using `BNB` for fees.
-Binance accounts may use `BNB` for fees, and if a trade happens to be on `BNB`, further trades may consume this position and make the initial BNB trade unsellable as the expected amount is not there anymore.
+对于 Binance，建议将 `"BNB/<STAKE>"` 添加到您的黑名单以避免问题，除非您愿意维护足够的额外 `BNB` 在账户上，或者除非您愿意禁用使用 `BNB` 作为手续费。
+Binance 账户可能使用 `BNB` 作为手续费，如果交易恰好是 `BNB`，进一步的交易可能会消耗此头寸，并使初始 BNB 交易无法卖出，因为预期金额不再存在。
 
-If not enough `BNB` is available to cover transaction fees, then fees will not be covered by `BNB` and no fee reduction will occur. Freqtrade will never buy BNB to cover for fees. BNB needs to be bought and monitored manually to this end.
+如果没有足够的 `BNB` 可用于支付交易手续费，则手续费将不会由 `BNB` 支付，也不会发生手续费减少。Freqtrade 永远不会购买 BNB 来支付手续费。BNB 需要为此目的手动购买和监控。
 
-### Binance sites
+### Binance 站点
 
-Binance has been split into 2, and users must use the correct ccxt exchange ID for their exchange, otherwise API keys are not recognized.
+Binance 已分为 2 个，用户必须为其交易所使用正确的 ccxt 交易所 ID，否则 API 密钥不会被识别。
 
-* [binance.com](https://www.binance.com/) - International users. Use exchange id: `binance`.
-* [binance.us](https://www.binance.us/) - US based users. Use exchange id: `binanceus`.
+* [binance.com](https://www.binance.com/) - 国际用户。使用交易所 id：`binance`。
+* [binance.us](https://www.binance.us/) - 美国用户。使用交易所 id：`binanceus`。
 
-### Binance RSA keys
+### Binance RSA 密钥
 
-Freqtrade supports binance RSA API keys.
+Freqtrade 支持 binance RSA API 密钥。
 
-We recommend to use them as environment variable.
+我们建议将它们用作环境变量。
 
 ``` bash
 export FREQTRADE__EXCHANGE__SECRET="$(cat ./rsa_binance.private)"
 ```
 
-They can however also be configured via configuration file. Since json doesn't support multi-line strings, you'll have to replace all newlines with `\n` to have a valid json file.
+但是，它们也可以通过配置文件进行配置。由于 json 不支持多行字符串，您必须将所有换行符替换为 `\n` 才能拥有有效的 json 文件。
 
 ``` json
 // ...

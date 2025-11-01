@@ -1,14 +1,14 @@
 ```
-usage: freqtrade install-ui [-h] [--erase] [--prerelease]
+用法: freqtrade install-ui [-h] [--erase] [--prerelease]
                             [--ui-version UI_VERSION]
 
-options:
-  -h, --help            show this help message and exit
-  --erase               Clean UI folder, don't download new version.
-  --prerelease          Install the latest pre-release version of FreqUI. This
-                        is not recommended for production use.
+选项:
+  -h, --help            显示此帮助消息并退出
+  --erase               清理 UI 文件夹，不下载新版本。
+  --prerelease          安装 FreqUI 的最新预发布版本。这
+                        不推荐用于生产环境。
   --ui-version UI_VERSION
-                        Specify a specific version of FreqUI to install. Not
-                        specifying this installs the latest version.
+                        指定要安装的 FreqUI 的特定版本。不
+                        指定此选项将安装最新版本。
 
 ```

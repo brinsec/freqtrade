@@ -136,10 +136,10 @@ async def api_start_backtest(
     ApiBG.bt["bt_error"] = None
     """Start backtesting if not done so already"""
     if ApiBG.bgtask_running:
-        raise RPCException("Bot Background task already running")
+        raise RPCException("机器人后台任务已在运行")
 
     if ":" in bt_settings.strategy:
-        raise HTTPException(status_code=500, detail="base64 encoded strategies are not allowed.")
+        raise HTTPException(status_code=500, detail="不允许使用 base64 编码的策略。")
 
     btconfig = deepcopy(config)
     remove_exchange_credentials(btconfig["exchange"], True)
@@ -168,7 +168,7 @@ async def api_start_backtest(
         "running": True,
         "progress": 0,
         "step": str(BacktestState.STARTUP),
-        "status_msg": "Backtest started",
+        "status_msg": "回测已启动",
     }
 
 
@@ -189,16 +189,16 @@ def api_get_backtest():
             ),
             "progress": ApiBG.bt["bt"].progress.progress if ApiBG.bt["bt"] else 0,
             "trade_count": len(LocalTrade.bt_trades),
-            "status_msg": "Backtest running",
+            "status_msg": "回测运行中",
         }
 
     if not ApiBG.bt["bt"]:
         return {
-            "status": "not_started",
+            "status": "未启动",
             "running": False,
             "step": "",
             "progress": 0,
-            "status_msg": "Backtest not yet executed",
+            "status_msg": "回测尚未执行",
         }
     if ApiBG.bt["bt_error"]:
         return {
@@ -206,13 +206,13 @@ def api_get_backtest():
             "running": False,
             "step": "",
             "progress": 0,
-            "status_msg": f"Backtest failed with {ApiBG.bt['bt_error']}",
+            "status_msg": f"回测失败: {ApiBG.bt['bt_error']}",
         }
 
     return {
         "status": "ended",
         "running": False,
-        "status_msg": "Backtest ended",
+        "status_msg": "回测已结束",
         "step": "finished",
         "progress": 1,
         "backtest_result": ApiBG.bt["bt"].results,
@@ -228,7 +228,7 @@ def api_delete_backtest():
             "running": True,
             "step": "",
             "progress": 0,
-            "status_msg": "Backtest running",
+            "status_msg": "回测运行中",
         }
     if ApiBG.bt["bt"]:
         ApiBG.bt["bt"].cleanup()
@@ -242,7 +242,7 @@ def api_delete_backtest():
         "running": False,
         "step": "",
         "progress": 0,
-        "status_msg": "Backtest reset",
+        "status_msg": "回测已重置",
     }
 
 
@@ -254,7 +254,7 @@ def api_backtest_abort():
             "running": False,
             "step": "",
             "progress": 0,
-            "status_msg": "Backtest ended",
+            "status_msg": "回测已结束",
         }
     ApiBG.bt["bt"].abort = True
     return {
@@ -262,7 +262,7 @@ def api_backtest_abort():
         "running": False,
         "step": "",
         "progress": 0,
-        "status_msg": "Backtest ended",
+        "status_msg": "回测已结束",
     }
 
 
@@ -285,7 +285,7 @@ def api_backtest_history_result(filename: str, strategy: str, config=Depends(get
         if is_file_in_dir(fn, bt_results_base):
             break
     else:
-        raise HTTPException(status_code=404, detail="File not found.")
+        raise HTTPException(status_code=404, detail="文件未找到。")
 
     results: dict[str, Any] = {
         "metadata": {},
@@ -298,7 +298,7 @@ def api_backtest_history_result(filename: str, strategy: str, config=Depends(get
         "running": False,
         "step": "",
         "progress": 1,
-        "status_msg": "Historic result",
+        "status_msg": "历史结果",
         "backtest_result": results,
     }
 
@@ -317,7 +317,7 @@ def api_delete_backtest_history_entry(file: str, config=Depends(get_config)):
         if is_file_in_dir(file_abs, bt_results_base):
             break
     else:
-        raise HTTPException(status_code=404, detail="File not found.")
+        raise HTTPException(status_code=404, detail="文件未找到。")
 
     delete_backtest_result(file_abs)
     return get_backtest_resultlist(config["user_data_dir"] / "backtest_results")
@@ -339,7 +339,7 @@ def api_update_backtest_history_entry(
         if is_file_in_dir(file_abs, bt_results_base):
             break
     else:
-        raise HTTPException(status_code=404, detail="File not found.")
+        raise HTTPException(status_code=404, detail="文件未找到。")
 
     content = {"notes": body.notes}
     try:
@@ -366,7 +366,7 @@ def api_get_backtest_market_change(file: str, config=Depends(get_config)):
         if is_file_in_dir(file_abs, bt_results_base):
             break
     else:
-        raise HTTPException(status_code=404, detail="File not found.")
+        raise HTTPException(status_code=404, detail="文件未找到。")
 
     df = get_backtest_market_change(file_abs)
 

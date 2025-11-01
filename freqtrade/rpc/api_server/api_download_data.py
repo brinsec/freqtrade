@@ -53,7 +53,7 @@ def pairlists_evaluate(
     payload: DownloadDataPayload, background_tasks: BackgroundTasks, config=Depends(get_config)
 ):
     if ApiBG.download_data_running:
-        raise HTTPException(status_code=400, detail="Data Download is already running.")
+        raise HTTPException(status_code=400, detail="数据下载已在运行。")
     config_loc = deepcopy(config)
     config_loc["stake_currency"] = ""
     config_loc["pairs"] = payload.pairs
@@ -81,6 +81,6 @@ def pairlists_evaluate(
     ApiBG.download_data_running = True
 
     return {
-        "status": "Data Download started in background.",
+        "status": "数据下载已在后台启动。",
         "job_id": job_id,
     }

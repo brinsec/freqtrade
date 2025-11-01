@@ -1,40 +1,40 @@
-# Reinforcement Learning
+# 强化学习
 
-!!! Note "Installation size"
-    Reinforcement learning dependencies include large packages such as `torch`, which should be explicitly requested during `./setup.sh -i` by answering "y" to the question "Do you also want dependencies for freqai-rl (~700mb additional space required) [y/N]?".
-    Users who prefer docker should ensure they use the docker image appended with `_freqairl`.
+!!! Note "安装大小"
+    强化学习依赖项包括大型软件包，如 `torch`，在运行 `./setup.sh -i` 时，应在提示 "Do you also want dependencies for freqai-rl (~700mb additional space required) [y/N]?" 时回答 "y" 来明确请求安装。
+    偏好使用 docker 的用户应确保使用附加了 `_freqairl` 的 docker 镜像。
 
-## Background and terminology
+## 背景和术语
 
-### What is RL and why does FreqAI need it?
+### 什么是 RL，为什么 FreqAI 需要它？
 
-Reinforcement learning involves two important components, the *agent* and the training *environment*. During agent training, the agent moves through historical data candle by candle, always making 1 of a set of actions: Long entry, long exit, short entry, short exit, neutral). During this training process, the environment tracks the performance of these actions and rewards the agent according to a custom user made `calculate_reward()` (here we offer a default reward for users to build on if they wish [details here](#creating-a-custom-reward-function)). The reward is used to train weights in a neural network.
+强化学习涉及两个重要组件：*智能体（agent）*和训练*环境（environment）*。在智能体训练期间，智能体逐根 K 线遍历历史数据，总是从一组动作中选择 1 个：做多入场、做多出场、做空入场、做空出场、中性）。在此训练过程中，环境跟踪这些动作的表现，并根据用户自定义的 `calculate_reward()` 奖励智能体（这里我们提供了一个默认奖励供用户在需要时在此基础上构建[详细信息见这里](#creating-a-custom-reward-function)）。奖励用于训练神经网络中的权重。
 
-A second important component of the FreqAI RL implementation is the use of *state* information. State information is fed into the network at each step, including current profit, current position, and current trade duration. These are used to train the agent in the training environment, and to reinforce the agent in dry/live (this functionality is not available in backtesting). *FreqAI + Freqtrade is a perfect match for this reinforcing mechanism since this information is readily available in live deployments.*
+FreqAI RL 实现的第二个重要组件是使用*状态（state）*信息。状态信息在每一步都被输入到网络中，包括当前利润、当前位置和当前交易持续时间。这些用于在训练环境中训练智能体，并在模拟/实盘运行中强化智能体（此功能在回测中不可用）。*FreqAI + Freqtrade 是这种强化机制的完美匹配，因为这些信息在实盘部署中随时可用。*
 
-Reinforcement learning is a natural progression for FreqAI, since it adds a new layer of adaptivity and market reactivity that Classifiers and Regressors cannot match. However, Classifiers and Regressors have strengths that RL does not have such as robust predictions. Improperly trained RL agents may find "cheats" and "tricks" to maximize reward without actually winning any trades. For this reason, RL is more complex and demands a higher level of understanding than typical Classifiers and Regressors.
+强化学习是 FreqAI 的自然进展，因为它添加了分类器和回归器无法匹配的新层次的适应性和市场反应性。然而，分类器和回归器具有 RL 没有的优势，例如稳健的预测。训练不当的 RL 智能体可能会找到"作弊"和"技巧"来最大化奖励，而实际上没有赢得任何交易。因此，RL 比典型的分类器和回归器更复杂，需要更高层次的理解。
 
-### The RL interface
+### RL 接口
 
-With the current framework, we aim to expose the training environment via the common "prediction model" file, which is a user inherited `BaseReinforcementLearner` object (e.g. `freqai/prediction_models/ReinforcementLearner`). Inside this user class, the RL environment is available and customized via `MyRLEnv` as [shown below](#creating-a-custom-reward-function).
+在当前框架中，我们的目标是通过通用的"预测模型"文件公开训练环境，这是一个用户继承的 `BaseReinforcementLearner` 对象（例如 `freqai/prediction_models/ReinforcementLearner`）。在这个用户类内部，RL 环境通过 `MyRLEnv` 可用并可自定义，如[下面所示](#creating-a-custom-reward-function)。
 
-We envision the majority of users focusing their effort on creative design of the `calculate_reward()` function [details here](#creating-a-custom-reward-function), while leaving the rest of the environment untouched. Other users may not touch the environment at all, and they will only play with the configuration settings and the powerful feature engineering that already exists in FreqAI. Meanwhile, we enable advanced users to create their own model classes entirely.
+我们设想大多数用户将精力集中在 `calculate_reward()` 函数的创造性设计上[详细信息见这里](#creating-a-custom-reward-function)，同时保持环境的其余部分不变。其他用户可能完全不接触环境，他们只会使用配置设置和 FreqAI 中已存在的强大特征工程。同时，我们使高级用户能够完全创建自己的模型类。
 
-The framework is built on stable_baselines3 (torch) and OpenAI gym for the base environment class. But generally speaking, the model class is well isolated. Thus, the addition of competing libraries can be easily integrated into the existing framework. For the environment, it is inheriting from `gym.Env` which means that it is necessary to write an entirely new environment in order to switch to a different library.
+该框架基于 stable_baselines3 (torch) 和 OpenAI gym 构建基础环境类。但总的来说，模型类是良好隔离的。因此，可以轻松地将竞争库集成到现有框架中。对于环境，它继承自 `gym.Env`，这意味着要切换到不同的库，需要编写一个全新的环境。
 
-### Important considerations
+### 重要注意事项
 
-As explained above, the agent is "trained" in an artificial trading "environment". In our case, that environment may seem quite similar to a real Freqtrade backtesting environment, but it is *NOT*. In fact, the RL training environment is much more simplified. It does not incorporate any of the complicated strategy logic, such as callbacks like `custom_exit`, `custom_stoploss`, leverage controls, etc. The RL environment is instead a very "raw" representation of the true market, where the agent has free will to learn the policy (read: stoploss, take profit, etc.) which is enforced by the `calculate_reward()`. Thus, it is important to consider that the agent training environment is not identical to the real world.
+如上所述，智能体在人工交易"环境"中进行"训练"。在我们的情况下，该环境可能与真实的 Freqtrade 回测环境非常相似，但事实*并非如此*。实际上，RL 训练环境要简化得多。它不包含任何复杂的策略逻辑，例如像 `custom_exit`、`custom_stoploss`、杠杆控制等回调。RL 环境反而是真实市场的非常"原始"的表示，其中智能体有自由意志来学习策略（读取：止损、止盈等），这些由 `calculate_reward()` 强制执行。因此，重要的是要考虑智能体训练环境与现实世界并不完全相同。
 
-## Running Reinforcement Learning
+## 运行强化学习
 
-Setting up and running a Reinforcement Learning model is the same as running a Regressor or Classifier. The same two flags, `--freqaimodel` and `--strategy`, must be defined on the command line:
+设置和运行强化学习模型与运行回归器或分类器相同。必须在命令行中定义相同的两个标志 `--freqaimodel` 和 `--strategy`：
 
 ```bash
 freqtrade trade --freqaimodel ReinforcementLearner --strategy MyRLStrategy --config config.json
 ```
 
-where `ReinforcementLearner` will use the templated `ReinforcementLearner` from `freqai/prediction_models/ReinforcementLearner` (or a custom user defined one located in `user_data/freqaimodels`). The strategy, on the other hand, follows the same base [feature engineering](freqai-feature-engineering.md) with `feature_engineering_*` as a typical Regressor. The difference lies in the creation of the targets, Reinforcement Learning doesn't require them. However, FreqAI requires a default (neutral) value to be set in the action column:
+其中 `ReinforcementLearner` 将使用来自 `freqai/prediction_models/ReinforcementLearner` 的模板化 `ReinforcementLearner`（或位于 `user_data/freqaimodels` 中的用户自定义版本）。另一方面，策略遵循与典型回归器相同的[特征工程](freqai-feature-engineering.md)基础，使用 `feature_engineering_*`。区别在于目标的创建，强化学习不需要它们。但是，FreqAI 要求在动作列中设置默认（中性）值：
 
 ```python
     def set_freqai_targets(self, dataframe, **kwargs) -> DataFrame:
@@ -56,7 +56,7 @@ where `ReinforcementLearner` will use the templated `ReinforcementLearner` from 
         return dataframe
 ```
 
-Most of the function remains the same as for typical Regressors, however, the function below shows how the strategy must pass the raw price data to the agent so that it has access to raw OHLCV in the training environment:
+该函数的大部分内容与典型回归器相同，但是，下面的函数显示了策略必须如何将原始价格数据传递给智能体，以便它在训练环境中可以访问原始 OHLCV：
 
 ```python
     def feature_engineering_standard(self, dataframe: DataFrame, **kwargs) -> DataFrame:
@@ -68,9 +68,9 @@ Most of the function remains the same as for typical Regressors, however, the fu
     return dataframe
 ```
 
-Finally, there is no explicit "label" to make - instead it is necessary to assign the `&-action` column which will contain the agent's actions when accessed in `populate_entry/exit_trends()`. In the present example, the neutral action to 0. This value should align with the environment used. FreqAI provides two environments, both use 0 as the neutral action.
+最后，没有明确的"标签"需要制作 - 相反，有必要分配 `&-action` 列，该列将在 `populate_entry/exit_trends()` 中访问时包含智能体的动作。在当前的示例中，中性动作为 0。该值应与使用的环境对齐。FreqAI 提供两个环境，两者都使用 0 作为中性动作。
 
-After users realize there are no labels to set, they will soon understand that the agent is making its "own" entry and exit decisions. This makes strategy construction rather simple. The entry and exit signals come from the agent in the form of an integer - which are used directly to decide entries and exits in the strategy:
+在用户意识到没有标签需要设置后，他们很快就会理解智能体正在做出自己的入场和出场决策。这使得策略构建相当简单。入场和出场信号以整数的形式来自智能体 - 这些整数直接用于决定策略中的入场和出场：
 
 ```python
     def populate_entry_trend(self, df: DataFrame, metadata: dict) -> DataFrame:
@@ -103,11 +103,11 @@ After users realize there are no labels to set, they will soon understand that t
         return df
 ```
 
-It is important to consider that `&-action` depends on which environment they choose to use. The example above shows 5 actions, where 0 is neutral, 1 is enter long, 2 is exit long, 3 is enter short and 4 is exit short.
+重要的是要考虑 `&-action` 取决于他们选择使用的环境。上面的示例显示了 5 个动作，其中 0 是中性，1 是做多入场，2 是做多出场，3 是做空入场，4 是做空出场。
 
-## Configuring the Reinforcement Learner
+## 配置强化学习器
 
-In order to configure the `Reinforcement Learner` the following dictionary must exist in the `freqai` config:
+为了配置 `Reinforcement Learner`，必须在 `freqai` 配置中存在以下字典：
 
 ```json
         "rl_config": {
@@ -125,24 +125,24 @@ In order to configure the `Reinforcement Learner` the following dictionary must 
         }
 ```
 
-Parameter details can be found [here](freqai-parameter-table.md), but in general the `train_cycles` decides how many times the agent should cycle through the candle data in its artificial environment to train weights in the model. `model_type` is a string which selects one of the available models in [stable_baselines](https://stable-baselines3.readthedocs.io/en/master/)(external link).
+参数详细信息可以在[这里](freqai-parameter-table.md)找到，但一般来说，`train_cycles` 决定智能体应该在其人工环境中循环遍历 K 线数据多少次来训练模型中的权重。`model_type` 是一个字符串，用于在 [stable_baselines](https://stable-baselines3.readthedocs.io/en/master/)（外部链接）中选择可用的模型之一。
 
 !!! Note
-    If you would like to experiment with `continual_learning`, then you should set that value to `true` in the main `freqai` configuration dictionary. This will tell the Reinforcement Learning library to continue training new models from the final state of previous models, instead of retraining new models from scratch each time a retrain is initiated.
+    如果您想尝试 `continual_learning`，则应在主 `freqai` 配置字典中将该值设置为 `true`。这将告诉强化学习库从先前模型的最终状态继续训练新模型，而不是在每次启动重训练时从头开始重新训练新模型。
 
 !!! Note
-    Remember that the general `model_training_parameters` dictionary should contain all the model hyperparameter customizations for the particular `model_type`. For example, `PPO` parameters can be found [here](https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html).
+    请记住，通用的 `model_training_parameters` 字典应包含特定 `model_type` 的所有模型超参数自定义。例如，可以在[这里](https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html)找到 `PPO` 参数。
 
-## Creating a custom reward function
+## 创建自定义奖励函数
 
-!!! danger "Not for production"
-    Warning!
-    The reward function provided with the Freqtrade source code is a showcase of functionality designed to show/test as many possible environment control features as possible. It is also designed to run quickly on small computers. This is a benchmark, it is *not* for live production. Please beware that you will need to create your own custom_reward() function or use a template built by other users outside of the Freqtrade source code.
+!!! danger "不用于生产"
+    警告！
+    Freqtrade 源代码提供的奖励函数是一个功能展示，旨在展示/测试尽可能多的环境控制功能。它还旨在在小型计算机上快速运行。这是一个基准，*不*用于实盘生产。请注意，您需要创建自己的 custom_reward() 函数或使用 Freqtrade 源代码之外的其他用户构建的模板。
 
-As you begin to modify the strategy and the prediction model, you will quickly realize some important differences between the Reinforcement Learner and the Regressors/Classifiers. Firstly, the strategy does not set a target value (no labels!). Instead, you set the `calculate_reward()` function inside the `MyRLEnv` class (see below). A default `calculate_reward()` is provided inside `prediction_models/ReinforcementLearner.py` to demonstrate the necessary building blocks for creating rewards, but this is *not* designed for production. Users *must* create their own custom reinforcement learning model class or use a pre-built one from outside the Freqtrade source code and save it to `user_data/freqaimodels`. It is inside the `calculate_reward()` where creative theories about the market can be expressed. For example, you can reward your agent when it makes a winning trade, and penalize the agent when it makes a losing trade. Or perhaps, you wish to reward the agent for entering trades, and penalize the agent for sitting in trades too long. Below we show examples of how these rewards are all calculated:
+当您开始修改策略和预测模型时，您会很快意识到强化学习器与回归器/分类器之间的一些重要区别。首先，策略不设置目标值（没有标签！）。相反，您在 `MyRLEnv` 类内设置 `calculate_reward()` 函数（见下文）。`prediction_models/ReinforcementLearner.py` 中提供了默认的 `calculate_reward()` 以演示创建奖励所需的构建块，但这*不是*为生产设计的。用户*必须*创建自己的自定义强化学习模型类，或使用 Freqtrade 源代码之外的预构建类，并将其保存到 `user_data/freqaimodels`。正是在 `calculate_reward()` 内部，可以表达关于市场的创造性理论。例如，您可以在智能体进行盈利交易时奖励它，在智能体进行亏损交易时惩罚它。或者，您可能希望奖励智能体进入交易，并惩罚智能体在交易中停留时间过长。下面我们展示如何计算这些奖励的示例：
 
-!!! note "Hint"
-    The best reward functions are ones that are continuously differentiable, and well scaled. In other words, adding a single large negative penalty to a rare event is not a good idea, and the neural net will not be able to learn that function. Instead, it is better to add a small negative penalty to a common event. This will help the agent learn faster. Not only this, but you can help improve the continuity of your rewards/penalties by having them scale with severity according to some linear/exponential functions. In other words, you'd slowly scale the penalty as the duration of the trade increases. This is better than a single large penalty occurring at a single point in time.
+!!! note "提示"
+    最好的奖励函数是连续可微且良好缩放的函数。换句话说，对罕见事件添加单个大的负惩罚不是一个好主意，神经网络将无法学习该函数。相反，最好对常见事件添加小的负惩罚。这将帮助智能体更快地学习。不仅如此，您还可以通过让奖励/惩罚根据某些线性/指数函数随严重程度缩放来帮助改善奖励/惩罚的连续性。换句话说，您会随着交易持续时间的增加而 slowly 缩放惩罚。这比在单个时间点发生单个大惩罚要好。
 
 ```python
 from freqtrade.freqai.prediction_models.ReinforcementLearner import ReinforcementLearner
@@ -151,39 +151,33 @@ from freqtrade.freqai.RL.Base5ActionRLEnv import Actions, Base5ActionRLEnv, Posi
 
 class MyCoolRLModel(ReinforcementLearner):
     """
-    User created RL prediction model.
+    用户创建的 RL 预测模型。
 
-    Save this file to `freqtrade/user_data/freqaimodels`
+    将此文件保存到 `freqtrade/user_data/freqaimodels`
 
-    then use it with:
+    然后使用它：
 
     freqtrade trade --freqaimodel MyCoolRLModel --config config.json --strategy SomeCoolStrat
 
-    Here the users can override any of the functions
-    available in the `IFreqaiModel` inheritance tree. Most importantly for RL, this
-    is where the user overrides `MyRLEnv` (see below), to define custom
-    `calculate_reward()` function, or to override any other parts of the environment.
+    这里用户可以覆盖 `IFreqaiModel` 继承树中可用的任何函数。对于 RL 最重要的是，这里是用户覆盖 `MyRLEnv`（见下文）的地方，以定义自定义的 `calculate_reward()` 函数，或覆盖环境的任何其他部分。
 
-    This class also allows users to override any other part of the IFreqaiModel tree.
-    For example, the user can override `def fit()` or `def train()` or `def predict()`
-    to take fine-tuned control over these processes.
+    此类还允许用户覆盖 IFreqaiModel 树的任何其他部分。
+    例如，用户可以覆盖 `def fit()` 或 `def train()` 或 `def predict()`
+    以对这些过程进行微调控制。
 
-    Another common override may be `def data_cleaning_predict()` where the user can
-    take fine-tuned control over the data handling pipeline.
+    另一个常见的覆盖可能是 `def data_cleaning_predict()`，用户可以在其中
+    对数据处理管道进行微调控制。
     """
     class MyRLEnv(Base5ActionRLEnv):
         """
-        User made custom environment. This class inherits from BaseEnvironment and gym.Env.
-        Users can override any functions from those parent classes. Here is an example
-        of a user customized `calculate_reward()` function.
+        用户制作的自定义环境。此类继承自 BaseEnvironment 和 gym.Env。
+        用户可以覆盖这些父类中的任何函数。以下是用户自定义 `calculate_reward()` 函数的示例。
 
-        Warning!
-        This is function is a showcase of functionality designed to show as many possible
-        environment control features as possible. It is also designed to run quickly
-        on small computers. This is a benchmark, it is *not* for live production.
+        警告！
+        此函数是功能展示，旨在展示尽可能多的环境控制功能。它还旨在在小型计算机上快速运行。这是一个基准，*不*用于实盘生产。
         """
         def calculate_reward(self, action: int) -> float:
-            # first, penalize if the action is not valid
+            # 首先，如果动作无效则惩罚
             if not self._is_valid(action):
                 return -2
             pnl = self.get_unrealized_profit()
@@ -192,12 +186,12 @@ class MyCoolRLModel(ReinforcementLearner):
 
             pair = self.pair.replace(':', '')
 
-            # you can use feature values from dataframe
-            # Assumes the shifted RSI indicator has been generated in the strategy.
+            # 您可以使用数据框中的特征值
+            # 假设已在策略中生成移位的 RSI 指标。
             rsi_now = self.raw_features[f"%-rsi-period_10_shift-1_{pair}_"
                             f"{self.config['timeframe']}"].iloc[self._current_tick]
 
-            # reward agent for entering trades
+            # 奖励智能体进入交易
             if (action in (Actions.Long_enter.value, Actions.Short_enter.value)
                     and self._position == Positions.Neutral):
                 if rsi_now < 40:
@@ -206,7 +200,7 @@ class MyCoolRLModel(ReinforcementLearner):
                     factor = 1
                 return 25 * factor
 
-            # discourage agent from not entering trades
+            # 阻止智能体不进入交易
             if action == Actions.Neutral.value and self._position == Positions.Neutral:
                 return -1
             max_trade_duration = self.rl_config.get('max_trade_duration_candles', 300)
@@ -215,16 +209,16 @@ class MyCoolRLModel(ReinforcementLearner):
                 factor *= 1.5
             elif trade_duration > max_trade_duration:
                 factor *= 0.5
-            # discourage sitting in position
+            # 阻止在持仓中停留
             if self._position in (Positions.Short, Positions.Long) and \
             action == Actions.Neutral.value:
                 return -1 * trade_duration / max_trade_duration
-            # close long
+            # 平多
             if action == Actions.Long_exit.value and self._position == Positions.Long:
                 if pnl > self.profit_aim * self.rr:
                     factor *= self.rl_config['model_reward_parameters'].get('win_reward_factor', 2)
                 return float(pnl * factor)
-            # close short
+            # 平空
             if action == Actions.Short_exit.value and self._position == Positions.Short:
                 if pnl > self.profit_aim * self.rr:
                     factor *= self.rl_config['model_reward_parameters'].get('win_reward_factor', 2)
@@ -232,30 +226,29 @@ class MyCoolRLModel(ReinforcementLearner):
             return 0.
 ```
 
-## Using Tensorboard
+## 使用 Tensorboard
 
-Reinforcement Learning models benefit from tracking training metrics. FreqAI has integrated Tensorboard to allow users to track training and evaluation performance across all coins and across all retrainings. Tensorboard is activated via the following command:
+强化学习模型受益于跟踪训练指标。FreqAI 已集成 Tensorboard，允许用户跟踪所有币种和所有重训练的训练和评估性能。通过以下命令激活 Tensorboard：
 
 ```bash
 tensorboard --logdir user_data/models/unique-id
 ```
 
-where `unique-id` is the `identifier` set in the `freqai` configuration file. This command must be run in a separate shell to view the output in the browser at 127.0.0.1:6006 (6006 is the default port used by Tensorboard).
+其中 `unique-id` 是在 `freqai` 配置文件中设置的 `identifier`。此命令必须在单独的 shell 中运行，以便在浏览器中的 127.0.0.1:6006（6006 是 Tensorboard 使用的默认端口）查看输出。
 
 ![tensorboard](assets/tensorboard.jpg)
 
-## Custom logging
+## 自定义日志记录
 
-FreqAI also provides a built in episodic summary logger called `self.tensorboard_log` for adding custom information to the Tensorboard log. By default, this function is already called once per step inside the environment to record the agent actions. All values accumulated for all steps in a single episode are reported at the conclusion of each episode, followed by a full reset of all metrics to 0 in preparation for the subsequent episode.
+FreqAI 还提供了一个内置的情节摘要记录器 `self.tensorboard_log`，用于向 Tensorboard 日志添加自定义信息。默认情况下，此函数已在环境内每步调用一次以记录智能体动作。在单个情节中所有步骤累积的所有值都会在每个情节结束时报告，然后将所有指标完全重置为 0，为后续情节做准备。
 
-`self.tensorboard_log` can also be used anywhere inside the environment, for example, it can be added to the `calculate_reward` function to collect more detailed information about how often various parts of the reward were called:
+`self.tensorboard_log` 也可以在环境内的任何地方使用，例如，可以将其添加到 `calculate_reward` 函数中以收集有关奖励的各个部分被调用频率的更多详细信息：
 
 ```python
     class MyRLEnv(Base5ActionRLEnv):
         """
-        User made custom environment. This class inherits from BaseEnvironment and gym.Env.
-        Users can override any functions from those parent classes. Here is an example
-        of a user customized `calculate_reward()` function.
+        用户制作的自定义环境。此类继承自 BaseEnvironment 和 gym.Env。
+        用户可以覆盖这些父类中的任何函数。以下是用户自定义 `calculate_reward()` 函数的示例。
         """
         def calculate_reward(self, action: int) -> float:
             if not self._is_valid(action):
@@ -265,16 +258,16 @@ FreqAI also provides a built in episodic summary logger called `self.tensorboard
 ```
 
 !!! Note
-    The `self.tensorboard_log()` function is designed for tracking incremented objects only i.e. events, actions inside the training environment. If the event of interest is a float, the float can be passed as the second argument e.g. `self.tensorboard_log("float_metric1", 0.23)`. In this case the metric values are not incremented.
+    `self.tensorboard_log()` 函数设计为仅跟踪递增对象，即训练环境内的事件、动作。如果感兴趣的事件是浮点数，则可以将浮点数作为第二个参数传递，例如 `self.tensorboard_log("float_metric1", 0.23)`。在这种情况下，指标值不会递增。
 
-## Choosing a base environment
+## 选择基础环境
 
-FreqAI provides three base environments, `Base3ActionRLEnvironment`, `Base4ActionEnvironment` and `Base5ActionEnvironment`. As the names imply, the environments are customized for agents that can select from 3, 4 or 5 actions. The `Base3ActionEnvironment` is the simplest, the agent can select from hold, long, or short. This environment can also be used for long-only bots (it automatically follows the `can_short` flag from the strategy), where long is the enter condition and short is the exit condition. Meanwhile, in the `Base4ActionEnvironment`, the agent can enter long, enter short, hold neutral, or exit position. Finally, in the `Base5ActionEnvironment`, the agent has the same actions as Base4, but instead of a single exit action, it separates exit long and exit short. The main changes stemming from the environment selection include:
+FreqAI 提供三个基础环境：`Base3ActionRLEnvironment`、`Base4ActionEnvironment` 和 `Base5ActionEnvironment`。顾名思义，这些环境是为可以从 3、4 或 5 个动作中选择的智能体定制的。`Base3ActionEnvironment` 是最简单的，智能体可以从持有、做多或做空中选择。此环境也可用于仅做多机器人（它自动遵循策略中的 `can_short` 标志），其中做多是入场条件，做空是出场条件。同时，在 `Base4ActionEnvironment` 中，智能体可以做多入场、做空入场、持有中性或出场。最后，在 `Base5ActionEnvironment` 中，智能体具有与 Base4 相同的动作，但不是一个单独的出场动作，而是将做多出场和做空出场分开。环境选择带来的主要变化包括：
 
-* the actions available in the `calculate_reward`
-* the actions consumed by the user strategy
+* `calculate_reward` 中可用的动作
+* 用户策略消耗的动作
 
-All of the FreqAI provided environments inherit from an action/position agnostic environment object called the `BaseEnvironment`, which contains all shared logic. The architecture is designed to be easily customized. The simplest customization is the `calculate_reward()` (see details [here](#creating-a-custom-reward-function)). However, the customizations can be further extended into any of the functions inside the environment. You can do this by simply overriding those functions inside your `MyRLEnv` in the prediction model file. Or for more advanced customizations, it is encouraged to create an entirely new environment inherited from `BaseEnvironment`.
+FreqAI 提供的所有环境都继承自一个称为 `BaseEnvironment` 的动作/位置无关的环境对象，它包含所有共享逻辑。架构设计为易于自定义。最简单的自定义是 `calculate_reward()`（详细信息见[这里](#creating-a-custom-reward-function)）。但是，可以将自定义进一步扩展到环境内的任何函数。您可以通过在预测模型文件中简单覆盖 `MyRLEnv` 内的这些函数来实现。或者，对于更高级的自定义，建议创建一个从 `BaseEnvironment` 继承的全新环境。
 
 !!! Note
-    Only the `Base3ActionRLEnv` can do long-only training/trading (set the user strategy attribute `can_short = False`).
+    只有 `Base3ActionRLEnv` 可以进行仅做多训练/交易（设置用户策略属性 `can_short = False`）。

@@ -233,7 +233,7 @@ def trade(tradeid: int = 0, rpc: RPC = Depends(get_rpc)):
     try:
         return rpc._rpc_trade_status([tradeid])[0]
     except (RPCException, KeyError):
-        raise HTTPException(status_code=404, detail="Trade not found.")
+        raise HTTPException(status_code=404, detail="交易未找到。")
 
 
 @router.delete("/trades/{tradeid}", response_model=DeleteTrade, tags=["info", "trading"])
@@ -314,9 +314,9 @@ def force_entry(payload: ForceEnterPayload, rpc: RPC = Depends(get_rpc)):
     if trade:
         return ForceEnterResponse.model_validate(trade.to_json())
     else:
-        return ForceEnterResponse.model_validate(
-            {"status": f"Error entering {payload.side} trade for pair {payload.pair}."}
-        )
+            return ForceEnterResponse.model_validate(
+                {"status": f"进入 {payload.pair} 的 {payload.side} 交易时出错。"}
+            )
 
 
 # /forcesell is deprecated with short addition. use /forceexit instead
@@ -419,7 +419,7 @@ def plot_config(
 ):
     if not strategy:
         if not rpc:
-            raise RPCException("Strategy is mandatory in webserver mode.")
+            raise RPCException("在 webserver 模式下策略是必需的。")
         return PlotConfig.model_validate(rpc._rpc_plot_config())
     else:
         config1 = deepcopy(config)
@@ -455,7 +455,7 @@ def get_strategy(strategy: str, config=Depends(get_config)):
             strategy, config_, extra_dir=config_.get("strategy_path")
         )
     except OperationalException:
-        raise HTTPException(status_code=404, detail="Strategy not found")
+        raise HTTPException(status_code=404, detail="策略未找到")
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e))
     return {

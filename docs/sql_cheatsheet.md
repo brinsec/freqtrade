@@ -1,18 +1,18 @@
-# SQL Helper
+# SQL 帮助
 
-This page contains some help if you want to query your sqlite db.
+如果您想查询您的 sqlite 数据库，本页包含一些帮助。
 
-!!! Tip "Other Database systems"
-    To use other Database Systems like PostgreSQL or MariaDB, you can use the same queries, but you need to use the respective client for the database system. [Click here](advanced-setup.md#use-a-different-database-system) to learn how to setup a different database system with freqtrade.
+!!! Tip "其他数据库系统"
+    要使用其他数据库系统（如 PostgreSQL 或 MariaDB），您可以使用相同的查询，但需要使用相应数据库系统的客户端。[点击此处](advanced-setup.md#use-a-different-database-system)了解如何为 freqtrade 设置不同的数据库系统。
 
-!!! Warning
-    If you are not familiar with SQL, you should be very careful when running queries on your database.  
-    Always make sure to have a backup of your database before running any queries.
+!!! Warning "警告"
+    如果您不熟悉 SQL，在数据库上运行查询时应非常小心。
+    在运行任何查询之前，请始终确保对数据库进行了备份。
 
-## Install sqlite3
+## 安装 sqlite3
 
-Sqlite3 is a terminal based sqlite application.
-Feel free to use a visual Database editor like SqliteBrowser if you feel more comfortable with that.
+Sqlite3 是基于终端的 sqlite 应用程序。
+如果您觉得更舒适，可以随意使用像 SqliteBrowser 这样的可视化数据库编辑器。
 
 ### Ubuntu/Debian installation
 

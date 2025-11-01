@@ -1,46 +1,44 @@
 ```
-usage: freqtrade backtesting-show [-h] [-v] [--no-color] [--logfile FILE] [-V]
+用法: freqtrade backtesting-show [-h] [-v] [--no-color] [--logfile FILE] [-V]
                                   [-c PATH] [-d PATH] [--userdir PATH]
                                   [--backtest-filename PATH]
                                   [--backtest-directory PATH]
                                   [--show-pair-list]
                                   [--breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]]
 
-options:
-  -h, --help            show this help message and exit
+选项:
+  -h, --help            显示此帮助消息并退出
   --backtest-filename PATH, --export-filename PATH
-                        Use this filename for backtest results.Example:
+                        用于回测结果的文件名。示例：
                         `--backtest-
-                        filename=backtest_results_2020-09-27_16-20-48.json`.
-                        Assumes either `user_data/backtest_results/` or
-                        `--export-directory` as base directory.
+                        filename=backtest_results_2020-09-27_16-20-48.json`。
+                        假设 `user_data/backtest_results/` 或
+                        `--export-directory` 作为基础目录。
   --backtest-directory PATH, --export-directory PATH
-                        Directory to use for backtest results. Example:
-                        `--export-directory=user_data/backtest_results/`.
-  --show-pair-list      Show backtesting pairlist sorted by profit.
+                        用于回测结果的目录。示例：
+                        `--export-directory=user_data/backtest_results/`。
+  --show-pair-list      显示按利润排序的回测交易对列表。
   --breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]
-                        Show backtesting breakdown per [day, week, month,
-                        year, weekday].
+                        按 [天、周、月、
+                        年、工作日] 显示回测分解。
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+通用参数:
+  -v, --verbose         详细模式（-vv 获取更多信息，-vvv 获取所有消息）。
+  --no-color            禁用超参数优化结果的着色。如果您将
+                        输出重定向到文件，这可能很有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        记录到指定的文件。特殊值为：
+                        'syslog'、'journald'。有关更多详细信息，请参阅文档。
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在者为准）。
+                        可以使用多个 --config 选项。可以
+                        设置为 `-` 以从 stdin 读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
+                        包含历史回测数据的交易所基础目录路径。
+                        要查看期货数据，请另外使用交易模式。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        用户数据目录路径。
 
 ```

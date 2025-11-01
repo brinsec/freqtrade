@@ -1,11 +1,11 @@
-# Strategy Callbacks
+# 策略回调
 
-While the main strategy functions (`populate_indicators()`, `populate_entry_trend()`, `populate_exit_trend()`) should be used in a vectorized way, and are only called [once during backtesting](bot-basics.md#backtesting-hyperopt-execution-logic), callbacks are called "whenever needed".
+虽然主要策略函数（`populate_indicators()`、`populate_entry_trend()`、`populate_exit_trend()`）应该以向量化方式使用，并且只在[回测期间调用一次](bot-basics.md#backtesting-hyperopt-execution-logic)，回调在"需要时"调用。
 
-As such, you should avoid doing heavy calculations in callbacks to avoid delays during operations.
-Depending on the callback used, they may be called when entering / exiting a trade, or throughout the duration of a trade.
+因此，您应该避免在回调中进行繁重的计算，以避免操作期间的延迟。
+根据使用的回调，它们可能在进入/退出交易时调用，或者在交易的整个持续时间内调用。
 
-Currently available callbacks:
+当前可用的回调：
 
 * [`bot_start()`](#bot-start)
 * [`bot_loop_start()`](#bot-loop-start)
@@ -13,8 +13,8 @@ Currently available callbacks:
 * [`custom_exit()`](#custom-exit-signal)
 * [`custom_stoploss()`](#custom-stoploss)
 * [`custom_roi()`](#custom-roi)
-* [`custom_entry_price()` and `custom_exit_price()`](#custom-order-price-rules)
-* [`check_entry_timeout()` and `check_exit_timeout()`](#custom-order-timeout-rules)
+* [`custom_entry_price()` 和 `custom_exit_price()`](#custom-order-price-rules)
+* [`check_entry_timeout()` 和 `check_exit_timeout()`](#custom-order-timeout-rules)
 * [`confirm_trade_entry()`](#trade-entry-buy-order-confirmation)
 * [`confirm_trade_exit()`](#trade-exit-sell-order-confirmation)
 * [`adjust_trade_position()`](#adjust-trade-position)
@@ -22,18 +22,18 @@ Currently available callbacks:
 * [`leverage()`](#leverage-callback)
 * [`order_filled()`](#order-filled-callback)
 
-!!! Tip "Callback calling sequence"
-    You can find the callback calling sequence in [bot-basics](bot-basics.md#bot-execution-logic)
+!!! Tip "回调调用序列"
+    您可以在 [bot-basics](bot-basics.md#bot-execution-logic) 中找到回调调用序列
 
 --8<-- "includes/strategy-imports.md"
 
 --8<-- "includes/strategy-exit-comparisons.md"
 
 
-## Bot start
+## 机器人启动
 
-A simple callback which is called once when the strategy is loaded.
-This can be used to perform actions that must only be performed once and runs after dataprovider and wallet are set
+一个简单的回调，在加载策略时调用一次。
+这可用于执行必须只执行一次的操作，并在设置数据提供者和钱包后运行
 
 ``` python
 import requests
@@ -44,26 +44,25 @@ class AwesomeStrategy(IStrategy):
 
     def bot_start(self, **kwargs) -> None:
         """
-        Called only once after bot instantiation.
-        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
+        仅在机器人实例化后调用一次。
+        :param **kwargs: 确保保留此参数，以便对此的更新不会破坏您的策略。
         """
         if self.config["runmode"].value in ("live", "dry_run"):
-            # Assign this to the class by using self.*
-            # can then be used by populate_* methods
+            # 通过使用 self.* 将其分配给类
+            # 然后可以在 populate_* 方法中使用
             self.custom_remote_data = requests.get("https://some_remote_source.example.com")
 
 ```
 
-During hyperopt, this runs only once at startup.
+在超参数优化期间，这仅在启动时运行一次。
 
-## Bot loop start
+## 机器人循环启动
 
-A simple callback which is called once at the start of every bot throttling iteration in dry/live mode (roughly every 5
-seconds, unless configured differently) or once per candle in backtest/hyperopt mode.
-This can be used to perform calculations which are pair independent (apply to all pairs), loading of external data, etc.
+一个简单的回调，在模拟/实盘模式下的每个机器人节流迭代开始时调用一次（大约每 5 秒，除非配置不同）或在回测/超参数优化模式下每个蜡烛调用一次。
+这可用于执行与交易对无关的计算（适用于所有交易对）、加载外部数据等。
 
 ``` python
-# Default imports
+# 默认导入
 import requests
 
 class AwesomeStrategy(IStrategy):
@@ -72,25 +71,25 @@ class AwesomeStrategy(IStrategy):
 
     def bot_loop_start(self, current_time: datetime, **kwargs) -> None:
         """
-        Called at the start of the bot iteration (one loop).
-        Might be used to perform pair-independent tasks
-        (e.g. gather some remote resource for comparison)
-        :param current_time: datetime object, containing the current datetime
-        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
+        在机器人迭代（一个循环）开始时调用。
+        可用于执行与交易对无关的任务
+        （例如，收集一些远程资源进行比较）
+        :param current_time: datetime 对象，包含当前日期时间
+        :param **kwargs: 确保保留此参数，以便对此的更新不会破坏您的策略。
         """
         if self.config["runmode"].value in ("live", "dry_run"):
-            # Assign this to the class by using self.*
-            # can then be used by populate_* methods
+            # 通过使用 self.* 将其分配给类
+            # 然后可以在 populate_* 方法中使用
             self.remote_data = requests.get("https://some_remote_source.example.com")
 
 ```
 
-## Stake size management
+## 投注金额管理
 
-Called before entering a trade, makes it possible to manage your position size when placing a new trade.
+在进入交易之前调用，使您可以在下新交易时管理头寸大小。
 
 ```python
-# Default imports
+# 默认导入
 
 class AwesomeStrategy(IStrategy):
     def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
@@ -103,42 +102,42 @@ class AwesomeStrategy(IStrategy):
 
         if current_candle["fastk_rsi_1h"] > current_candle["fastd_rsi_1h"]:
             if self.config["stake_amount"] == "unlimited":
-                # Use entire available wallet during favorable conditions when in compounding mode.
+                # 在复合模式下，在有利条件下使用整个可用钱包。
                 return max_stake
             else:
-                # Compound profits during favorable conditions instead of using a static stake.
+                # 在有利条件下复合利润，而不是使用静态投注金额。
                 return self.wallets.get_total_stake_amount() / self.config["max_open_trades"]
 
-        # Use default stake amount.
+        # 使用默认投注金额。
         return proposed_stake
 ```
 
-Freqtrade will fall back to the `proposed_stake` value should your code raise an exception. The exception itself will be logged.
+如果您的代码引发异常，Freqtrade 将回退到 `proposed_stake` 值。异常本身将被记录。
 
-!!! Tip
-    You do not _have_ to ensure that `min_stake <= returned_value <= max_stake`. Trades will succeed as the returned value will be clamped to supported range and this action will be logged.
+!!! Tip "提示"
+    您不必确保 `min_stake <= returned_value <= max_stake`。交易将成功，因为返回值将被限制到支持的范围，并且此操作将被记录。
 
-!!! Tip
-    Returning `0` or `None` will prevent trades from being placed.
+!!! Tip "提示"
+    返回 `0` 或 `None` 将阻止下订单。
 
-## Custom exit signal
+## 自定义出场信号
 
-Called for open trade every throttling iteration (roughly every 5 seconds) until a trade is closed.
+在每次节流迭代（大约每 5 秒）时为未平仓交易调用，直到交易关闭。
 
-Allows to define custom exit signals, indicating that specified position should be closed (full exit). This is very useful when we need to customize exit conditions for each individual trade, or if you need trade data to make an exit decision.
+允许定义自定义出场信号，指示应关闭指定头寸（完全退出）。当我们需要为每个单独的交易自定义退出条件，或者如果您需要交易数据来做出退出决定时，这非常有用。
 
-For example you could implement a 1:2 risk-reward ROI with `custom_exit()`.
+例如，您可以使用 `custom_exit()` 实现 1:2 风险回报 ROI。
 
-Using `custom_exit()` signals in place of stoploss though *is not recommended*. It is a inferior method to using `custom_stoploss()` in this regard - which also allows you to keep the stoploss on exchange.
+但是，使用 `custom_exit()` 信号代替止损*不推荐*。在这方面，这是使用 `custom_stoploss()` 的较差方法 - 这也允许您将止损保留在交易所上。
 
-!!! Note
-    Returning a (none-empty) `string` or `True` from this method is equal to setting exit signal on a candle at specified time. This method is not called when exit signal is set already, or if exit signals are disabled (`use_exit_signal=False`). `string` max length is 64 characters. Exceeding this limit will cause the message to be truncated to 64 characters.
-    `custom_exit()` will ignore `exit_profit_only`, and will always be called unless `use_exit_signal=False`, even if there is a new enter signal.
+!!! Note "注意"
+    从该方法返回（非空）`string` 或 `True` 等同于在指定时间的蜡烛上设置出场信号。当已经设置了出场信号，或者如果出场信号被禁用（`use_exit_signal=False`）时，不会调用此方法。`string` 最大长度为 64 个字符。超过此限制将导致消息被截断为 64 个字符。
+    `custom_exit()` 将忽略 `exit_profit_only`，除非 `use_exit_signal=False`，否则将始终被调用，即使有新的入场信号。
 
-An example of how we can use different indicators depending on the current profit and also exit trades that were open longer than one day:
+一个示例，说明如何根据当前利润使用不同的指标，并退出打开超过一天的交易：
 
 ``` python
-# Default imports
+# 默认导入
 
 class AwesomeStrategy(IStrategy):
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime, current_rate: float,
@@ -146,70 +145,70 @@ class AwesomeStrategy(IStrategy):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
 
-        # Above 20% profit, sell when rsi < 80
+        # 利润超过 20% 时，当 rsi < 80 时卖出
         if current_profit > 0.2:
             if last_candle["rsi"] < 80:
                 return "rsi_below_80"
 
-        # Between 2% and 10%, sell if EMA-long above EMA-short
+        # 在 2% 和 10% 之间，如果 EMA-长线高于 EMA-短线则卖出
         if 0.02 < current_profit < 0.1:
             if last_candle["emalong"] > last_candle["emashort"]:
                 return "ema_long_below_80"
 
-        # Sell any positions at a loss if they are held for more than one day.
+        # 如果持有超过一天，以亏损卖出任何头寸。
         if current_profit < 0.0 and (current_time - trade.open_date_utc).days >= 1:
             return "unclog"
 ```
 
-See [Dataframe access](strategy-advanced.md#dataframe-access) for more information about dataframe use in strategy callbacks.
+有关策略回调中 dataframe 使用的更多信息，请参阅 [Dataframe 访问](strategy-advanced.md#dataframe-access)。
 
-## Custom stoploss
+## 自定义止损
 
-Called for open trade every iteration (roughly every 5 seconds) until a trade is closed.
+在每次迭代（大约每 5 秒）时为未平仓交易调用，直到交易关闭。
 
-The usage of the custom stoploss method must be enabled by setting `use_custom_stoploss=True` on the strategy object.
+必须在策略对象上设置 `use_custom_stoploss=True` 来启用自定义止损方法的使用。
 
-The stoploss price can only ever move upwards - if the stoploss value returned from `custom_stoploss` would result in a lower stoploss price than was previously set, it will be ignored. The traditional `stoploss` value serves as an absolute lower level and will be instated as the initial stoploss (before this method is called for the first time for a trade), and is still mandatory.  
-As custom stoploss acts as regular, changing stoploss, it will behave similar to `trailing_stop` - and trades exiting due to this will have the exit_reason of `"trailing_stop_loss"`.
+止损价格只能向上移动 - 如果从 `custom_stoploss` 返回的止损值会导致止损价格低于先前设置的价格，它将被忽略。传统的 `stoploss` 值作为绝对最低水平，并将被设置为初始止损（在此方法首次为交易调用之前），并且仍然是强制性的。
+由于自定义止损作为常规的、变化的止损，它的行为类似于 `trailing_stop` - 并且由于此退出的交易将具有 `"trailing_stop_loss"` 的退出原因。
 
-The method must return a stoploss value (float / number) as a percentage of the current price.
-E.g. If the `current_rate` is 200 USD, then returning `0.02` will set the stoploss price 2% lower, at 196 USD.
-During backtesting, `current_rate` (and `current_profit`) are provided against the candle's high (or low for short trades) - while the resulting stoploss is evaluated against the candle's low (or high for short trades).
+该方法必须返回止损值（float / number）作为当前价格的百分比。
+例如，如果 `current_rate` 是 200 USD，则返回 `0.02` 将止损价格设置为低于当前价格 2%，即 196 USD。
+在回测期间，`current_rate`（和 `current_profit`）针对蜡烛的高点（或空头交易的低点）提供 - 而结果止损针对蜡烛的低点（或空头交易的高点）进行评估。
 
-The absolute value of the return value is used (the sign is ignored), so returning `0.05` or `-0.05` have the same result, a stoploss 5% below the current price.
-Returning `None` will be interpreted as "no desire to change", and is the only safe way to return when you'd like to not modify the stoploss.
-`NaN` and `inf` values are considered invalid and will be ignored (identical to `None`).
+使用返回值的绝对值（忽略符号），因此返回 `0.05` 或 `-0.05` 具有相同的结果，止损低于当前价格 5%。
+返回 `None` 将被解释为"不想更改"，这是当您不想修改止损时唯一安全的返回方式。
+`NaN` 和 `inf` 值被视为无效并将被忽略（与 `None` 相同）。
 
-Stoploss on exchange works similar to `trailing_stop`, and the stoploss on exchange is updated as configured in `stoploss_on_exchange_interval` ([More details about stoploss on exchange](stoploss.md#stop-loss-on-exchangefreqtrade)).
+交易所上的止损与 `trailing_stop` 类似，并且交易所上的止损在 `stoploss_on_exchange_interval` 中配置更新（[有关交易所止损的更多详情](stoploss.md#stop-loss-on-exchangefreqtrade)）。
 
-If you're on futures markets, please take note of the [stoploss and leverage](stoploss.md#stoploss-and-leverage) section, as the stoploss value returned from `custom_stoploss` is the risk for this trade - not the relative price movement.
+如果您在期货市场上，请注意 [止损和杠杆](stoploss.md#stoploss-and-leverage) 部分，因为从 `custom_stoploss` 返回的止损值是此交易的风险 - 而不是相对价格变动。
 
-!!! Note "Use of dates"
-    All time-based calculations should be done based on `current_time` - using `datetime.now()` or `datetime.utcnow()` is discouraged, as this will break backtesting support.
+!!! Note "日期的使用"
+    所有基于时间的计算都应该基于 `current_time` - 不鼓励使用 `datetime.now()` 或 `datetime.utcnow()`，因为这会破坏回测支持。
 
-!!! Tip "Trailing stoploss"
-    It's recommended to disable `trailing_stop` when using custom stoploss values. Both can work in tandem, but you might encounter the trailing stop to move the price higher while your custom function would not want this, causing conflicting behavior.
+!!! Tip "追踪止损"
+    建议在使用自定义止损值时禁用 `trailing_stop`。两者可以协同工作，但您可能会遇到追踪止损将价格移高，而您的自定义函数不希望这种情况，从而导致冲突行为。
 
-### Adjust stoploss after position adjustments
+### 头寸调整后调整止损
 
-Depending on your strategy, you may encounter the need to adjust the stoploss in both directions after a [position adjustment](#adjust-trade-position).
-For this, freqtrade will make an additional call with `after_fill=True` after an order fills, which will allow the strategy to move the stoploss in any direction (also widening the gap between stoploss and current price, which is otherwise forbidden).
+根据您的策略，您可能需要在[头寸调整](#adjust-trade-position)后在两个方向上调整止损。
+为此，freqtrade 在订单成交后将使用 `after_fill=True` 进行额外调用，这将允许策略在任何方向移动止损（也扩大止损和当前价格之间的差距，这在其他情况下是被禁止的）。
 
-!!! Note "backwards compatibility"
-    This call will only be made if the `after_fill` parameter is part of the function definition of your `custom_stoploss` function.
-    As such, this will not impact (and with that, surprise) existing, running strategies.
+!!! Note "向后兼容性"
+    只有当 `after_fill` 参数是您的 `custom_stoploss` 函数定义的一部分时，才会进行此调用。
+    因此，这不会影响（因此也不会让）现有的、正在运行的策略感到意外。
 
-### Custom stoploss examples
+### 自定义止损示例
 
-The next section will show some examples on what's possible with the custom stoploss function.
-Of course, many more things are possible, and all examples can be combined at will.
+下一节将展示一些可以使用自定义止损函数实现的示例。
+当然，可以实现更多功能，所有示例都可以随意组合。
 
-#### Trailing stop via custom stoploss
+#### 通过自定义止损实现追踪止损
 
-To simulate a regular trailing stoploss of 4% (trailing 4% behind the maximum reached price) you would use the following very simple method:
+要模拟 4% 的常规追踪止损（在达到的最高价格后追踪 4%），您将使用以下非常简单的方法：
 
 ``` python
-# Default imports
+# 默认导入
 
 class AwesomeStrategy(IStrategy):
 
@@ -221,33 +220,33 @@ class AwesomeStrategy(IStrategy):
                         current_rate: float, current_profit: float, after_fill: bool, 
                         **kwargs) -> float | None:
         """
-        Custom stoploss logic, returning the new distance relative to current_rate (as ratio).
-        e.g. returning -0.05 would create a stoploss 5% below current_rate.
-        The custom stoploss can never be below self.stoploss, which serves as a hard maximum loss.
+        自定义止损逻辑，返回相对于 current_rate 的新距离（作为比率）。
+        例如，返回 -0.05 将在 current_rate 下方 5% 处创建止损。
+        自定义止损永远不能低于 self.stoploss，它作为硬最大亏损。
 
-        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/
+        完整文档请访问 https://www.freqtrade.io/en/latest/strategy-advanced/
 
-        When not implemented by a strategy, returns the initial stoploss value.
-        Only called when use_custom_stoploss is set to True.
+        当策略未实现时，返回初始止损值。
+        仅在 use_custom_stoploss 设置为 True 时调用。
 
-        :param pair: Pair that's currently analyzed
-        :param trade: trade object.
-        :param current_time: datetime object, containing the current datetime
-        :param current_rate: Rate, calculated based on pricing settings in exit_pricing.
-        :param current_profit: Current profit (as ratio), calculated based on current_rate.
-        :param after_fill: True if the stoploss is called after the order was filled.
-        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
-        :return float: New stoploss value, relative to the current_rate
+        :param pair: 当前分析的交易对
+        :param trade: 交易对象。
+        :param current_time: datetime 对象，包含当前日期时间
+        :param current_rate: 价格，基于 exit_pricing 中的定价设置计算。
+        :param current_profit: 当前利润（作为比率），基于 current_rate 计算。
+        :param after_fill: 如果在订单成交后调用止损，则为 True。
+        :param **kwargs: 确保保留此参数，以便对此的更新不会破坏您的策略。
+        :return float: 新的止损值，相对于 current_rate
         """
         return -0.04 * trade.leverage
 ```
 
-#### Time based trailing stop
+#### 基于时间的追踪止损
 
-Use the initial stoploss for the first 60 minutes, after this change to 10% trailing stoploss, and after 2 hours (120 minutes) we use a 5% trailing stoploss.
+在前 60 分钟使用初始止损，此后更改为 10% 追踪止损，2 小时（120 分钟）后我们使用 5% 追踪止损。
 
 ``` python
-# Default imports
+# 默认导入
 
 class AwesomeStrategy(IStrategy):
 
@@ -259,7 +258,7 @@ class AwesomeStrategy(IStrategy):
                         current_rate: float, current_profit: float, after_fill: bool, 
                         **kwargs) -> float | None:
 
-        # Make sure you have the longest interval first - these conditions are evaluated from top to bottom.
+        # 确保最长的间隔在前 - 这些条件从顶部到底部进行评估。
         if current_time - timedelta(minutes=120) > trade.open_date_utc:
             return -0.05 * trade.leverage
         elif current_time - timedelta(minutes=60) > trade.open_date_utc:
@@ -267,13 +266,13 @@ class AwesomeStrategy(IStrategy):
         return None
 ```
 
-#### Time based trailing stop with after-fill adjustments
+#### 带成交后调整的基于时间的追踪止损
 
-Use the initial stoploss for the first 60 minutes, after this change to 10% trailing stoploss, and after 2 hours (120 minutes) we use a 5% trailing stoploss.
-If an additional order fills, set stoploss to -10% below the new `open_rate` ([Averaged across all entries](#position-adjust-calculations)).
+在前 60 分钟使用初始止损，此后更改为 10% 追踪止损，2 小时（120 分钟）后我们使用 5% 追踪止损。
+如果额外的订单成交，将止损设置为新 `open_rate` 下方 -10%（[跨所有入场平均](#position-adjust-calculations)）。
 
 ``` python
-# Default imports
+# 默认导入
 
 class AwesomeStrategy(IStrategy):
 
@@ -286,9 +285,9 @@ class AwesomeStrategy(IStrategy):
                         **kwargs) -> float | None:
 
         if after_fill: 
-            # After an additional order, start with a stoploss of 10% below the new open rate
+            # 在额外订单后，从新开盘价下方 10% 的止损开始
             return stoploss_from_open(0.10, current_profit, is_short=trade.is_short, leverage=trade.leverage)
-        # Make sure you have the longest interval first - these conditions are evaluated from top to bottom.
+        # 确保最长的间隔在前 - 这些条件从顶部到底部进行评估。
         if current_time - timedelta(minutes=120) > trade.open_date_utc:
             return -0.05 * trade.leverage
         elif current_time - timedelta(minutes=60) > trade.open_date_utc:
@@ -296,13 +295,13 @@ class AwesomeStrategy(IStrategy):
         return None
 ```
 
-#### Different stoploss per pair
+#### 每个交易对的不同止损
 
-Use a different stoploss depending on the pair.
-In this example, we'll trail the highest price with 10% trailing stoploss for `ETH/BTC` and `XRP/BTC`, with 5% trailing stoploss for `LTC/BTC` and with 15% for all other pairs.
+根据交易对使用不同的止损。
+在此示例中，我们将为 `ETH/BTC` 和 `XRP/BTC` 使用 10% 追踪止损追踪最高价格，为 `LTC/BTC` 使用 5% 追踪止损，为所有其他交易对使用 15%。
 
 ``` python
-# Default imports
+# 默认导入
 
 class AwesomeStrategy(IStrategy):
 
@@ -321,14 +320,14 @@ class AwesomeStrategy(IStrategy):
         return -0.15 * trade.leverage
 ```
 
-#### Trailing stoploss with positive offset
+#### 带正偏移的追踪止损
 
-Use the initial stoploss until the profit is above 4%, then use a trailing stoploss of 50% of the current profit with a minimum of 2.5% and a maximum of 5%.
+在利润超过 4% 之前使用初始止损，然后使用当前利润的 50% 的追踪止损，最小为 2.5%，最大为 5%。
 
-Please note that the stoploss can only increase, values lower than the current stoploss are ignored.
+请注意，止损只能增加，低于当前止损的值将被忽略。
 
 ``` python
-# Default imports
+# 默认导入
 
 class AwesomeStrategy(IStrategy):
 
@@ -341,12 +340,12 @@ class AwesomeStrategy(IStrategy):
                         **kwargs) -> float | None:
 
         if current_profit < 0.04:
-            return None # return None to keep using the initial stoploss
+            return None # 返回 None 以继续使用初始止损
 
-        # After reaching the desired offset, allow the stoploss to trail by half the profit
+        # 达到所需偏移后，允许止损追踪一半利润
         desired_stoploss = current_profit / 2
 
-        # Use a minimum of 2.5% and a maximum of 5%
+        # 使用最小 2.5% 和最大 5%
         return max(min(desired_stoploss, 0.05), 0.025) * trade.leverage
 ```
 

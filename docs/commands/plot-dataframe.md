@@ -1,5 +1,5 @@
 ```
-usage: freqtrade plot-dataframe [-h] [-v] [--no-color] [--logfile FILE] [-V]
+用法: freqtrade plot-dataframe [-h] [-v] [--no-color] [--logfile FILE] [-V]
                                 [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
                                 [--strategy-path PATH]
                                 [--recursive-strategy-search]
@@ -14,73 +14,67 @@ usage: freqtrade plot-dataframe [-h] [-v] [--no-color] [--logfile FILE] [-V]
                                 [--timerange TIMERANGE] [-i TIMEFRAME]
                                 [--no-trades]
 
-options:
-  -h, --help            show this help message and exit
+选项:
+  -h, --help            显示此帮助消息并退出
   -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
+                        将此命令限制为这些交易对。交易对用空格分隔。
   --indicators1 INDICATORS1 [INDICATORS1 ...]
-                        Set indicators from your strategy you want in the
-                        first row of the graph. Space-separated list. Example:
-                        `ema3 ema5`. Default: `['sma', 'ema3', 'ema5']`.
+                        设置您希望在图表第一行中
+                        的策略指标。空格分隔的列表。示例：
+                        `ema3 ema5`。默认：`['sma', 'ema3', 'ema5']`。
   --indicators2 INDICATORS2 [INDICATORS2 ...]
-                        Set indicators from your strategy you want in the
-                        third row of the graph. Space-separated list. Example:
-                        `fastd fastk`. Default: `['macd', 'macdsignal']`.
-  --plot-limit INT      Specify tick limit for plotting. Notice: too high
-                        values cause huge files. Default: 750.
-  --db-url PATH         Override trades database URL, this is useful in custom
-                        deployments (default: `sqlite:///tradesv3.sqlite` for
-                        Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for
-                        Dry Run).
+                        设置您希望在图表第三行中
+                        的策略指标。空格分隔的列表。示例：
+                        `fastd fastk`。默认：`['macd', 'macdsignal']`。
+  --plot-limit INT      指定绘图的时间点限制。注意：过高的
+                        值会导致文件很大。默认：750。
+  --db-url PATH         覆盖交易数据库 URL，这在自定义部署中很有用
+                        （默认：实盘模式为 `sqlite:///tradesv3.sqlite`，
+                        模拟运行模式为 `sqlite:///tradesv3.dryrun.sqlite`）。
   --trade-source {DB,file}
-                        Specify the source for trades (Can be DB or file
-                        (backtest file)) Default: file
+                        指定交易的来源（可以是 DB 或文件
+                        （回测文件））默认：file
   --export {none,trades,signals}
-                        Export backtest results (default: trades).
+                        导出回测结果（默认：trades）。
   --backtest-filename PATH, --export-filename PATH
-                        Use this filename for backtest results.Example:
+                        用于回测结果的文件名。示例：
                         `--backtest-
-                        filename=backtest_results_2020-09-27_16-20-48.json`.
-                        Assumes either `user_data/backtest_results/` or
-                        `--export-directory` as base directory.
+                        filename=backtest_results_2020-09-27_16-20-48.json`。
+                        假设 `user_data/backtest_results/` 或
+                        `--export-directory` 作为基础目录。
   --timerange TIMERANGE
-                        Specify what timerange of data to use.
+                        指定要使用的数据时间范围。
   -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
-  --no-trades           Skip using trades from backtesting file and DB.
+                        指定时间框架（`1m`、`5m`、`30m`、`1h`、`1d`）。
+  --no-trades           跳过使用回测文件和数据库中的交易。
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+通用参数:
+  -v, --verbose         详细模式（-vv 获取更多信息，-vvv 获取所有消息）。
+  --no-color            禁用超参数优化结果的着色。如果您将
+                        输出重定向到文件，这可能很有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        记录到指定的文件。特殊值为：
+                        'syslog'、'journald'。有关更多详细信息，请参阅文档。
+  -V, --version        显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在者为准）。
+                        可以使用多个 --config 选项。可以
+                        设置为 `-` 以从 stdin 读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
+                        包含历史回测数据的交易所基础目录路径。
+                        要查看期货数据，请另外使用交易模式。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        用户数据目录路径。
 
-Strategy arguments:
+策略参数:
   -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
+                        指定机器人将使用的策略类名称。
+  --strategy-path PATH  指定其他策略查找路径。
   --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
+                        在策略文件夹中递归搜索策略。
+  --freqaimodel NAME    指定自定义 freqaimodels。
   --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
+                        为 freqaimodels 指定其他查找路径。
 
 ```

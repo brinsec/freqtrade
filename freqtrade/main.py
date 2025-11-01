@@ -54,29 +54,29 @@ def main(sysargv: list[str] | None = None) -> None:
         else:
             # No subcommand was issued.
             raise OperationalException(
-                "Usage of Freqtrade requires a subcommand to be specified.\n"
-                "To have the bot executing trades in live/dry-run modes, "
-                "depending on the value of the `dry_run` setting in the config, run Freqtrade "
-                "as `freqtrade trade [options...]`.\n"
-                "To see the full list of options available, please use "
-                "`freqtrade --help` or `freqtrade <command> --help`."
+                "使用 Freqtrade 需要指定一个子命令。\n"
+                "要让机器人在实时/模拟运行模式下执行交易，"
+                "根据配置中 `dry_run` 设置的值，运行 Freqtrade "
+                "为 `freqtrade trade [选项...]`。\n"
+                "要查看所有可用选项，请使用 "
+                "`freqtrade --help` 或 `freqtrade <命令> --help`。"
             )
 
     except SystemExit as e:  # pragma: no cover
         return_code = e
     except KeyboardInterrupt:
-        logger.info("SIGINT received, aborting ...")
+        logger.info("收到 SIGINT，正在中止...")
         return_code = 0
     except ConfigurationError as e:
         logger.error(
-            f"Configuration error: {e}\n"
-            f"Please make sure to review the documentation at {DOCS_LINK}."
+            f"配置错误：{e}\n"
+            f"请确保查看 {DOCS_LINK} 上的文档。"
         )
     except FreqtradeException as e:
         logger.error(str(e))
         return_code = 2
     except Exception:
-        logger.exception("Fatal exception!")
+        logger.exception("致命异常！")
     finally:
         sys.exit(return_code)
 

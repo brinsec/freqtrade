@@ -1,17 +1,17 @@
-# Utility Subcommands
+# 实用子命令
 
-Besides the Live-Trade and Dry-Run run modes, the `backtesting` and `hyperopt` optimization subcommands, and the `download-data` subcommand which prepares historical data, the bot contains a number of utility subcommands. They are described in this section.
+除了实盘交易和模拟运行模式、`backtesting` 和 `hyperopt` 优化子命令以及准备历史数据的 `download-data` 子命令之外，机器人还包含许多实用子命令。本节将描述它们。
 
-## Create userdir
+## 创建用户目录
 
-Creates the directory structure to hold your files for freqtrade.
-Will also create strategy and hyperopt examples for you to get started.
-Can be used multiple times - using `--reset` will reset the sample strategy and hyperopt files to their default state.
+创建目录结构以保存您的 freqtrade 文件。
+还将为您创建策略和超参数优化示例以开始使用。
+可以使用多次 - 使用 `--reset` 将示例策略和超参数优化文件重置为默认状态。
 
 --8<-- "commands/create-userdir.md"
 
-!!! Warning
-    Using `--reset` may result in loss of data, since this will overwrite all sample files without asking again.
+!!! Warning "警告"
+    使用 `--reset` 可能导致数据丢失，因为这将覆盖所有示例文件而不再询问。
 
 ```
 ├── backtest_results

@@ -1,12 +1,12 @@
-# Strategy analysis example
+# 策略分析示例
 
-Debugging a strategy can be time-consuming. Freqtrade offers helper functions to visualize raw data.
-The following assumes you work with SampleStrategy, data for 5m timeframe from Binance and have downloaded them into the data directory in the default location.
-Please follow the [documentation](https://www.freqtrade.io/en/stable/data-download/) for more details.
+调试策略可能很耗时。Freqtrade 提供辅助函数来可视化原始数据。
+以下假设您使用 SampleStrategy，来自 Binance 的 5 分钟时间框架数据，并将它们下载到默认位置的数据目录中。
+有关更多详细信息，请遵循[文档](https://www.freqtrade.io/en/stable/data-download/)。
 
-## Setup
+## 设置
 
-### Change Working directory to repository root
+### 将工作目录更改为仓库根目录
 
 
 ```python
@@ -32,33 +32,33 @@ except FileNotFoundError:
 print(Path.cwd())
 ```
 
-### Configure Freqtrade environment
+### 配置 Freqtrade 环境
 
 
 ```python
 from freqtrade.configuration import Configuration
 
 
-# Customize these according to your needs.
+# 根据您的需要进行自定义。
 
-# Initialize empty configuration object
+# 初始化空配置对象
 config = Configuration.from_files([])
-# Optionally (recommended), use existing configuration file
+# 可选（推荐），使用现有配置文件
 # config = Configuration.from_files(["user_data/config.json"])
 
-# Define some constants
+# 定义一些常量
 config["timeframe"] = "5m"
-# Name of the strategy class
+# 策略类名称
 config["strategy"] = "SampleStrategy"
-# Location of the data
+# 数据位置
 data_location = config["datadir"]
-# Pair to analyze - Only use one pair here
+# 要分析的交易对 - 这里只使用一个交易对
 pair = "BTC/USDT"
 ```
 
 
 ```python
-# Load data using values set above
+# 使用上面设置的值加载数据
 from freqtrade.data.history import load_pair_history
 from freqtrade.enums import CandleType
 
@@ -67,21 +67,21 @@ candles = load_pair_history(
     datadir=data_location,
     timeframe=config["timeframe"],
     pair=pair,
-    data_format="json",  # Make sure to update this to your data
+    data_format="json",  # 确保更新为您的数据格式
     candle_type=CandleType.SPOT,
 )
 
-# Confirm success
-print(f"Loaded {len(candles)} rows of data for {pair} from {data_location}")
+# 确认成功
+print(f"从 {data_location} 为 {pair} 加载了 {len(candles)} 行数据")
 candles.head()
 ```
 
-## Load and run strategy
-* Rerun each time the strategy file is changed
+## 加载并运行策略
+* 每次策略文件更改时重新运行
 
 
 ```python
-# Load strategy using values set above
+# 使用上面设置的值加载策略
 from freqtrade.data.dataprovider import DataProvider
 from freqtrade.resolvers import StrategyResolver
 
@@ -90,47 +90,47 @@ strategy = StrategyResolver.load_strategy(config)
 strategy.dp = DataProvider(config, None, None)
 strategy.ft_bot_start()
 
-# Generate buy/sell signals using strategy
+# 使用策略生成买入/卖出信号
 df = strategy.analyze_ticker(candles, {"pair": pair})
 df.tail()
 ```
 
-### Display the trade details
+### 显示交易详情
 
-* Note that using `data.head()` would also work, however most indicators have some "startup" data at the top of the dataframe.
-* Some possible problems
-    * Columns with NaN values at the end of the dataframe
-    * Columns used in `crossed*()` functions with completely different units
-* Comparison with full backtest
-    * having 200 buy signals as output for one pair from `analyze_ticker()` does not necessarily mean that 200 trades will be made during backtesting.
-    * Assuming you use only one condition such as, `df['rsi'] < 30` as buy condition, this will generate multiple "buy" signals for each pair in sequence (until rsi returns > 29). The bot will only buy on the first of these signals (and also only if a trade-slot ("max_open_trades") is still available), or on one of the middle signals, as soon as a "slot" becomes available.  
+* 注意使用 `data.head()` 也可以工作，但大多数指标在数据框顶部有一些"启动"数据。
+* 一些可能的问题
+    * 数据框末尾有 NaN 值的列
+    * 在 `crossed*()` 函数中使用的具有完全不同单位的列
+* 与完整回测的比较
+    * 从 `analyze_ticker()` 为一个交易对输出 200 个买入信号并不一定意味着在回测期间将进行 200 笔交易。
+    * 假设您只使用一个条件，例如 `df['rsi'] < 30` 作为买入条件，这将为每个交易对按顺序生成多个"买入"信号（直到 rsi 返回 > 29）。机器人只会在这些信号中的第一个买入（并且仅在交易槽位（"max_open_trades"）仍然可用时），或者在其中一个中间信号上，一旦"槽位"变为可用。  
 
 
 
 ```python
-# Report results
-print(f"Generated {df['enter_long'].sum()} entry signals")
+# 报告结果
+print(f"生成了 {df['enter_long'].sum()} 个入场信号")
 data = df.set_index("date", drop=False)
 data.tail()
 ```
 
-## Load existing objects into a Jupyter notebook
+## 将现有对象加载到 Jupyter notebook 中
 
-The following cells assume that you have already generated data using the cli.  
-They will allow you to drill deeper into your results, and perform analysis which otherwise would make the output very difficult to digest due to information overload.
+以下单元格假设您已经使用 cli 生成了数据。  
+它们将允许您更深入地分析结果，并执行分析，否则由于信息过载会使输出难以理解。
 
-### Load backtest results to pandas dataframe
+### 将回测结果加载到 pandas 数据框
 
-Analyze a trades dataframe (also used below for plotting)
+分析交易数据框（也用于下面的绘图）
 
 
 ```python
 from freqtrade.data.btanalysis import load_backtest_data, load_backtest_stats
 
 
-# if backtest_dir points to a directory, it'll automatically load the last backtest file.
+# 如果 backtest_dir 指向一个目录，它将自动加载最后一个回测文件。
 backtest_dir = config["user_data_dir"] / "backtest_results"
-# backtest_dir can also point to a specific file
+# backtest_dir 也可以指向特定文件
 # backtest_dir = (
 #   config["user_data_dir"] / "backtest_results/backtest-result-2020-07-01_20-04-22.json"
 # )
@@ -138,44 +138,44 @@ backtest_dir = config["user_data_dir"] / "backtest_results"
 
 
 ```python
-# You can get the full backtest statistics by using the following command.
-# This contains all information used to generate the backtest result.
+# 您可以使用以下命令获取完整的回测统计信息。
+# 这包含用于生成回测结果的所有信息。
 stats = load_backtest_stats(backtest_dir)
 
 strategy = "SampleStrategy"
-# All statistics are available per strategy, so if `--strategy-list` was used during backtest,
-# this will be reflected here as well.
-# Example usages:
+# 所有统计信息都按策略提供，因此如果在回测期间使用了 `--strategy-list`，
+# 这也会在这里反映出来。
+# 使用示例：
 print(stats["strategy"][strategy]["results_per_pair"])
-# Get pairlist used for this backtest
+# 获取用于此回测的交易对列表
 print(stats["strategy"][strategy]["pairlist"])
-# Get market change (average change of all pairs from start to end of the backtest period)
+# 获取市场变化（回测期间所有交易对从开始到结束的平均变化）
 print(stats["strategy"][strategy]["market_change"])
-# Maximum drawdown ()
+# 最大回撤
 print(stats["strategy"][strategy]["max_drawdown_abs"])
-# Maximum drawdown start and end
+# 最大回撤开始和结束
 print(stats["strategy"][strategy]["drawdown_start"])
 print(stats["strategy"][strategy]["drawdown_end"])
 
 
-# Get strategy comparison (only relevant if multiple strategies were compared)
+# 获取策略比较（仅在比较多个策略时相关）
 print(stats["strategy_comparison"])
 ```
 
 
 ```python
-# Load backtested trades as dataframe
+# 将回测交易加载为数据框
 trades = load_backtest_data(backtest_dir)
 
-# Show value-counts per pair
+# 显示每个交易对的值计数
 trades.groupby("pair")["exit_reason"].value_counts()
 ```
 
-## Plotting daily profit / equity line
+## 绘制每日利润 / 净值线
 
 
 ```python
-# Plotting equity line (starting with 0 on day 1 and adding daily profit for each backtested day)
+# 绘制净值线（从第 1 天开始为 0，并为每个回测日期添加每日利润）
 
 import pandas as pd
 import plotly.express as px
@@ -198,54 +198,54 @@ fig = px.line(df, x="dates", y="equity_daily")
 fig.show()
 ```
 
-### Load live trading results into a pandas dataframe
+### 将实盘交易结果加载到 pandas 数据框
 
-In case you did already some trading and want to analyze your performance
+如果您已经进行了一些交易并想分析您的表现
 
 
 ```python
 from freqtrade.data.btanalysis import load_trades_from_db
 
 
-# Fetch trades from database
+# 从数据库获取交易
 trades = load_trades_from_db("sqlite:///tradesv3.sqlite")
 
-# Display results
+# 显示结果
 trades.groupby("pair")["exit_reason"].value_counts()
 ```
 
-## Analyze the loaded trades for trade parallelism
-This can be useful to find the best `max_open_trades` parameter, when used with backtesting in conjunction with a very high `max_open_trades` setting.
+## 分析加载的交易以了解交易并行性
+这对于找到最佳 `max_open_trades` 参数很有用，当与回测一起使用并结合非常高的 `max_open_trades` 设置时。
 
-`analyze_trade_parallelism()` returns a timeseries dataframe with an "open_trades" column, specifying the number of open trades for each candle.
+`analyze_trade_parallelism()` 返回一个带有 "open_trades" 列的时间序列数据框，指定每个蜡烛的开放交易数量。
 
 
 ```python
 from freqtrade.data.btanalysis import analyze_trade_parallelism
 
 
-# Analyze the above
+# 分析上述内容
 parallel_trades = analyze_trade_parallelism(trades, "5m")
 
 parallel_trades.plot()
 ```
 
-## Plot results
+## 绘制结果
 
-Freqtrade offers interactive plotting capabilities based on plotly.
+Freqtrade 提供基于 plotly 的交互式绘图功能。
 
 
 ```python
 from freqtrade.plot.plotting import generate_candlestick_graph
 
 
-# Limit graph period to keep plotly quick and reactive
+# 限制图表期间以保持 plotly 快速和响应
 
-# Filter trades to one pair
+# 将交易过滤为一个交易对
 trades_red = trades.loc[trades["pair"] == pair]
 
 data_red = data["2019-06-01":"2019-06-10"]
-# Generate candlestick graph
+# 生成蜡烛图
 graph = generate_candlestick_graph(
     pair=pair,
     data=data_red,
@@ -257,14 +257,14 @@ graph = generate_candlestick_graph(
 
 
 ```python
-# Show graph inline
+# 内联显示图表
 # graph.show()
 
-# Render graph in a separate window
+# 在单独窗口中渲染图表
 graph.show(renderer="browser")
 ```
 
-## Plot average profit per trade as distribution graph
+## 将每笔交易的平均利润绘制为分布图
 
 
 ```python
@@ -272,10 +272,10 @@ import plotly.figure_factory as ff
 
 
 hist_data = [trades.profit_ratio]
-group_labels = ["profit_ratio"]  # name of the dataset
+group_labels = ["profit_ratio"]  # 数据集名称
 
 fig = ff.create_distplot(hist_data, group_labels, bin_size=0.01)
 fig.show()
 ```
 
-Feel free to submit an issue or Pull Request enhancing this document if you would like to share ideas on how to best analyze the data.
+如果您想分享如何最好地分析数据的想法，欢迎提交问题或 Pull Request 来增强此文档。

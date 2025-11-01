@@ -295,7 +295,7 @@ class RPC:
         """
         nonspot = self._config.get("trading_mode", TradingMode.SPOT) != TradingMode.SPOT
         if not Trade.get_open_trades():
-            raise RPCException("no active trade")
+            raise RPCException("没有活跃交易")
 
         trades_list = []
         fiat_profit_sum = nan
@@ -389,7 +389,7 @@ class RPC:
             return timedelta(**{timeunit: step})
 
         if not (isinstance(timescale, int) and timescale > 0):
-            raise RPCException("timescale must be an integer greater than 0")
+            raise RPCException("时间范围必须是一个大于 0 的整数")
 
         profit_units: dict[date, dict] = {}
         daily_stake = self._freqtrade.wallets.get_total_stake_amount()
@@ -888,23 +888,23 @@ class RPC:
     def _rpc_start(self) -> dict[str, str]:
         """Handler for start"""
         if self._freqtrade.state == State.RUNNING:
-            return {"status": "already running"}
+            return {"status": "已在运行"}
 
         self._freqtrade.state = State.RUNNING
-        return {"status": "starting trader ..."}
+        return {"status": "正在启动交易机器人..."}
 
     def _rpc_stop(self) -> dict[str, str]:
         """Handler for stop"""
         if self._freqtrade.state != State.STOPPED:
             self._freqtrade.state = State.STOPPED
-            return {"status": "stopping trader ..."}
+            return {"status": "正在停止交易机器人..."}
 
-        return {"status": "already stopped"}
+        return {"status": "已停止"}
 
     def _rpc_reload_config(self) -> dict[str, str]:
         """Handler for reload_config."""
         self._freqtrade.state = State.RELOAD_CONFIG
-        return {"status": "Reloading config ..."}
+        return {"status": "正在重新加载配置..."}
 
     def _rpc_pause(self) -> dict[str, str]:
         """
@@ -917,13 +917,13 @@ class RPC:
             self._freqtrade.state = State.PAUSED
             return {
                 "status": (
-                    "starting bot with trader in paused state, no entries will occur. "
-                    "Run /start to enable entries."
+                    "启动机器人时交易器处于暂停状态,不会发生入场。"
+                    "运行 /start 以启用入场。"
                 )
             }
 
         return {
-            "status": "paused, no more entries will occur from now. Run /start to enable entries."
+            "status": "已暂停,从现在起不会再发生入场。运行 /start 以启用入场。"
         }
 
     def _rpc_reload_trade_from_exchange(self, trade_id: int) -> dict[str, str]:
@@ -933,10 +933,10 @@ class RPC:
         """
         trade = Trade.get_trades(trade_filter=[Trade.id == trade_id]).first()
         if not trade:
-            raise RPCException(f"Could not find trade with id {trade_id}.")
+            raise RPCException(f"找不到 ID 为 {trade_id} 的交易。")
 
         self._freqtrade.handle_onexchange_order(trade)
-        return {"status": "Reloaded from orders from exchange"}
+        return {"status": "已从交易所订单重新加载"}
 
     def __exec_force_exit(
         self, trade: Trade, ordertype: str | None, amount: float | None = None
@@ -978,7 +978,7 @@ class RPC:
                 )
                 remaining = (trade.amount - amount) * current_rate
                 if min_exit_stake and remaining < min_exit_stake:
-                    raise RPCException(f"Remaining amount of {remaining} would be too small.")
+                    raise RPCException(f"剩余金额 {remaining} 太小。")
                 sub_amount = amount
 
             self._freqtrade.execute_trade_exit(
@@ -1027,26 +1027,26 @@ class RPC:
             Trade.commit()
             self._freqtrade.wallets.update()
             if not result:
-                raise RPCException("Failed to exit trade.")
-            return {"result": f"Created exit order for trade {trade_id}."}
+                raise RPCException("平仓交易失败。")
+            return {"result": f"已为交易 {trade_id} 创建出场订单。"}
 
     def _force_entry_validations(self, pair: str, order_side: SignalDirection):
         if not self._freqtrade.config.get("force_entry_enable", False):
-            raise RPCException("Force_entry not enabled.")
+            raise RPCException("强制入场未启用。")
 
         if self._freqtrade.state != State.RUNNING:
-            raise RPCException("trader is not running")
+            raise RPCException("交易机器人未运行")
 
         if order_side == SignalDirection.SHORT and self._freqtrade.trading_mode == TradingMode.SPOT:
-            raise RPCException("Can't go short on Spot markets.")
+            raise RPCException("现货市场不能做空。")
 
         if pair not in self._freqtrade.exchange.get_markets(tradable_only=True):
-            raise RPCException("Symbol does not exist or market is not active.")
+            raise RPCException("交易对不存在或市场不活跃。")
         # Check if pair quote currency equals to the stake currency.
         stake_currency = self._freqtrade.config.get("stake_currency")
         if not self._freqtrade.exchange.get_pair_quote_currency(pair) == stake_currency:
             raise RPCException(
-                f"Wrong pair selected. Only pairs with stake-currency {stake_currency} allowed."
+                f"选择的交易对错误。只允许使用标的货币为 {stake_currency} 的交易对。"
             )
 
     def _rpc_force_entry(
@@ -1113,7 +1113,7 @@ class RPC:
                 trade = Trade.get_trades([Trade.is_open.is_(True), Trade.pair == pair]).first()
                 return trade
             else:
-                raise RPCException(f"Failed to enter position for {pair}.")
+                raise RPCException(f"进入 {pair} 的仓位失败。")
 
     def _rpc_cancel_open_order(self, trade_id: int):
         if self._freqtrade.state == State.STOPPED:
@@ -1128,17 +1128,17 @@ class RPC:
             ).first()
             if not trade:
                 logger.warning("cancel_open_order: Invalid trade_id received.")
-                raise RPCException("Invalid trade_id.")
+                raise RPCException("无效的交易 ID。")
             if not trade.has_open_orders:
                 logger.warning("cancel_open_order: No open order for trade_id.")
-                raise RPCException("No open order for trade_id.")
+                raise RPCException("交易 ID 没有未平仓订单。")
 
             for open_order in trade.open_orders:
                 try:
                     order = self._freqtrade.exchange.fetch_order(open_order.order_id, trade.pair)
                 except ExchangeError as e:
                     logger.info(f"Cannot query order for {trade} due to {e}.", exc_info=True)
-                    raise RPCException("Order not found.")
+                    raise RPCException("订单未找到。")
                 self._freqtrade.handle_cancel_order(
                     order, open_order, trade, CANCEL_REASON["USER_CANCEL"]
                 )
@@ -1154,7 +1154,7 @@ class RPC:
             trade = Trade.get_trades(trade_filter=[Trade.id == trade_id]).first()
             if not trade:
                 logger.warning("delete trade: Invalid argument received")
-                raise RPCException(f"Trade with id '{trade_id}' not found.")
+                raise RPCException(f"找不到 ID 为 '{trade_id}' 的交易。")
 
             # Try cancelling regular order if that exists
             for open_order in trade.open_orders:
@@ -1182,8 +1182,8 @@ class RPC:
                 "result": "success",
                 "trade_id": trade_id,
                 "result_msg": (
-                    f"Deleted trade #{trade_id} for pair {trade_pair}. "
-                    f"Closed {c_count} open orders."
+                    f"已删除交易对 {trade_pair} 的交易 #{trade_id}。"
+                    f"已关闭 {c_count} 个未平仓订单。"
                 ),
                 "cancel_order_count": c_count,
             }
@@ -1216,7 +1216,7 @@ class RPC:
 
         if not trades:
             raise RPCException(
-                f"No trade found for trade_id: {trade_id}" if trade_id else "No open trades found."
+                f"找不到交易 ID 为 {trade_id} 的交易" if trade_id else "没有未平仓交易。"
             )
 
         results = []
@@ -1249,9 +1249,9 @@ class RPC:
                 if key:
                     message_details += f"with key '{key}' "
                 message_details += (
-                    f"found for Trade ID: {trade_id}." if trade_id else "found for any open trades."
+                    f"的交易 ID: {trade_id}。" if trade_id else "的任何未平仓交易。"
                 )
-                raise RPCException(f"No custom-data {message_details}")
+                raise RPCException(f"没有自定义数据 {message_details}")
 
         return results
 
@@ -1290,7 +1290,7 @@ class RPC:
     def _rpc_count(self) -> dict[str, float]:
         """Returns the number of trades running"""
         if self._freqtrade.state == State.STOPPED:
-            raise RPCException("trader is not running")
+            raise RPCException("交易机器人未运行")
 
         trades = Trade.get_open_trades()
         return {
@@ -1353,7 +1353,7 @@ class RPC:
             if pair in self._freqtrade.pairlists.blacklist:
                 self._freqtrade.pairlists.blacklist.remove(pair)
             else:
-                errors[pair] = {"error_msg": f"Pair {pair} is not in the current blacklist."}
+                errors[pair] = {"error_msg": f"交易对 {pair} 不在当前黑名单中。"}
         resp = self._rpc_blacklist()
         resp["errors"] = errors
         return resp
@@ -1369,9 +1369,9 @@ class RPC:
                         self._freqtrade.pairlists.blacklist.append(pair)
 
                     except ValueError:
-                        errors[pair] = {"error_msg": f"Pair {pair} is not a valid wildcard."}
+                        errors[pair] = {"error_msg": f"交易对 {pair} 不是有效的通配符。"}
                 else:
-                    errors[pair] = {"error_msg": f"Pair {pair} already in pairlist."}
+                    errors[pair] = {"error_msg": f"交易对 {pair} 已在交易对列表中。"}
 
         res = {
             "method": self._freqtrade.pairlists.name_list,

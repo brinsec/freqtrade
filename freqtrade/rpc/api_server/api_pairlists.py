@@ -77,7 +77,7 @@ def pairlists_evaluate(
     payload: PairListsPayload, background_tasks: BackgroundTasks, config=Depends(get_config)
 ):
     if ApiBG.pairlist_running:
-        raise HTTPException(status_code=400, detail="Pairlist evaluation is already running.")
+        raise HTTPException(status_code=400, detail="交易对列表评估已在运行。")
 
     config_loc = deepcopy(config)
     config_loc["stake_currency"] = payload.stake_currency
@@ -101,7 +101,7 @@ def pairlists_evaluate(
     ApiBG.pairlist_running = True
 
     return {
-        "status": "Pairlist evaluation started in background.",
+        "status": "交易对列表评估已在后台启动。",
         "job_id": job_id,
     }
 
@@ -133,10 +133,10 @@ def handleExchangePayload(payload: ExchangeModePayloadMixin, config_loc: Config)
 )
 def pairlists_evaluate_get(jobid: str):
     if not (job := ApiBG.jobs.get(jobid)):
-        raise HTTPException(status_code=404, detail="Job not found.")
+        raise HTTPException(status_code=404, detail="任务未找到。")
 
     if job["is_running"]:
-        raise HTTPException(status_code=400, detail="Job not finished yet.")
+        raise HTTPException(status_code=400, detail="任务尚未完成。")
 
     if error := job["error"]:
         return {

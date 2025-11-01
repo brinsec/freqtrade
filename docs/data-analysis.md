@@ -1,85 +1,85 @@
-# Analyzing bot data with Jupyter notebooks
+# 使用 Jupyter notebooks 分析机器人数据
 
-You can analyze the results of backtests and trading history easily using Jupyter notebooks. Sample notebooks are located at `user_data/notebooks/` after initializing the user directory with `freqtrade create-userdir --userdir user_data`.
+您可以使用 Jupyter notebooks 轻松分析回测和交易历史的结果。示例 notebooks 位于 `user_data/notebooks/`，在使用 `freqtrade create-userdir --userdir user_data` 初始化用户目录后。
 
-## Quick start with docker
+## 使用 docker 快速开始
 
-Freqtrade provides a docker-compose file which starts up a jupyter lab server.
-You can run this server using the following command: `docker compose -f docker/docker-compose-jupyter.yml up`
+Freqtrade 提供了一个 docker-compose 文件，该文件启动一个 jupyter lab 服务器。
+您可以使用以下命令运行此服务器：`docker compose -f docker/docker-compose-jupyter.yml up`
 
-This will create a dockercontainer running jupyter lab, which will be accessible using `https://127.0.0.1:8888/lab`.
-Please use the link that's printed in the console after startup for simplified login.
+这将创建一个运行 jupyter lab 的 docker 容器，可以使用 `https://127.0.0.1:8888/lab` 访问。
+请使用启动后在控制台中打印的链接以简化登录。
 
-For more information, Please visit the [Data analysis with Docker](docker_quickstart.md#data-analysis-using-docker-compose) section.
+有关更多信息，请访问 [使用 Docker 进行数据分析](docker_quickstart.md#data-analysis-using-docker-compose) 部分。
 
-### Pro tips
+### 专业提示
 
-* See [jupyter.org](https://jupyter.org/documentation) for usage instructions.
-* Don't forget to start a Jupyter notebook server from within your conda or venv environment or use [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels)*
-* Copy the example notebook before use so your changes don't get overwritten with the next freqtrade update.
+* 查看 [jupyter.org](https://jupyter.org/documentation) 获取使用说明。
+* 不要忘记从您的 conda 或 venv 环境内启动 Jupyter notebook 服务器，或使用 [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels)*
+* 在使用前复制示例 notebook，这样您的更改不会在下次 freqtrade 更新时被覆盖。
 
-### Using virtual environment with system-wide Jupyter installation
+### 将虚拟环境与系统范围的 Jupyter 安装一起使用
 
-Sometimes it can be desired to use a system-wide installation of Jupyter notebook, and use a jupyter kernel from the virtual environment.
-This prevents you from installing the full jupyter suite multiple times per system, and provides an easy way to switch between tasks (freqtrade / other analytics tasks).
+有时可能需要使用系统范围的 Jupyter notebook 安装，并使用来自虚拟环境的 jupyter 内核。
+这可以防止您在系统上多次安装完整的 jupyter 套件，并提供在任务（freqtrade / 其他分析任务）之间切换的简便方法。
 
-For this to work, first activate your virtual environment and run the following commands:
+要使此工作，首先激活您的虚拟环境并运行以下命令：
 
 ``` bash
-# Activate virtual environment
+# 激活虚拟环境
 source .venv/bin/activate
 
 pip install ipykernel
 ipython kernel install --user --name=freqtrade
-# Restart jupyter (lab / notebook)
-# select kernel "freqtrade" in the notebook
+# 重启 jupyter (lab / notebook)
+# 在 notebook 中选择内核 "freqtrade"
 ```
 
-!!! Note
-    This section is provided for completeness, the Freqtrade Team won't provide full support for problems with this setup and will recommend to install Jupyter in the virtual environment directly, as that is the easiest way to get jupyter notebooks up and running. For help with this setup please refer to the [Project Jupyter](https://jupyter.org/) [documentation](https://jupyter.org/documentation) or [help channels](https://jupyter.org/community).
+!!! Note "注意"
+    提供此部分是为了完整性，Freqtrade 团队不会为此设置的问题提供完全支持，并会建议直接在虚拟环境中安装 Jupyter，因为这是启动和运行 jupyter notebooks 的最简单方法。有关此设置的帮助，请参阅 [Project Jupyter](https://jupyter.org/) [文档](https://jupyter.org/documentation) 或 [帮助渠道](https://jupyter.org/community)。
 
-!!! Warning
-    Some tasks don't work especially well in notebooks. For example, anything using asynchronous execution is a problem for Jupyter. Also, freqtrade's primary entry point is the shell cli, so using pure python in a notebook bypasses arguments that provide required objects and parameters to helper functions. You may need to set those values or create expected objects manually.
+!!! Warning "警告"
+    某些任务在 notebooks 中不能很好地工作。例如，任何使用异步执行的内容对 Jupyter 来说都是问题。此外，freqtrade 的主要入口点是 shell cli，因此在 notebook 中使用纯 python 会绕过向辅助函数提供所需对象和参数的参数。您可能需要设置这些值或手动创建预期对象。
 
-## Recommended workflow
+## 推荐工作流程
 
-| Task | Tool |
+| 任务 | 工具 |
   --- | ---
-Bot operations | CLI
-Repetitive tasks | Shell scripts
-Data analysis & visualization | Notebook
+机器人操作 | CLI
+重复性任务 | Shell 脚本
+数据分析和可视化 | Notebook
 
-1. Use the CLI to
+1. 使用 CLI 来
 
-    * download historical data
-    * run a backtest
-    * run with real-time data
-    * export results
+    * 下载历史数据
+    * 运行回测
+    * 使用实时数据运行
+    * 导出结果
 
-1. Collect these actions in shell scripts
+1. 在 shell 脚本中收集这些操作
 
-    * save complicated commands with arguments
-    * execute multi-step operations
-    * automate testing strategies and preparing data for analysis
+    * 保存带有参数的复杂命令
+    * 执行多步骤操作
+    * 自动化测试策略和准备分析数据
 
-1. Use a notebook to
+1. 使用 notebook 来
 
-    * visualize data
-    * mangle and plot to generate insights
+    * 可视化数据
+    * 操作和绘图以生成见解
 
-## Example utility snippets
+## 示例实用代码片段
 
-### Change directory to root
+### 更改目录到根目录
 
-Jupyter notebooks execute from the notebook directory. The following snippet searches for the project root, so relative paths remain consistent.
+Jupyter notebooks 从 notebook 目录执行。以下代码片段搜索项目根目录，因此相对路径保持一致。
 
 ```python
 import os
 from pathlib import Path
 
-# Change directory
-# Modify this cell to insure that the output shows the correct path.
-# Define all paths relative to the project root shown in the cell output
+# 更改目录
+# 修改此单元格以确保输出显示正确的路径。
+# 相对于单元格输出中显示的项目根目录定义所有路径
 project_root = "somedir/freqtrade"
 i=0
 try:
@@ -93,24 +93,24 @@ except:
 print(Path.cwd())
 ```
 
-### Load multiple configuration files
+### 加载多个配置文件
 
-This option can be useful to inspect the results of passing in multiple configs.
-This will also run through the whole Configuration initialization, so the configuration is completely initialized to be passed to other methods.
+此选项对于检查传入多个配置的结果很有用。
+这也将运行整个配置初始化，因此配置完全初始化以传递给其他方法。
 
 ``` python
 import json
 from freqtrade.configuration import Configuration
 
-# Load config from multiple files
+# 从多个文件加载配置
 config = Configuration.from_files(["config1.json", "config2.json"])
 
-# Show the config in memory
+# 显示内存中的配置
 print(json.dumps(config['original_config'], indent=2))
 ```
 
-For Interactive environments, have an additional configuration specifying `user_data_dir` and pass this in last, so you don't have to change directories while running the bot.
-Best avoid relative paths, since this starts at the storage location of the jupyter notebook, unless the directory is changed.
+对于交互式环境，请有一个额外的配置指定 `user_data_dir` 并将其最后传递，这样您就不必在运行机器人时更改目录。
+最好避免相对路径，因为这从 jupyter notebook 的存储位置开始，除非更改了目录。
 
 ``` json
 {
@@ -118,10 +118,10 @@ Best avoid relative paths, since this starts at the storage location of the jupy
 }
 ```
 
-### Further Data analysis documentation
+### 进一步的数据分析文档
 
-* [Strategy debugging](strategy_analysis_example.md) - also available as Jupyter notebook (`user_data/notebooks/strategy_analysis_example.ipynb`)
-* [Plotting](plotting.md)
-* [Tag Analysis](advanced-backtesting.md)
+* [策略调试](strategy_analysis_example.md) - 也可作为 Jupyter notebook 使用（`user_data/notebooks/strategy_analysis_example.ipynb`）
+* [绘图](plotting.md)
+* [标签分析](advanced-backtesting.md)
 
-Feel free to submit an issue or Pull Request enhancing this document if you would like to share ideas on how to best analyze the data.
+如果您想分享关于如何最好地分析数据的想法，请随时提交问题或拉取请求来增强此文档。

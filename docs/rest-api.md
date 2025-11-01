@@ -2,13 +2,13 @@
 
 ## FreqUI
 
-FreqUI now has it's own dedicated [documentation section](freq-ui.md) - please refer to that section for all information regarding the FreqUI.
+FreqUI 现在有自己的专用[文档部分](freq-ui.md) - 请参阅该部分了解有关 FreqUI 的所有信息。
 
-## Configuration
+## 配置
 
-Enable the rest API by adding the api_server section to your configuration and setting `api_server.enabled` to `true`.
+通过将 api_server 部分添加到您的配置并将 `api_server.enabled` 设置为 `true` 来启用 REST API。
 
-Sample configuration:
+示例配置：
 
 ``` json
     "api_server": {
@@ -25,42 +25,42 @@ Sample configuration:
     },
 ```
 
-!!! Danger "Security warning"
-    By default, the configuration listens on localhost only (so it's not reachable from other systems). We strongly recommend to not expose this API to the internet and choose a strong, unique password, since others will potentially be able to control your bot.
+!!! Danger "安全警告"
+    默认情况下，配置仅监听 localhost（因此无法从其他系统访问）。我们强烈建议不要将此 API 暴露到互联网，并选择一个强大、唯一的密码，因为其他人可能能够控制您的机器人。
 
-??? Note "API/UI Access on a remote servers"
-    If you're running on a VPS, you should consider using either a ssh tunnel, or setup a VPN (openVPN, wireguard) to connect to your bot.
-    This will ensure that freqUI is not directly exposed to the internet, which is not recommended for security reasons (freqUI does not support https out of the box).
-    Setup of these tools is not part of this tutorial, however many good tutorials can be found on the internet.
+??? Note "在远程服务器上访问 API/UI"
+    如果您在 VPS 上运行，您应该考虑使用 ssh 隧道，或设置 VPN（openVPN、wireguard）来连接到您的机器人。
+    这将确保 freqUI 不会直接暴露到互联网，出于安全原因不推荐这样做（freqUI 默认不支持 https）。
+    设置这些工具不是本教程的一部分，但可以在互联网上找到许多好的教程。
 
-You can then access the API by going to `http://127.0.0.1:8080/api/v1/ping` in a browser to check if the API is running correctly.
-This should return the response:
+然后，您可以通过在浏览器中访问 `http://127.0.0.1:8080/api/v1/ping` 来访问 API 以检查 API 是否正常运行。
+这应该返回响应：
 
 ``` output
 {"status":"pong"}
 ```
 
-All other endpoints return sensitive info and require authentication and are therefore not available through a web browser.
+所有其他端点返回敏感信息并要求身份验证，因此无法通过 Web 浏览器访问。
 
-### Security
+### 安全
 
-To generate a secure password, best use a password manager, or use the below code.
+要生成安全密码，最好使用密码管理器，或使用下面的代码。
 
 ``` python
 import secrets
 secrets.token_hex()
 ```
 
-!!! Hint "JWT token"
-    Use the same method to also generate a JWT secret key (`jwt_secret_key`).
+!!! Hint "JWT 令牌"
+    使用相同的方法生成 JWT 密钥（`jwt_secret_key`）。
 
-!!! Danger "Password selection"
-    Please make sure to select a very strong, unique password to protect your bot from unauthorized access.
-    Also change `jwt_secret_key` to something random (no need to remember this, but it'll be used to encrypt your session, so it better be something unique!).
+!!! Danger "密码选择"
+    请确保选择一个非常强大、唯一的密码，以保护您的机器人免受未经授权的访问。
+    还要将 `jwt_secret_key` 更改为随机值（无需记住此值，但它将用于加密您的会话，所以最好使用唯一的值！）。
 
-### Configuration with docker
+### 使用 docker 配置
 
-If you run your bot using docker, you'll need to have the bot listen to incoming connections. The security is then handled by docker.
+如果您使用 docker 运行机器人，您需要让机器人监听传入连接。然后安全性由 docker 处理。
 
 ``` json
     "api_server": {
@@ -73,34 +73,34 @@ If you run your bot using docker, you'll need to have the bot listen to incoming
     },
 ```
 
-Make sure that the following 2 lines are available in your docker-compose file:
+确保以下 2 行在您的 docker-compose 文件中可用：
 
 ```yml
     ports:
       - "127.0.0.1:8080:8080"
 ```
 
-!!! Danger "Security warning"
-    By using `"8080:8080"` (or `"0.0.0.0:8080:8080"`) in the docker port mapping, the API will be available to everyone connecting to the server under the correct port, so others may be able to control your bot.
-    This **may** be safe if you're running the bot in a secure environment (like your home network), but it's not recommended to expose the API to the internet.
+!!! Danger "安全警告"
+    通过在 docker 端口映射中使用 `"8080:8080"`（或 `"0.0.0.0:8080:8080"`），API 将对在正确端口下连接到服务器的所有人可用，因此其他人可能能够控制您的机器人。
+    如果您在安全环境中运行机器人（如您的家庭网络），这**可能**是安全的，但不建议将 API 暴露到互联网。
 
-## Rest API
+## REST API
 
-### Consuming the API
+### 使用 API
 
-We advise consuming the API by using the supported `freqtrade-client` package (also available as `scripts/rest_client.py`).
+我们建议使用支持的 `freqtrade-client` 包（也可作为 `scripts/rest_client.py` 使用）来使用 API。
 
-This command can be installed independent of any running freqtrade bot by using `pip install freqtrade-client`.
+此命令可以通过使用 `pip install freqtrade-client` 独立于任何运行的 freqtrade 机器人安装。
 
-This module is designed to be lightweight, and only depends on the `requests` and `python-rapidjson` modules, skipping all heavy dependencies freqtrade otherwise needs.
+此模块设计为轻量级，仅依赖于 `requests` 和 `python-rapidjson` 模块，跳过 freqtrade 否则需要的所有重依赖项。
 
 ``` bash
 freqtrade-client <command> [optional parameters]
 ```
 
-By default, the script assumes `127.0.0.1` (localhost) and port `8080` to be used, however you can specify a configuration file to override this behaviour.
+默认情况下，脚本假设使用 `127.0.0.1`（localhost）和端口 `8080`，但您可以指定配置文件来覆盖此行为。
 
-#### Minimalistic client config
+#### 最小化客户端配置
 
 ``` json
 {
@@ -119,17 +119,17 @@ By default, the script assumes `127.0.0.1` (localhost) and port `8080` to be use
 freqtrade-client --config rest_config.json <command> [optional parameters]
 ```
 
-Commands with many arguments may require keyword arguments (for clarity) - which can be provided as follows:
+具有许多参数的命令可能需要关键字参数（为了清晰） - 可以按如下方式提供：
 
 ``` bash
 freqtrade-client --config rest_config.json forceenter BTC/USDT long enter_tag=GutFeeling
 ```
 
-This method will work for all arguments - check the "show" command for a list of available parameters.
+此方法适用于所有参数 - 检查 "show" 命令以获取可用参数列表。
 
-??? Note "Programmatic use"
-    The `freqtrade-client` package (installable independent of freqtrade) can be used in your own scripts to interact with the freqtrade API.
-    to do so, please use the following:
+??? Note "程序化使用"
+    `freqtrade-client` 包（可独立于 freqtrade 安装）可以在您自己的脚本中使用，以与 freqtrade API 交互。
+    为此，请使用以下内容：
 
     ``` python
     from freqtrade_client import FtRestClient
@@ -137,266 +137,266 @@ This method will work for all arguments - check the "show" command for a list of
 
     client = FtRestClient(server_url, username, password)
 
-    # Get the status of the bot
+    # 获取机器人的状态
     ping = client.ping()
     print(ping)
 
-    # Add pairs to blacklist
+    # 将交易对添加到黑名单
     client.blacklist("BTC/USDT", "ETH/USDT")
-    # Add pairs to blacklist by supplying a list
+    # 通过提供列表将交易对添加到黑名单
     client.blacklist(*listPairs)
     # ... 
     ```
 
-    For a full list of available commands, please refer to the list below.
+    有关可用命令的完整列表，请参阅下面的列表。
 
-Possible commands can be listed from the rest-client script using the `help` command.
+可以使用 `help` 命令从 rest-client 脚本列出可能的命令。
 
 ``` bash
 freqtrade-client help
 ```
 
 ``` output
-Possible commands:
+可能的命令：
 
 available_pairs
-    Return available pair (backtest data) based on timeframe / stake_currency selection
+    根据时间框架 / 抵押货币选择返回可用交易对（回测数据）
 
-        :param timeframe: Only pairs with this timeframe available.
-        :param stake_currency: Only pairs that include this timeframe
+        :param timeframe: 仅包含此时间框架的交易对。
+        :param stake_currency: 仅包含此时间框架的交易对
 
 balance
-    Get the account balance.
+    获取账户余额。
 
 blacklist
-    Show the current blacklist.
+    显示当前黑名单。
 
-        :param add: List of coins to add (example: "BNB/BTC")
+        :param add: 要添加的币种列表（示例："BNB/BTC"）
 
 cancel_open_order
-    Cancel open order for trade.
+    取消交易的开放订单。
 
-        :param trade_id: Cancels open orders for this trade.
+        :param trade_id: 取消此交易的开放订单。
 
 count
-    Return the amount of open trades.
+    返回开放交易的数量。
 
 daily
-    Return the profits for each day, and amount of trades.
+    返回每天的利润和交易数量。
 
 delete_lock
-    Delete (disable) lock from the database.
+    从数据库中删除（禁用）锁定。
 
-        :param lock_id: ID for the lock to delete
+        :param lock_id: 要删除的锁定的 ID
 
 delete_trade
-    Delete trade from the database.
-        Tries to close open orders. Requires manual handling of this asset on the exchange.
+    从数据库中删除交易。
+        尝试关闭开放订单。需要在交易所上手动处理此资产。
 
-        :param trade_id: Deletes the trade with this ID from the database.
+        :param trade_id: 从数据库中删除具有此 ID 的交易。
 
 forcebuy
-    Buy an asset.
+    买入资产。
 
-        :param pair: Pair to buy (ETH/BTC)
-        :param price: Optional - price to buy
+        :param pair: 要买入的交易对（ETH/BTC）
+        :param price: 可选 - 买入价格
 
 forceenter
-    Force entering a trade
+    强制进入交易
 
-        :param pair: Pair to buy (ETH/BTC)
-        :param side: 'long' or 'short'
-        :param price: Optional - price to buy
+        :param pair: 要买入的交易对（ETH/BTC）
+        :param side: 'long' 或 'short'
+        :param price: 可选 - 买入价格
 
 forceexit
-    Force-exit a trade.
+    强制退出交易。
 
-        :param tradeid: Id of the trade (can be received via status command)
-        :param ordertype: Order type to use (must be market or limit)
-        :param amount: Amount to sell. Full sell if not given
+        :param tradeid: 交易的 ID（可以通过 status 命令接收）
+        :param ordertype: 要使用的订单类型（必须是 market 或 limit）
+        :param amount: 要卖出的数量。如果未给出，则全部卖出
 
 health
-    Provides a quick health check of the running bot.
+    提供运行机器人的快速健康检查。
 
 lock_add
-    Manually lock a specific pair
+    手动锁定特定交易对
 
-        :param pair: Pair to lock
-        :param until: Lock until this date (format "2024-03-30 16:00:00Z")
-        :param side: Side to lock (long, short, *)
-        :param reason: Reason for the lock        
+        :param pair: 要锁定的交易对
+        :param until: 锁定到此日期（格式 "2024-03-30 16:00:00Z"）
+        :param side: 要锁定的一侧（long、short、*）
+        :param reason: 锁定的原因        
 
 locks
-    Return current locks
+    返回当前锁定
 
 logs
-    Show latest logs.
+    显示最新日志。
 
-        :param limit: Limits log messages to the last <limit> logs. No limit to get the entire log.
+        :param limit: 将日志消息限制为最后 <limit> 条日志。无限制以获取整个日志。
 
 pair_candles
-    Return live dataframe for <pair><timeframe>.
+    返回 <pair><timeframe> 的实时数据框。
 
-        :param pair: Pair to get data for
-        :param timeframe: Only pairs with this timeframe available.
-        :param limit: Limit result to the last n candles.
+        :param pair: 要获取数据的交易对
+        :param timeframe: 仅包含此时间框架的交易对。
+        :param limit: 将结果限制为最后 n 个蜡烛。
 
 pair_history
-    Return historic, analyzed dataframe
+    返回历史、已分析的数据框
 
-        :param pair: Pair to get data for
-        :param timeframe: Only pairs with this timeframe available.
-        :param strategy: Strategy to analyze and get values for
-        :param timerange: Timerange to get data for (same format than --timerange endpoints)
+        :param pair: 要获取数据的交易对
+        :param timeframe: 仅包含此时间框架的交易对。
+        :param strategy: 要分析并获取值的策略
+        :param timerange: 要获取数据的时间范围（与 --timerange 端点相同的格式）
 
 performance
-    Return the performance of the different coins.
+    返回不同币种的性能。
 
 ping
-    simple ping
+    简单 ping
 
 plot_config
-    Return plot configuration if the strategy defines one.
+    如果策略定义了绘图配置，则返回绘图配置。
 
 profit
-    Return the profit summary.
+    返回利润摘要。
 
 reload_config
-    Reload configuration.
+    重新加载配置。
 
 show_config
-    Returns part of the configuration, relevant for trading operations.
+    返回配置的一部分，与交易操作相关。
 
 start
-    Start the bot if it's in the stopped state.
+    如果机器人在停止状态，则启动机器人。
 
 pause
-    Pause the bot if it's in the running state. If triggered on stopped state will handle open positions.
+    如果机器人在运行状态，则暂停机器人。如果在停止状态触发，将处理开放头寸。
 
 stats
-    Return the stats report (durations, sell-reasons).
+    返回统计报告（持续时间、卖出原因）。
 
 status
-    Get the status of open trades.
+    获取开放交易的状态。
 
 stop
-    Stop the bot. Use `start` to restart.
+    停止机器人。使用 `start` 重新启动。
 
 stopbuy
-    Stop buying (but handle sells gracefully). Use `reload_config` to reset.
+    停止买入（但优雅地处理卖出）。使用 `reload_config` 重置。
 
 strategies
-    Lists available strategies
+    列出可用策略
 
 strategy
-    Get strategy details
+    获取策略详细信息
 
-        :param strategy: Strategy class name
+        :param strategy: 策略类名称
 
 sysinfo
-    Provides system information (CPU, RAM usage)
+    提供系统信息（CPU、RAM 使用情况）
 
 trade
-    Return specific trade
+    返回特定交易
 
-        :param trade_id: Specify which trade to get.
+        :param trade_id: 指定要获取的交易。
 
 trades
-    Return trades history, sorted by id
+    返回交易历史，按 ID 排序
 
-        :param limit: Limits trades to the X last trades. Max 500 trades.
-        :param offset: Offset by this amount of trades.
+        :param limit: 将交易限制为最后 X 笔交易。最多 500 笔交易。
+        :param offset: 按此数量的交易偏移。
 
 list_open_trades_custom_data
-    Return a dict containing open trades custom-datas
+    返回包含开放交易自定义数据的字典
 
-        :param key: str, optional - Key of the custom-data
-        :param limit: Limits trades to X trades.
-        :param offset: Offset by this amount of trades.
+        :param key: str，可选 - 自定义数据的键
+        :param limit: 将交易限制为 X 笔交易。
+        :param offset: 按此数量的交易偏移。
 
 list_custom_data
-    Return a dict containing custom-datas of a specified trade
+    返回指定交易的自定义数据字典
 
-        :param trade_id: int - ID of the trade
-        :param key: str, optional - Key of the custom-data
+        :param trade_id: int - 交易的 ID
+        :param key: str，可选 - 自定义数据的键
 
 version
-    Return the version of the bot.
+    返回机器人的版本。
 
 whitelist
-    Show the current whitelist.
+    显示当前白名单。
 
 
 ```
 
-### Available endpoints
+### 可用端点
 
-If you wish to call the REST API manually via another route, e.g. directly via `curl`, the table below shows the relevant URL endpoints and parameters.
-All endpoints in the below table need to be prefixed with the base URL of the API, e.g. `http://127.0.0.1:8080/api/v1/` - so the command becomes `http://127.0.0.1:8080/api/v1/<command>`.
+如果您希望通过其他路由手动调用 REST API，例如直接通过 `curl`，下表显示了相关的 URL 端点和参数。
+下表中的所有端点都需要以 API 的基础 URL 为前缀，例如 `http://127.0.0.1:8080/api/v1/` - 因此命令变为 `http://127.0.0.1:8080/api/v1/<command>`。
 
-|  Endpoint | Method | Description / Parameters |
+|  端点 | 方法 | 描述 / 参数 |
 |-----------|--------|--------------------------|
-| `/ping` | GET | Simple command testing the API Readiness - requires no authentication.
-| `/start` | POST | Starts the trader.
-| `/pause` | POST | Pause the trader. Gracefully handle open trades according to their rules. Do not enter new positions.
-| `/stop` | POST | Stops the trader.
-| `/stopbuy` | POST | Stops the trader from opening new trades. Gracefully closes open trades according to their rules.
-| `/reload_config` | POST | Reloads the configuration file.
-| `/trades` | GET | List last trades. Limited to 500 trades per call.
-| `/trade/<tradeid>` | GET | Get specific trade.<br/>*Params:*<br/>- `tradeid` (`int`)
-| `/trades/<tradeid>` | DELETE | Remove trade from the database. Tries to close open orders. Requires manual handling of this trade on the exchange.<br/>*Params:*<br/>- `tradeid` (`int`)
-| `/trades/<tradeid>/open-order` | DELETE | Cancel open order for this trade.<br/>*Params:*<br/>- `tradeid` (`int`)
-| `/trades/<tradeid>/reload` | POST | Reload a trade from the Exchange. Only works in live, and can potentially help recover a trade that was manually sold on the exchange.<br/>*Params:*<br/>- `tradeid` (`int`)
-| `/show_config` | GET | Shows part of the current configuration with relevant settings to operation.
-| `/logs` | GET | Shows last log messages.
-| `/status` | GET | Lists all open trades.
-| `/count` | GET | Displays number of trades used and available.
-| `/entries` | GET | Shows profit statistics for each enter tags for given pair (or all pairs if pair isn't given). Pair is optional.<br/>*Params:*<br/>- `pair` (`str`)
-| `/exits` | GET | Shows profit statistics for each exit reasons for given pair (or all pairs if pair isn't given). Pair is optional.<br/>*Params:*<br/>- `pair` (`str`)
-| `/mix_tags` | GET | Shows profit statistics for each combinations of enter tag + exit reasons for given pair (or all pairs if pair isn't given). Pair is optional.<br/>*Params:*<br/>- `pair` (`str`)
-| `/locks` | GET | Displays currently locked pairs.
-| `/locks` | POST | Locks a pair until "until". (Until will be rounded up to the nearest timeframe). Side is optional and is either `long` or `short` (default is `long`). Reason is optional.<br/>*Params:*<br/>- `<pair>` (`str`)<br/>- `<until>` (`datetime`)<br/>- `[side]` (`str`)<br/>- `[reason]` (`str`)
-| `/locks/<lockid>` | DELETE | Deletes (disables) the lock by id.<br/>*Params:*<br/>- `lockid` (`int`)
-| `/profit` | GET | Display a summary of your profit/loss from close trades and some stats about your performance.
-| `/forceexit` | POST | Instantly exits the given trade (ignoring `minimum_roi`), using the given order type ("market" or "limit", uses your config setting if not specified), and the chosen amount (full sell if not specified). If `all` is supplied as the `tradeid`, then all currently open trades will be forced to exit.<br/>*Params:*<br/>- `<tradeid>` (`int` or `str`)<br/>- `<ordertype>` (`str`)<br/>- `[amount]` (`float`)
-| `/forceenter` | POST | Instantly enters the given pair. Side is optional and is either `long` or `short` (default is `long`). Rate is optional. (`force_entry_enable` must be set to True)<br/>*Params:*<br/>- `<pair>` (`str`)<br/>- `<side>` (`str`)<br/>- `[rate]` (`float`)
-| `/performance` | GET | Show performance of each finished trade grouped by pair.
-| `/balance` | GET | Show account balance per currency.
-| `/daily` | GET | Shows profit or loss per day, over the last n days (n defaults to 7).<br/>*Params:*<br/>- `timescale` (`int`)
-| `/weekly` | GET | Shows profit or loss per week, over the last n days (n defaults to 4).<br/>*Params:*<br/>- `timescale` (`int`)
-| `/monthly` | GET | Shows profit or loss per month, over the last n days (n defaults to 3).<br/>*Params:*<br/>- `timescale` (`int`)
-| `/stats` | GET | Display a summary of profit / loss reasons as well as average holding times.
-| `/whitelist` | GET | Show the current whitelist.
-| `/blacklist` | GET | Show the current blacklist.
-| `/blacklist` | POST | Adds the specified pair to the blacklist.<br/>*Params:*<br/>- `blacklist` (`str`)
-| `/blacklist` | DELETE | Deletes the specified list of pairs from the blacklist.<br/>*Params:*<br/>- `[pair,pair]` (`list[str]`)
-| `/pair_candles` | GET | Returns dataframe for a pair / timeframe combination while the bot is running. **Alpha**
-| `/pair_candles` | POST | Returns dataframe for a pair / timeframe combination while the bot is running, filtered by a provided list of columns to return. **Alpha**<br/>*Params:*<br/>- `<column_list>` (`list[str]`)
-| `/pair_history` | GET | Returns an analyzed dataframe for a given timerange, analyzed by a given strategy. **Alpha**
-| `/pair_history` | POST | Returns an analyzed dataframe for a given timerange, analyzed by a given strategy, filtered by a provided list of columns to return. **Alpha**<br/>*Params:*<br/>- `<column_list>` (`list[str]`)
-| `/plot_config` | GET | Get plot config from the strategy (or nothing if not configured). **Alpha**
-| `/strategies` | GET | List strategies in strategy directory. **Alpha**
-| `/strategy/<strategy>` | GET | Get specific Strategy content by strategy class name. **Alpha**<br/>*Params:*<br/>- `<strategy>` (`str`)
-| `/available_pairs` | GET | List available backtest data. **Alpha**
-| `/version` | GET | Show version.
-| `/sysinfo` | GET | Show information about the system load.
-| `/health` | GET | Show bot health (last bot loop).
+| `/ping` | GET | 测试 API 就绪状态的简单命令 - 不需要身份验证。
+| `/start` | POST | 启动交易者。
+| `/pause` | POST | 暂停交易者。根据规则优雅地处理开放交易。不进入新头寸。
+| `/stop` | POST | 停止交易者。
+| `/stopbuy` | POST | 停止交易者打开新交易。根据规则优雅地关闭开放交易。
+| `/reload_config` | POST | 重新加载配置文件。
+| `/trades` | GET | 列出最后交易。每次调用限制为 500 笔交易。
+| `/trade/<tradeid>` | GET | 获取特定交易。<br/>*参数：*<br/>- `tradeid` (`int`)
+| `/trades/<tradeid>` | DELETE | 从数据库中删除交易。尝试关闭开放订单。需要在交易所上手动处理此交易。<br/>*参数：*<br/>- `tradeid` (`int`)
+| `/trades/<tradeid>/open-order` | DELETE | 取消此交易的开放订单。<br/>*参数：*<br/>- `tradeid` (`int`)
+| `/trades/<tradeid>/reload` | POST | 从交易所重新加载交易。仅在实盘模式下工作，可能有助于恢复在交易所上手动卖出的交易。<br/>*参数：*<br/>- `tradeid` (`int`)
+| `/show_config` | GET | 显示当前配置的一部分，包含与操作相关的设置。
+| `/logs` | GET | 显示最后日志消息。
+| `/status` | GET | 列出所有开放交易。
+| `/count` | GET | 显示已使用和可用的交易数量。
+| `/entries` | GET | 显示给定交易对（或如果未给出交易对，则显示所有交易对）的每个入场标签的利润统计。交易对是可选的。<br/>*参数：*<br/>- `pair` (`str`)
+| `/exits` | GET | 显示给定交易对（或如果未给出交易对，则显示所有交易对）的每个出场原因的利润统计。交易对是可选的。<br/>*参数：*<br/>- `pair` (`str`)
+| `/mix_tags` | GET | 显示给定交易对（或如果未给出交易对，则显示所有交易对）的每个入场标签 + 出场原因组合的利润统计。交易对是可选的。<br/>*参数：*<br/>- `pair` (`str`)
+| `/locks` | GET | 显示当前锁定的交易对。
+| `/locks` | POST | 锁定交易对直到 "until"。（Until 将向上舍入到最近的时间框架）。Side 是可选的，为 `long` 或 `short`（默认为 `long`）。Reason 是可选的。<br/>*参数：*<br/>- `<pair>` (`str`)<br/>- `<until>` (`datetime`)<br/>- `[side]` (`str`)<br/>- `[reason]` (`str`)
+| `/locks/<lockid>` | DELETE | 按 id 删除（禁用）锁定。<br/>*参数：*<br/>- `lockid` (`int`)
+| `/profit` | GET | 显示来自已关闭交易的利润/损失摘要以及有关您表现的一些统计信息。
+| `/forceexit` | POST | 立即退出给定交易（忽略 `minimum_roi`），使用给定的订单类型（"market" 或 "limit"，如果未指定则使用您的配置设置），以及所选数量（如果未指定则全部卖出）。如果 `all` 作为 `tradeid` 提供，则所有当前开放交易都将被强制退出。<br/>*参数：*<br/>- `<tradeid>` (`int` 或 `str`)<br/>- `<ordertype>` (`str`)<br/>- `[amount]` (`float`)
+| `/forceenter` | POST | 立即进入给定交易对。Side 是可选的，为 `long` 或 `short`（默认为 `long`）。Rate 是可选的。（`force_entry_enable` 必须设置为 True）<br/>*参数：*<br/>- `<pair>` (`str`)<br/>- `<side>` (`str`)<br/>- `[rate]` (`float`)
+| `/performance` | GET | 显示按交易对分组的每个已完成交易的性能。
+| `/balance` | GET | 显示每种货币的账户余额。
+| `/daily` | GET | 显示过去 n 天每天（n 默认为 7）的利润或损失。<br/>*参数：*<br/>- `timescale` (`int`)
+| `/weekly` | GET | 显示过去 n 天每周（n 默认为 4）的利润或损失。<br/>*参数：*<br/>- `timescale` (`int`)
+| `/monthly` | GET | 显示过去 n 天每月（n 默认为 3）的利润或损失。<br/>*参数：*<br/>- `timescale` (`int`)
+| `/stats` | GET | 显示利润/损失原因摘要以及平均持有时间。
+| `/whitelist` | GET | 显示当前白名单。
+| `/blacklist` | GET | 显示当前黑名单。
+| `/blacklist` | POST | 将指定交易对添加到黑名单。<br/>*参数：*<br/>- `blacklist` (`str`)
+| `/blacklist` | DELETE | 从黑名单中删除指定的交易对列表。<br/>*参数：*<br/>- `[pair,pair]` (`list[str]`)
+| `/pair_candles` | GET | 在机器人运行时返回交易对/时间框架组合的数据框。**Alpha**
+| `/pair_candles` | POST | 在机器人运行时返回交易对/时间框架组合的数据框，按提供的列列表进行过滤以返回。**Alpha**<br/>*参数：*<br/>- `<column_list>` (`list[str]`)
+| `/pair_history` | GET | 返回给定时间范围的分析数据框，由给定策略分析。**Alpha**
+| `/pair_history` | POST | 返回给定时间范围的分析数据框，由给定策略分析，按提供的列列表进行过滤以返回。**Alpha**<br/>*参数：*<br/>- `<column_list>` (`list[str]`)
+| `/plot_config` | GET | 从策略获取绘图配置（如果未配置则返回空）。**Alpha**
+| `/strategies` | GET | 列出策略目录中的策略。**Alpha**
+| `/strategy/<strategy>` | GET | 按策略类名称获取特定策略内容。**Alpha**<br/>*参数：*<br/>- `<strategy>` (`str`)
+| `/available_pairs` | GET | 列出可用回测数据。**Alpha**
+| `/version` | GET | 显示版本。
+| `/sysinfo` | GET | 显示有关系统负载的信息。
+| `/health` | GET | 显示机器人健康状态（最后一次机器人循环）。
 
-!!! Warning "Alpha status"
-    Endpoints labeled with *Alpha status* above may change at any time without notice.
+!!! Warning "Alpha 状态"
+    上面标记为 *Alpha 状态* 的端点可能随时更改，恕不另行通知。
 
-### Message WebSocket
+### 消息 WebSocket
 
-The API Server includes a websocket endpoint for subscribing to RPC messages from the freqtrade Bot.
-This can be used to consume real-time data from your bot, such as entry/exit fill messages, whitelist changes, populated indicators for pairs, and more.
+API 服务器包括一个 websocket 端点，用于订阅来自 freqtrade 机器人的 RPC 消息。
+这可用于使用来自机器人的实时数据，例如入场/出场成交消息、白名单更改、交易对的已填充指标等。
 
-This is also used to setup [Producer/Consumer mode](producer-consumer.md) in Freqtrade.
+这也用于在 Freqtrade 中设置[生产者/消费者模式](producer-consumer.md)。
 
-Assuming your rest API is set to `127.0.0.1` on port `8080`, the endpoint is available at `http://localhost:8080/api/v1/message/ws`.
+假设您的 rest API 设置为端口 `8080` 上的 `127.0.0.1`，端点可在 `http://localhost:8080/api/v1/message/ws` 使用。
 
-To access the websocket endpoint, the `ws_token` is required as a query parameter in the endpoint URL.
+要访问 websocket 端点，端点 URL 中需要 `ws_token` 作为查询参数。
 
-To generate a safe `ws_token` you can run the following code:
+要生成安全的 `ws_token`，您可以运行以下代码：
 
 ``` python
 >>> import secrets
@@ -404,7 +404,7 @@ To generate a safe `ws_token` you can run the following code:
 'hZ-y58LXyX_HZ8O1cJzVyN6ePWrLpNQv4Q'
 ```
 
-You would then add that token under `ws_token` in your `api_server` config. Like so:
+然后您将在 `api_server` 配置下的 `ws_token` 中添加该令牌。如下所示：
 
 ``` json
 "api_server": {
@@ -421,42 +421,42 @@ You would then add that token under `ws_token` in your `api_server` config. Like
 },
 ```
 
-You can now connect to the endpoint at `http://localhost:8080/api/v1/message/ws?token=hZ-y58LXyX_HZ8O1cJzVyN6ePWrLpNQv4Q`.
+您现在可以在 `http://localhost:8080/api/v1/message/ws?token=hZ-y58LXyX_HZ8O1cJzVyN6ePWrLpNQv4Q` 连接到端点。
 
-!!! Danger "Reuse of example tokens"
-    Please do not use the above example token. To make sure you are secure, generate a completely new token.
+!!! Danger "重用示例令牌"
+    请不要使用上面的示例令牌。为确保您的安全，请生成一个全新的令牌。
 
-#### Using the WebSocket
+#### 使用 WebSocket
 
-Once connected to the WebSocket, the bot will broadcast RPC messages to anyone who is subscribed to them. To subscribe to a list of messages, you must send a JSON request through the WebSocket like the one below. The `data` key must be a list of message type strings.
+连接到 WebSocket 后，机器人将向订阅它们的任何人广播 RPC 消息。要订阅消息列表，您必须通过 WebSocket 发送 JSON 请求，如下所示。`data` 键必须是消息类型字符串的列表。
 
 ``` json
 {
   "type": "subscribe",
-  "data": ["whitelist", "analyzed_df"] // A list of string message types
+  "data": ["whitelist", "analyzed_df"] // 字符串消息类型的列表
 }
 ```
 
-For a list of message types, please refer to the RPCMessageType enum in `freqtrade/enums/rpcmessagetype.py`
+有关消息类型列表，请参阅 `freqtrade/enums/rpcmessagetype.py` 中的 RPCMessageType 枚举
 
-Now anytime those types of RPC messages are sent in the bot, you will receive them through the WebSocket as long as the connection is active. They typically take the same form as the request:
+现在，只要连接处于活动状态，机器人中发送的那些类型的 RPC 消息都会通过 WebSocket 接收。它们通常采用与请求相同的形式：
 
 ``` json
 {
   "type": "analyzed_df",
   "data": {
       "key": ["NEO/BTC", "5m", "spot"],
-      "df": {}, // The dataframe
+      "df": {}, // 数据框
       "la": "2022-09-08 22:14:41.457786+00:00"
   }
 }
 ```
 
-#### Reverse Proxy setup
+#### 反向代理设置
 
-When using [Nginx](https://nginx.org/en/docs/), the following configuration is required for WebSockets to work (Note this configuration is incomplete, it's missing some information and can not be used as is):
+使用 [Nginx](https://nginx.org/en/docs/) 时，WebSocket 需要以下配置（注意此配置不完整，缺少一些信息，不能直接使用）：
 
-Please make sure to replace `<freqtrade_listen_ip>` (and the subsequent port) with the IP and Port matching your configuration/setup.
+请确保将 `<freqtrade_listen_ip>`（以及随后的端口）替换为与您的配置/设置匹配的 IP 和端口。
 
 ```
 http {
@@ -481,39 +481,39 @@ http {
 }
 ```
 
-To properly configure your reverse proxy (securely), please consult it's documentation for proxying websockets.
+要正确配置您的反向代理（安全地），请查阅其文档以了解如何代理 websocket。
 
-- **Traefik**: Traefik supports websockets out of the box, see the [documentation](https://doc.traefik.io/traefik/)
-- **Caddy**: Caddy v2 supports websockets out of the box, see the [documentation](https://caddyserver.com/docs/v2-upgrade#proxy)
+- **Traefik**：Traefik 开箱即用地支持 websocket，请参阅[文档](https://doc.traefik.io/traefik/)
+- **Caddy**：Caddy v2 开箱即用地支持 websocket，请参阅[文档](https://caddyserver.com/docs/v2-upgrade#proxy)
 
-!!! Tip "SSL certificates"
-    You can use tools like certbot to setup ssl certificates to access your bot's UI through encrypted connection by using any of the above reverse proxies.
-    While this will protect your data in transit, we do not recommend to run the freqtrade API outside of your private network (VPN, SSH tunnel).
+!!! Tip "SSL 证书"
+    您可以使用 certbot 等工具设置 ssl 证书，通过使用上述任何反向代理通过加密连接访问机器人的 UI。
+    虽然这将保护传输中的数据，但我们不建议在您的专用网络（VPN、SSH 隧道）之外运行 freqtrade API。
 
-### OpenAPI interface
+### OpenAPI 接口
 
-To enable the builtin openAPI interface (Swagger UI), specify `"enable_openapi": true` in the api_server configuration.
-This will enable the Swagger UI at the `/docs` endpoint. By default, that's running at <http://localhost:8080/docs> - but it'll depend on your settings.
+要启用内置的 openAPI 接口（Swagger UI），请在 api_server 配置中指定 `"enable_openapi": true`。
+这将在 `/docs` 端点启用 Swagger UI。默认情况下，它在 <http://localhost:8080/docs> 运行 - 但这取决于您的设置。
 
-### Advanced API usage using JWT tokens
+### 使用 JWT 令牌的高级 API 使用
 
-!!! Note
-    The below should be done in an application (a Freqtrade REST API client, which fetches info via API), and is not intended to be used on a regular basis.
+!!! Note "注意"
+    以下应在应用程序（通过 API 获取信息的 Freqtrade REST API 客户端）中完成，不打算定期使用。
 
-Freqtrade's REST API also offers JWT (JSON Web Tokens).
-You can login using the following command, and subsequently use the resulting access_token.
+Freqtrade 的 REST API 还提供 JWT（JSON Web 令牌）。
+您可以使用以下命令登录，然后使用生成的 access_token。
 
 ``` bash
 > curl -X POST --user Freqtrader http://localhost:8080/api/v1/token/login
 {"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1ODkxMTk2ODEsIm5iZiI6MTU4OTExOTY4MSwianRpIjoiMmEwYmY0NWUtMjhmOS00YTUzLTlmNzItMmM5ZWVlYThkNzc2IiwiZXhwIjoxNTg5MTIwNTgxLCJpZGVudGl0eSI6eyJ1IjoiRnJlcXRyYWRlciJ9LCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.qt6MAXYIa-l556OM7arBvYJ0SDI9J8bIk3_glDujF5g","refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1ODkxMTk2ODEsIm5iZiI6MTU4OTExOTY4MSwianRpIjoiZWQ1ZWI3YjAtYjMwMy00YzAyLTg2N2MtNWViMjIxNWQ2YTMxIiwiZXhwIjoxNTkxNzExNjgxLCJpZGVudGl0eSI6eyJ1IjoiRnJlcXRyYWRlciJ9LCJ0eXBlIjoicmVmcmVzaCJ9.d1AT_jYICyTAjD0fiQAr52rkRqtxCjUGEMwlNuuzgNQ"}
 
 > access_token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1ODkxMTk2ODEsIm5iZiI6MTU4OTExOTY4MSwianRpIjoiMmEwYmY0NWUtMjhmOS00YTUzLTlmNzItMmM5ZWVlYThkNzc2IiwiZXhwIjoxNTg5MTIwNTgxLCJpZGVudGl0eSI6eyJ1IjoiRnJlcXRyYWRlciJ9LCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.qt6MAXYIa-l556OM7arBvYJ0SDI9J8bIk3_glDujF5g"
-# Use access_token for authentication
+# 使用 access_token 进行身份验证
 > curl -X GET --header "Authorization: Bearer ${access_token}" http://localhost:8080/api/v1/count
 
 ```
 
-Since the access token has a short timeout (15 min) - the `token/refresh` request should be used periodically to get a fresh access token:
+由于访问令牌有短超时（15 分钟）- 应定期使用 `token/refresh` 请求以获取新的访问令牌：
 
 ``` bash
 > curl -X POST --header "Authorization: Bearer ${refresh_token}"http://localhost:8080/api/v1/token/refresh

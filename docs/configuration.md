@@ -1,43 +1,42 @@
-# Configure the bot
+# 配置机器人
 
-Freqtrade has many configurable features and possibilities.
-By default, these settings are configured via the configuration file (see below).
+Freqtrade 有许多可配置的功能和可能性。
+默认情况下，这些设置通过配置文件进行配置（见下文）。
 
-## The Freqtrade configuration file
+## Freqtrade 配置文件
 
-The bot uses a set of configuration parameters during its operation that all together conform to the bot configuration. It normally reads its configuration from a file (Freqtrade configuration file).
+机器人在运行期间使用一组配置参数，这些参数共同构成机器人配置。它通常从文件（Freqtrade 配置文件）读取其配置。
 
-Per default, the bot loads the configuration from the `config.json` file, located in the current working directory.
+默认情况下，机器人从当前工作目录中的 `config.json` 文件加载配置。
 
-You can specify a different configuration file used by the bot with the `-c/--config` command-line option.
+您可以使用 `-c/--config` 命令行选项指定机器人使用的不同配置文件。
 
-If you used the [Quick start](docker_quickstart.md#docker-quick-start) method for installing
-the bot, the installation script should have already created the default configuration file (`config.json`) for you.
+如果您使用 [快速开始](docker_quickstart.md#docker-quick-start) 方法安装机器人，安装脚本应该已经为您创建了默认配置文件（`config.json`）。
 
-If the default configuration file is not created we recommend to use `freqtrade new-config --config user_data/config.json` to generate a basic configuration file.
+如果未创建默认配置文件，我们建议使用 `freqtrade new-config --config user_data/config.json` 生成基本配置文件。
 
-The Freqtrade configuration file is to be written in JSON format.
+Freqtrade 配置文件应以 JSON 格式编写。
 
-Additionally to the standard JSON syntax, you may use one-line `// ...` and multi-line `/* ... */` comments in your configuration files and trailing commas in the lists of parameters.
+除了标准 JSON 语法外，您还可以在配置文件中使用单行 `// ...` 和多行 `/* ... */` 注释，以及参数列表中的尾随逗号。
 
-Do not worry if you are not familiar with JSON format -- simply open the configuration file with an editor of your choice, make some changes to the parameters you need, save your changes and, finally, restart the bot or, if it was previously stopped, run it again with the changes you made to the configuration. The bot validates the syntax of the configuration file at startup and will warn you if you made any errors editing it, pointing out problematic lines.
+如果您不熟悉 JSON 格式，请不要担心 - 只需用您选择的编辑器打开配置文件，对您需要的参数进行一些更改，保存您的更改，最后重新启动机器人，或者如果它之前已停止，则使用您对配置所做的更改再次运行它。机器人在启动时验证配置文件的语法，如果您在编辑时出现任何错误，它会警告您，指出有问题的行。
 
-### Environment variables
+### 环境变量
 
-Set options in the Freqtrade configuration via environment variables.
-This takes priority over the corresponding value in configuration or strategy.
+通过环境变量设置 Freqtrade 配置中的选项。
+这优先于配置或策略中的相应值。
 
-Environment variables must be prefixed with  `FREQTRADE__` to be loaded to the freqtrade configuration.
+环境变量必须以前缀 `FREQTRADE__` 开头才能加载到 freqtrade 配置中。
 
-`__` serves as level separator, so the format used should correspond to `FREQTRADE__{section}__{key}`.
-As such - an environment variable defined as  `export FREQTRADE__STAKE_AMOUNT=200` would result in `{stake_amount: 200}`.
+`__` 用作级别分隔符，因此使用的格式应对应于 `FREQTRADE__{section}__{key}`。
+因此 - 定义为 `export FREQTRADE__STAKE_AMOUNT=200` 的环境变量将导致 `{stake_amount: 200}`。
 
-A more complex example might be `export FREQTRADE__EXCHANGE__KEY=<yourExchangeKey>` to keep your exchange key secret. This will move the value to the `exchange.key` section of the configuration.
-Using this scheme, all configuration settings will also be available as environment variables.
+一个更复杂的示例可能是 `export FREQTRADE__EXCHANGE__KEY=<yourExchangeKey>` 以保持您的交易所密钥保密。这会将值移动到配置的 `exchange.key` 部分。
+使用此方案，所有配置设置也将作为环境变量可用。
 
-Please note that Environment variables will overwrite corresponding settings in your configuration, but command line Arguments will always win.
+请注意，环境变量将覆盖配置中的相应设置，但命令行参数始终优先。
 
-Common example:
+常见示例：
 
 ``` bash
 FREQTRADE__TELEGRAM__CHAT_ID=<telegramchatid>
@@ -46,44 +45,44 @@ FREQTRADE__EXCHANGE__KEY=<yourExchangeKey>
 FREQTRADE__EXCHANGE__SECRET=<yourExchangeSecret>
 ```
 
-Json lists are parsed as json - so you can use the following to set a list of pairs:
+Json 列表被解析为 json - 因此您可以使用以下内容来设置交易对列表：
 
 ``` bash
 export FREQTRADE__EXCHANGE__PAIR_WHITELIST='["BTC/USDT", "ETH/USDT"]'
 ```
 
-!!! Note
-    Environment variables detected are logged at startup - so if you can't find why a value is not what you think it should be based on the configuration, make sure it's not loaded from an environment variable.
+!!! Note "注意"
+    启动时会记录检测到的环境变量 - 因此如果您找不到为什么值不是您认为基于配置应该的值，请确保它不是从环境变量加载的。
 
-!!! Tip "Validate combined result"
-    You can use the [show-config subcommand](utils.md#show-config) to see the final, combined configuration.
+!!! Tip "验证组合结果"
+    您可以使用 [show-config 子命令](utils.md#show-config) 查看最终的组合配置。
 
-??? Warning "Loading sequence"
-    Environment variables are loaded after the initial configuration. As such, you cannot provide the path to the configuration through environment variables. Please use `--config path/to/config.json` for that.
-    This also applies to `user_dir` to some degree. while the user directory can be set through environment variables - the configuration will **not** be loaded from that location.
+??? Warning "加载顺序"
+    环境变量在初始配置之后加载。因此，您不能通过环境变量提供配置的路径。请使用 `--config path/to/config.json` 来实现。
+    这在一定程度上也适用于 `user_dir`。虽然可以通过环境变量设置用户目录 - 但配置**不会**从该位置加载。
 
-### Multiple configuration files
+### 多个配置文件
 
-Multiple configuration files can be specified and used by the bot or the bot can read its configuration parameters from the process standard input stream.
+可以指定多个配置文件供机器人使用，或者机器人可以从进程标准输入流读取其配置参数。
 
-You can specify additional configuration files in `add_config_files`. Files specified in this parameter will be loaded and merged with the initial config file. The files are resolved relative to the initial configuration file.
-This is similar to using multiple `--config` parameters, but simpler in usage as you don't have to specify all files for all commands.
+您可以在 `add_config_files` 中指定其他配置文件。在此参数中指定的文件将与初始配置文件加载并合并。文件相对于初始配置文件解析。
+这类似于使用多个 `--config` 参数，但在使用上更简单，因为您不必为所有命令指定所有文件。
 
-!!! Tip "Validate combined result"
-    You can use the [show-config subcommand](utils.md#show-config) to see the final, combined configuration.
+!!! Tip "验证组合结果"
+    您可以使用 [show-config 子命令](utils.md#show-config) 查看最终的组合配置。
 
-!!! Tip "Use multiple configuration files to keep secrets secret"
-    You can use a 2nd configuration file containing your secrets. That way you can share your "primary" configuration file, while still keeping your API keys for yourself.
-    The 2nd file should only specify what you intend to override.
-    If a key is in more than one of the configurations, then the "last specified configuration" wins (in the above example, `config-private.json`).
+!!! Tip "使用多个配置文件来保持秘密"
+    您可以使用包含您的秘密的第 2 个配置文件。这样您可以共享您的"主要"配置文件，同时仍将 API 密钥保留给您自己。
+    第 2 个文件应仅指定您打算覆盖的内容。
+    如果一个键在多个配置中，则"最后指定的配置"优先（在上面的示例中，`config-private.json`）。
 
-    For one-off commands, you can also use the below syntax by specifying multiple "--config" parameters.
+    对于一次性命令，您还可以通过指定多个 "--config" 参数使用以下语法。
 
     ``` bash
     freqtrade trade --config user_data/config1.json --config user_data/config-private.json <...>
     ```
 
-    The below is equivalent to the example above - but having 2 configuration files in the configuration, for easier reuse.
+    以下与上面的示例等效 - 但在配置中有 2 个配置文件，以便于重用。
 
     ``` json title="user_data/config.json"
     "add_config_files": [
@@ -96,8 +95,8 @@ This is similar to using multiple `--config` parameters, but simpler in usage as
     freqtrade trade --config user_data/config.json <...>
     ```
 
-??? Note "config collision handling"
-    If the same configuration setting takes place in both `config.json` and `config-import.json`, then the parent configuration wins.
+??? Note "配置冲突处理"
+    如果相同的配置设置在 `config.json` 和 `config-import.json` 中都存在，则父配置优先。
     In the below case, `max_open_trades` would be 3 after the merging - as the reusable "import" configuration has this key overwritten.
 
     ``` json title="user_data/config.json"

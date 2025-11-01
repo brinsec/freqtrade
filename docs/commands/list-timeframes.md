@@ -1,32 +1,30 @@
 ```
-usage: freqtrade list-timeframes [-h] [-v] [--no-color] [--logfile FILE] [-V]
+用法: freqtrade list-timeframes [-h] [-v] [--no-color] [--logfile FILE] [-V]
                                  [-c PATH] [-d PATH] [--userdir PATH]
                                  [--exchange EXCHANGE] [-1]
 
-options:
-  -h, --help            show this help message and exit
-  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.
-  -1, --one-column      Print output in one column.
+选项:
+  -h, --help            显示此帮助消息并退出
+  --exchange EXCHANGE   交易所名称。仅在未提供配置时有效。
+  -1, --one-column      在一列中打印输出。
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+通用参数:
+  -v, --verbose         详细模式（-vv 获取更多信息，-vvv 获取所有消息）。
+  --no-color            禁用超参数优化结果的着色。如果您将
+                        输出重定向到文件，这可能很有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        记录到指定的文件。特殊值为：
+                        'syslog'、'journald'。有关更多详细信息，请参阅文档。
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在者为准）。
+                        可以使用多个 --config 选项。可以
+                        设置为 `-` 以从 stdin 读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
+                        包含历史回测数据的交易所基础目录路径。
+                        要查看期货数据，请另外使用交易模式。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        用户数据目录路径。
 
 ```

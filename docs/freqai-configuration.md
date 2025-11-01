@@ -1,10 +1,10 @@
-# Configuration
+# 配置
 
-FreqAI is configured through the typical [Freqtrade config file](configuration.md) and the standard [Freqtrade strategy](strategy-customization.md). Examples of FreqAI config and strategy files can be found in `config_examples/config_freqai.example.json` and `freqtrade/templates/FreqaiExampleStrategy.py`, respectively.
+FreqAI 通过典型的 [Freqtrade 配置文件](configuration.md) 和标准的 [Freqtrade 策略](strategy-customization.md) 进行配置。FreqAI 配置和策略文件的示例可以在 `config_examples/config_freqai.example.json` 和 `freqtrade/templates/FreqaiExampleStrategy.py` 中找到。
 
-## Setting up the configuration file
+## 设置配置文件
 
- Although there are plenty of additional parameters to choose from, as highlighted in the [parameter table](freqai-parameter-table.md#parameter-table), a FreqAI config must at minimum include the following parameters (the parameter values are only examples):
+虽然有很多附加参数可供选择，如[参数表](freqai-parameter-table.md#parameter-table)中所示，FreqAI 配置必须至少包括以下参数（参数值仅是示例）：
 
 ```json
     "freqai": {
@@ -32,12 +32,12 @@ FreqAI is configured through the typical [Freqtrade config file](configuration.m
 
 A full example config is available in `config_examples/config_freqai.example.json`.
 
-!!! Note
-    The `identifier` is commonly overlooked by newcomers, however, this value plays an important role in your configuration. This value is a unique ID that you choose to describe one of your runs. Keeping it the same allows you to maintain crash resilience as well as faster backtesting. As soon as you want to try a new run (new features, new model, etc.), you should change this value (or delete the `user_data/models/unique-id` folder. More details available in the [parameter table](freqai-parameter-table.md#feature-parameters).
+!!! Note "注意"
+    `identifier` 通常被新手忽视，但是，此值在您的配置中起着重要作用。此值是您选择用来描述您的一次运行的唯一 ID。保持它相同可以让您保持崩溃恢复能力以及更快的回测。一旦您想尝试新的运行（新特征、新模型等），您应该更改此值（或删除 `user_data/models/unique-id` 文件夹。更多详细信息可在[参数表](freqai-parameter-table.md#feature-parameters)中找到。
 
-## Building a FreqAI strategy
+## 构建 FreqAI 策略
 
-The FreqAI strategy requires including the following lines of code in the standard [Freqtrade strategy](strategy-customization.md):
+FreqAI 策略需要在标准 [Freqtrade 策略](strategy-customization.md) 中包含以下代码行：
 
 ```python
     # user should define the maximum startup candle count (the largest number of candles

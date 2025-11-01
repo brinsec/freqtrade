@@ -1,8 +1,6 @@
-# Deprecated features
+# 已弃用的功能
 
-This page contains description of the command line arguments, configuration parameters
-and the bot features that were declared as DEPRECATED by the bot development team
-and are no longer supported. Please avoid their usage in your configuration.
+本页包含已被机器人开发团队声明为已弃用且不再支持的命令行参数、配置参数和机器人功能的描述。请在配置中避免使用它们。
 
 ## Removed features
 

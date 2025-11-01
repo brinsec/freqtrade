@@ -1,43 +1,39 @@
 ```
-usage: freqtrade strategy-updater [-h] [-v] [--no-color] [--logfile FILE] [-V]
+用法: freqtrade strategy-updater [-h] [-v] [--no-color] [--logfile FILE] [-V]
                                   [-c PATH] [-d PATH] [--userdir PATH]
                                   [--strategy-list STRATEGY_LIST [STRATEGY_LIST ...]]
                                   [--strategy-path PATH]
                                   [--recursive-strategy-search]
 
-options:
-  -h, --help            show this help message and exit
+选项:
+  -h, --help            显示此帮助消息并退出
   --strategy-list STRATEGY_LIST [STRATEGY_LIST ...]
-                        Provide a space-separated list of strategies to
-                        backtest. Please note that timeframe needs to be set
-                        either in config or via command line. When using this
-                        together with `--export trades`, the strategy-name is
-                        injected into the filename (so `backtest-data.json`
-                        becomes `backtest-data-SampleStrategy.json`
-  --strategy-path PATH  Specify additional strategy lookup path.
+                        提供要回测的策略的空格分隔列表。
+                        请注意，需要在配置中或通过命令行设置时间框架。
+                        当将此选项与 `--export trades` 一起使用时，策略名称是
+                        注入到文件名中（因此 `backtest-data.json`
+                        变为 `backtest-data-SampleStrategy.json`
+  --strategy-path PATH  指定其他策略查找路径。
   --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
+                        在策略文件夹中递归搜索策略。
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+通用参数:
+  -v, --verbose         详细模式（-vv 获取更多信息，-vvv 获取所有消息）。
+  --no-color            禁用超参数优化结果的着色。如果您将
+                        输出重定向到文件，这可能很有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        记录到指定的文件。特殊值为：
+                        'syslog'、'journald'。有关更多详细信息，请参阅文档。
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在者为准）。
+                        可以使用多个 --config 选项。可以
+                        设置为 `-` 以从 stdin 读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
+                        包含历史回测数据的交易所基础目录路径。
+                        要查看期货数据，请另外使用交易模式。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        用户数据目录路径。
 
 ```

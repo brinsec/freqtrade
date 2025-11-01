@@ -2,92 +2,92 @@
 
 # FreqAI
 
-## Introduction
+## 介绍
 
-FreqAI is a software designed to automate a variety of tasks associated with training a predictive machine learning model to generate market forecasts given a set of input signals. In general, FreqAI aims to be a sandbox for easily deploying robust machine learning libraries on real-time data ([details](#freqai-position-in-open-source-machine-learning-landscape)).
+FreqAI 是一种软件，旨在自动化与训练预测性机器学习模型相关的各种任务，以根据一组输入信号生成市场预测。总的来说，FreqAI 旨在成为一个沙盒，用于在实时数据上轻松部署强大的机器学习库（[详细信息](#freqai-position-in-open-source-machine-learning-landscape)）。
 
-!!! Note
-    FreqAI is, and always will be, a not-for-profit, open source project. FreqAI does *not* have a crypto token, FreqAI does *not* sell signals, and FreqAI does not have a domain besides the present [freqtrade documentation](https://www.freqtrade.io/en/latest/freqai/).
+!!! Note "注意"
+    FreqAI 是并且将永远是一个非营利、开源项目。FreqAI *没有*加密代币，FreqAI *不*出售信号，并且 FreqAI 除了当前的 [freqtrade 文档](https://www.freqtrade.io/en/latest/freqai/) 之外没有其他域名。
 
-Features include:
+功能包括：
 
-* **Self-adaptive retraining** - Retrain models during [live deployments](freqai-running.md#live-deployments) to self-adapt to the market in a supervised manner
-* **Rapid feature engineering** - Create large rich [feature sets](freqai-feature-engineering.md#feature-engineering) (10k+ features) based on simple user-created strategies
-* **High performance** - Threading allows for adaptive model retraining on a separate thread (or on GPU if available) from model inferencing (prediction) and bot trade operations. Newest models and data are kept in RAM for rapid inferencing
-* **Realistic backtesting** - Emulate self-adaptive training on historic data with a [backtesting module](freqai-running.md#backtesting) that automates retraining
-* **Extensibility** - The generalized and robust architecture allows for incorporating any [machine learning library/method](freqai-configuration.md#using-different-prediction-models) available in Python. Eight examples are currently available, including classifiers, regressors, and a convolutional neural network
-* **Smart outlier removal** - Remove outliers from training and prediction data sets using a variety of [outlier detection techniques](freqai-feature-engineering.md#outlier-detection)
-* **Crash resilience** - Store trained models to disk to make reloading from a crash fast and easy, and [purge obsolete files](freqai-running.md#purging-old-model-data) for sustained dry/live runs
-* **Automatic data normalization** - [Normalize the data](freqai-feature-engineering.md#building-the-data-pipeline) in a smart and statistically safe way
-* **Automatic data download** - Compute timeranges for data downloads and update historic data (in live deployments)
-* **Cleaning of incoming data** - Handle NaNs safely before training and model inferencing
-* **Dimensionality reduction** - Reduce the size of the training data via [Principal Component Analysis](freqai-feature-engineering.md#data-dimensionality-reduction-with-principal-component-analysis)
-* **Deploying bot fleets** - Set one bot to train models while a fleet of [consumers](producer-consumer.md) use signals.
+* **自适应重训练** - 在[实盘部署](freqai-running.md#live-deployments)期间重训练模型，以监督方式自适应市场
+* **快速特征工程** - 基于简单的用户创建策略创建大型丰富的[特征集](freqai-feature-engineering.md#feature-engineering)（10k+ 特征）
+* **高性能** - 线程允许在单独的线程（或 GPU，如果可用）上进行自适应模型重训练，与模型推理（预测）和机器人交易操作分离。最新的模型和数据保存在 RAM 中以进行快速推理
+* **真实回测** - 使用自动重训练的[回测模块](freqai-running.md#backtesting)在历史数据上模拟自适应训练
+* **可扩展性** - 通用且强大的架构允许合并 Python 中可用的任何[机器学习库/方法](freqai-configuration.md#using-different-prediction-models)。目前提供了八个示例，包括分类器、回归器和卷积神经网络
+* **智能异常值移除** - 使用各种[异常检测技术](freqai-feature-engineering.md#outlier-detection)从训练和预测数据集中移除异常值
+* **崩溃恢复** - 将训练好的模型存储到磁盘，以便从崩溃中快速轻松地重新加载，并为持续模拟/实盘运行[清除过时文件](freqai-running.md#purging-old-model-data)
+* **自动数据规范化** - 以智能且统计安全的方式[规范化数据](freqai-feature-engineering.md#building-the-data-pipeline)
+* **自动数据下载** - 计算数据下载的时间范围并更新历史数据（在实盘部署中）
+* **传入数据清理** - 在训练和模型推理之前安全地处理 NaNs
+* **降维** - 通过[主成分分析](freqai-feature-engineering.md#data-dimensionality-reduction-with-principal-component-analysis)减少训练数据的大小
+* **部署机器人舰队** - 设置一个机器人训练模型，同时一组[消费者](producer-consumer.md)使用信号。
 
-## Quick start
+## 快速开始
 
-The easiest way to quickly test FreqAI is to run it in dry mode with the following command:
+快速测试 FreqAI 的最简单方法是在模拟模式下使用以下命令运行：
 
 ```bash
 freqtrade trade --config config_examples/config_freqai.example.json --strategy FreqaiExampleStrategy --freqaimodel LightGBMRegressor --strategy-path freqtrade/templates
 ```
 
-You will see the boot-up process of automatic data downloading, followed by simultaneous training and trading. 
+您将看到自动数据下载的启动过程，然后是同时训练和交易。
 
-!!! danger "Not for production"
-    The example strategy provided with the Freqtrade source code is designed for showcasing/testing a wide variety of FreqAI features. It is also designed to run on small computers so that it can be used as a benchmark between developers and users. It is *not* designed to be run in production.
+!!! Danger "不用于生产"
+    随 Freqtrade 源代码提供的示例策略旨在展示/测试各种 FreqAI 功能。它也设计为在小型计算机上运行，以便可以用作开发人员和用户之间的基准。它*不*设计用于生产。
 
-An example strategy, prediction model, and config to use as a starting points can be found in
-`freqtrade/templates/FreqaiExampleStrategy.py`, `freqtrade/freqai/prediction_models/LightGBMRegressor.py`, and
-`config_examples/config_freqai.example.json`, respectively.
+可以用作起点的示例策略、预测模型和配置可以在
+`freqtrade/templates/FreqaiExampleStrategy.py`、`freqtrade/freqai/prediction_models/LightGBMRegressor.py` 和
+`config_examples/config_freqai.example.json` 中找到。
 
-## General approach
+## 一般方法
 
-You provide FreqAI with a set of custom *base indicators* (the same way as in a [typical Freqtrade strategy](strategy-customization.md)) as well as target values (*labels*). For each pair in the whitelist, FreqAI trains a model to predict the target values based on the input of custom indicators. The models are then consistently retrained, with a predetermined frequency, to adapt to market conditions. FreqAI offers the ability to both backtest strategies (emulating reality with periodic retraining on historic data) and deploy dry/live runs. In dry/live conditions, FreqAI can be set to constant retraining in a background thread to keep models as up to date as possible.
+您为 FreqAI 提供一组自定义*基础指标*（与[典型的 Freqtrade 策略](strategy-customization.md)中的方式相同）以及目标值（*标签*）。对于白名单中的每个交易对，FreqAI 训练一个模型，根据自定义指标的输入预测目标值。然后定期重训练模型，以预先确定的频率适应市场条件。FreqAI 提供了回测策略（通过在历史数据上定期重训练来模拟现实）和部署模拟/实盘运行的能力。在模拟/实盘条件下，FreqAI 可以设置为在后台线程中持续重训练，以尽可能保持模型最新。
 
-An overview of the algorithm, explaining the data processing pipeline and model usage, is shown below.
+算法的概述，解释数据处理管道和模型使用，如下所示。
 
 ![freqai-algo](assets/freqai_algo.jpg)
 
-### Important machine learning vocabulary
+### 重要的机器学习词汇
 
-**Features** - the parameters, based on historic data, on which a model is trained. All features for a single candle are stored as a vector. In FreqAI, you build a feature data set from anything you can construct in the strategy.
+**特征（Features）** - 基于历史数据的参数，模型在这些参数上进行训练。单个蜡烛的所有特征存储为向量。在 FreqAI 中，您可以从策略中构造的任何内容构建特征数据集。
 
-**Labels** - the target values that the model is trained toward. Each feature vector is associated with a single label that is defined by you within the strategy. These labels intentionally look into the future and are what you are training the model to be able to predict.
+**标签（Labels）** - 模型训练的目标值。每个特征向量与您在策略中定义的单个标签关联。这些标签有意向前看，是您训练模型能够预测的内容。
 
-**Training** - the process of "teaching" the model to match the feature sets to the associated labels. Different types of models "learn" in different ways which means that one might be better than another for a specific application. More information about the different models that are already implemented in FreqAI can be found [here](freqai-configuration.md#using-different-prediction-models).
+**训练（Training）** - "教"模型将特征集与相关标签匹配的过程。不同类型的模型以不同的方式"学习"，这意味着对于一个特定应用，一个可能比另一个更好。有关 FreqAI 中已实现的不同模型的更多信息可以在[这里](freqai-configuration.md#using-different-prediction-models)找到。
 
-**Train data** - a subset of the feature data set that is fed to the model during training to "teach" the model how to predict the targets. This data directly influences weight connections in the model.
+**训练数据（Train data）** - 特征数据集的子集，在训练期间提供给模型以"教"模型如何预测目标。此数据直接影响模型中的权重连接。
 
-**Test data** - a subset of the feature data set that is used to evaluate the performance of the model after training. This data does not influence nodal weights within the model.
+**测试数据（Test data）** - 用于在训练后评估模型性能的特征数据集的子集。此数据不影响模型内的节点权重。
 
-**Inferencing** - the process of feeding a trained model new unseen data on which it will make a prediction. 
+**推理（Inferencing）** - 向训练好的模型提供新的未见数据，模型将对其进行预测的过程。 
 
-## Install prerequisites
+## 安装先决条件
 
-The normal Freqtrade install process will ask if you wish to install FreqAI dependencies. You should reply "yes" to this question if you wish to use FreqAI. If you did not reply yes, you can manually install these dependencies after the install with:
+正常的 Freqtrade 安装过程会询问您是否要安装 FreqAI 依赖项。如果您希望使用 FreqAI，应该回答"是"。如果您没有回答是，可以在安装后使用以下命令手动安装这些依赖项：
 
 ``` bash
 pip install -r requirements-freqai.txt
 ```
 
-!!! Note
-    Catboost will not be installed on low-powered arm devices (raspberry), since it does not provide wheels for this platform.
+!!! Note "注意"
+    Catboost 不会在低功耗 ARM 设备（树莓派）上安装，因为它不为该平台提供 wheel。
 
-### Usage with docker
+### 与 docker 一起使用
 
-If you are using docker, a dedicated tag with FreqAI dependencies is available as `:freqai`. As such - you can replace the image line in your docker compose file with `image: freqtradeorg/freqtrade:stable_freqai`. This image contains the regular FreqAI dependencies. Similar to native installs, Catboost will not be available on ARM based devices. If you would like to use PyTorch or Reinforcement learning, you should use the torch or RL tags, `image: freqtradeorg/freqtrade:stable_freqaitorch`, `image: freqtradeorg/freqtrade:stable_freqairl`.
+如果您使用 docker，带有 FreqAI 依赖项的专用标签可作为 `:freqai` 使用。因此 - 您可以将 docker compose 文件中的镜像行替换为 `image: freqtradeorg/freqtrade:stable_freqai`。此镜像包含常规 FreqAI 依赖项。与原生安装类似，Catboost 在基于 ARM 的设备上将不可用。如果您想使用 PyTorch 或强化学习，应该使用 torch 或 RL 标签，`image: freqtradeorg/freqtrade:stable_freqaitorch`、`image: freqtradeorg/freqtrade:stable_freqairl`。
 
-!!! note "docker-compose-freqai.yml"
-    We do provide an explicit docker-compose file for this in `docker/docker-compose-freqai.yml` - which can be used via `docker compose -f docker/docker-compose-freqai.yml run ...` - or can be copied to replace the original docker file. This docker-compose file also contains a (disabled) section to enable GPU resources within docker containers. This obviously assumes the system has GPU resources available.
+!!! Note "docker-compose-freqai.yml"
+    我们确实在 `docker/docker-compose-freqai.yml` 中为此提供了一个明确的 docker-compose 文件 - 可以通过 `docker compose -f docker/docker-compose-freqai.yml run ...` 使用 - 或者可以复制以替换原始 docker 文件。此 docker-compose 文件还包含一个（禁用的）部分，以在 docker 容器内启用 GPU 资源。这显然假设系统具有可用的 GPU 资源。
 
-### FreqAI position in open source machine learning landscape
+### FreqAI 在开源机器学习领域中的位置
 
-Forecasting chaotic time-series based systems, such as equity/cryptocurrency markets, requires a broad set of tools geared toward testing a wide range of hypotheses. Fortunately, a recent maturation of robust machine learning libraries (e.g. `scikit-learn`) has opened up a wide range of research possibilities. Scientists from a diverse range of fields can now easily prototype their studies on an abundance of established machine learning algorithms. Similarly, these user-friendly libraries enable "citizen scientists" to use their basic Python skills for data exploration. However, leveraging these machine learning libraries on historical and live chaotic data sources can be logistically difficult and expensive. Additionally, robust data collection, storage, and handling presents a disparate challenge. [`FreqAI`](#freqai) aims to provide a generalized and extensible open-sourced framework geared toward live deployments of adaptive modeling for market forecasting. The `FreqAI` framework is effectively a sandbox for the rich world of open source machine learning libraries. Inside the `FreqAI` sandbox, users find they can combine a wide variety of third-party libraries to test creative hypotheses on a free live 24/7 chaotic data source - cryptocurrency exchange data. 
+预测基于混沌时间序列的系统（如股票/加密货币市场）需要一套广泛的工具，用于测试各种假设。幸运的是，强大的机器学习库（例如 `scikit-learn`）的近期成熟为广泛的研究可能性打开了大门。来自不同领域的科学家现在可以轻松地在大量已建立的机器学习算法上原型化他们的研究。同样，这些用户友好的库使"公民科学家"能够使用他们的基本 Python 技能进行数据探索。但是，在历史和实时混沌数据源上利用这些机器学习库可能在逻辑上困难且昂贵。此外，强大的数据收集、存储和处理提出了不同的挑战。[`FreqAI`](#freqai) 旨在提供一个通用且可扩展的开源框架，用于市场预测的自适应建模的实时部署。`FreqAI` 框架实际上是丰富的开源机器学习库世界的沙盒。在 `FreqAI` 沙盒中，用户发现他们可以结合各种各样的第三方库来在免费的实时 24/7 混沌数据源（加密货币交易所数据）上测试创造性假设。 
 
-### Citing FreqAI
+### 引用 FreqAI
 
-FreqAI is [published in the Journal of Open Source Software](https://joss.theoj.org/papers/10.21105/joss.04864). If you find FreqAI useful in your research, please use the following citation:
+FreqAI [已发表在开源软件杂志](https://joss.theoj.org/papers/10.21105/joss.04864)上。如果您在研究中发现 FreqAI 有用，请使用以下引用：
 
 ```bibtex
 @article{Caulk2022, 
@@ -100,42 +100,42 @@ FreqAI is [published in the Journal of Open Source Software](https://joss.theoj.
     journal = {Journal of Open Source Software} } 
 ```
 
-## Common pitfalls
+## 常见陷阱
 
-FreqAI cannot be combined with dynamic `VolumePairlists` (or any pairlist filter that adds and removes pairs dynamically).
-This is for performance reasons - FreqAI relies on making quick predictions/retrains. To do this effectively,
-it needs to download all the training data at the beginning of a dry/live instance. FreqAI stores and appends
-new candles automatically for future retrains. This means that if new pairs arrive later in the dry run due to a volume pairlist, it will not have the data ready. However, FreqAI does work with the `ShufflePairlist` or a `VolumePairlist` which keeps the total pairlist constant (but reorders the pairs according to volume).
+FreqAI 不能与动态 `VolumePairlists`（或任何动态添加和删除交易对的交易对列表过滤器）结合使用。
+这是出于性能原因 - FreqAI 依赖于进行快速预测/重训练。为了有效地做到这一点，
+它需要在模拟/实盘实例开始时下载所有训练数据。FreqAI 自动存储并追加
+新蜡烛以供将来重训练。这意味着如果由于成交量交易对列表而在模拟运行中稍后出现新交易对，它将没有准备好数据。但是，FreqAI 确实可以与 `ShufflePairlist` 或保持总交易对列表恒定（但根据成交量重新排序交易对）的 `VolumePairlist` 一起工作。
 
-## Additional learning materials
+## 其他学习材料
 
-Here we compile some external materials that provide deeper looks into various components of FreqAI:
+这里我们编译了一些外部材料，提供对 FreqAI 各个组件的更深入了解：
 
-- [Real-time head-to-head: Adaptive modeling of financial market data using XGBoost and CatBoost](https://emergentmethods.medium.com/real-time-head-to-head-adaptive-modeling-of-financial-market-data-using-xgboost-and-catboost-995a115a7495)
-- [FreqAI - from price to prediction](https://emergentmethods.medium.com/freqai-from-price-to-prediction-6fadac18b665)
+- [实时正面交锋：使用 XGBoost 和 CatBoost 对金融市场数据进行自适应建模](https://emergentmethods.medium.com/real-time-head-to-head-adaptive-modeling-of-financial-market-data-using-xgboost-and-catboost-995a115a7495)
+- [FreqAI - 从价格到预测](https://emergentmethods.medium.com/freqai-from-price-to-prediction-6fadac18b665)
 
 
-## Support
+## 支持
 
-You can find support for FreqAI in a variety of places, including the [Freqtrade discord](https://discord.gg/Jd8JYeWHc4), the dedicated [FreqAI discord](https://discord.gg/7AMWACmbjT), and in [github issues](https://github.com/freqtrade/freqtrade/issues).
+您可以在各种地方找到 FreqAI 的支持，包括 [Freqtrade discord](https://discord.gg/Jd8JYeWHc4)、专用的 [FreqAI discord](https://discord.gg/7AMWACmbjT) 以及 [github issues](https://github.com/freqtrade/freqtrade/issues)。
 
-## Credits
+## 致谢
 
-FreqAI is developed by a group of individuals who all contribute specific skillsets to the project.
+FreqAI 由一群个人开发，他们都为项目贡献了特定技能。
 
-Conception and software development:
+构思和软件开发：
 Robert Caulk @robcaulk
 
-Theoretical brainstorming and data analysis:
+理论头脑风暴和数据分析：
 Elin Törnquist @th0rntwig
 
-Code review and software architecture brainstorming:
+代码审查和软件架构头脑风暴：
 @xmatthias
 
-Software development:
+软件开发：
 Wagner Costa @wagnercosta
 Emre Suzen @aemr3
 Timothy Pogue @wizrds
 
-Beta testing and bug reporting:
+Beta 测试和错误报告：
 Stefan Gehring @bloodhunter4rc, @longyu, Andrew Lawless @paranoidandy, Pascal Schmidt @smidelis, Ryan McMullan @smarmau, Juha Nykänen @suikula, Johan van der Vlugt @jooopiert, Richárd Józsa @richardjosza

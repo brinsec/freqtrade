@@ -1,50 +1,49 @@
-# Backtesting
+# 回测
 
-This page explains how to validate your strategy performance by using Backtesting.
+本页说明如何使用回测来验证您的策略性能。
 
-Backtesting requires historic data to be available.
-To learn how to get data for the pairs and exchange you're interested in, head over to the [Data Downloading](data-download.md) section of the documentation.
+回测需要历史数据可用。
+要了解如何获取您感兴趣的交易对和交易所的数据，请前往文档的 [数据下载](data-download.md) 部分。
 
-Backtesting is also available in [webserver mode](freq-ui.md#backtesting), which allows you to run backtests via the web interface.
+回测也在 [webserver 模式](freq-ui.md#backtesting) 中可用，允许您通过 Web 界面运行回测。
 
-## Backtesting command reference
+## 回测命令参考
 
 --8<-- "commands/backtesting.md"
 
-## Test your strategy with Backtesting
+## 使用回测测试您的策略
 
-Now you have good Entry and exit strategies and some historic data, you want to test it against
-real data. This is what we call [backtesting](https://en.wikipedia.org/wiki/Backtesting).
+现在您有了良好的入场和出场策略以及一些历史数据，您想针对真实数据进行测试。这就是我们所说的 [回测](https://en.wikipedia.org/wiki/Backtesting)。
 
-Backtesting will use the crypto-currencies (pairs) from your config file and load historical candle (OHLCV) data from `user_data/data/<exchange>` by default.
-If no data is available for the exchange / pair / timeframe combination, backtesting will ask you to download them first using `freqtrade download-data`.
-For details on downloading, please refer to the [Data Downloading](data-download.md) section in the documentation.
+回测将使用配置文件中的加密货币（交易对），并默认从 `user_data/data/<exchange>` 加载历史蜡烛图（OHLCV）数据。
+如果没有可用于交易所/交易对/时间框架组合的数据，回测将要求您首先使用 `freqtrade download-data` 下载它们。
+有关下载的详细信息，请参阅文档中的 [数据下载](data-download.md) 部分。
 
-The result of backtesting will confirm if your bot has better odds of making a profit than a loss.
+回测的结果将确认您的机器人是否具有更好的盈利概率。
 
-All profit calculations include fees, and freqtrade will use the exchange's default fees for the calculation.
+所有利润计算都包括手续费，freqtrade 将使用交易所的默认手续费进行计算。
 
-!!! Warning "Using dynamic pairlists for backtesting"
-    Using dynamic pairlists is possible (not all of the handlers are allowed to be used in backtest mode), however it relies on the current market conditions - which will not reflect the historic status of the pairlist.
-    Also, when using pairlists other than StaticPairlist, reproducibility of backtesting-results cannot be guaranteed.
-    Please read the [pairlists documentation](plugins.md#pairlists) for more information.
+!!! Warning "在回测中使用动态交易对列表"
+    可以使用动态交易对列表（并非所有处理器都允许在回测模式中使用），但它依赖于当前的市场条件 - 这不会反映交易对列表的历史状态。
+    此外，使用 StaticPairlist 以外的交易对列表时，无法保证回测结果的可重现性。
+    请阅读 [交易对列表文档](plugins.md#pairlists) 了解更多信息。
 
-    To achieve reproducible results, best generate a pairlist via the [`test-pairlist`](utils.md#test-pairlist) command and use that as static pairlist.
+    要实现可重现的结果，最好通过 [`test-pairlist`](utils.md#test-pairlist) 命令生成交易对列表，并将其用作静态交易对列表。
 
-!!! Note
-    By default, Freqtrade will export backtesting results to `user_data/backtest_results`.
-    The exported trades can be used for [further analysis](#further-backtest-result-analysis) or can be used by the [plotting sub-command](plotting.md#plot-price-and-indicators) (`freqtrade plot-dataframe`) in the scripts directory.
+!!! Note "注意"
+    默认情况下，Freqtrade 会将回测结果导出到 `user_data/backtest_results`。
+    导出的交易可用于 [进一步分析](#further-backtest-result-analysis) 或由脚本目录中的 [绘图子命令](plotting.md#plot-price-and-indicators)（`freqtrade plot-dataframe`）使用。
 
 
-### Starting balance
+### 起始余额
 
-Backtesting will require a starting balance, which can be provided as `--dry-run-wallet <balance>` or `--starting-balance <balance>` command line argument, or via `dry_run_wallet` configuration setting.
-This amount must be higher than `stake_amount`, otherwise the bot will not be able to simulate any trade.
+回测需要起始余额，可以通过 `--dry-run-wallet <balance>` 或 `--starting-balance <balance>` 命令行参数提供，或通过 `dry_run_wallet` 配置设置提供。
+此金额必须高于 `stake_amount`，否则机器人将无法模拟任何交易。
 
-### Dynamic stake amount
+### 动态投注金额
 
-Backtesting supports [dynamic stake amount](configuration.md#dynamic-stake-amount) by configuring `stake_amount` as `"unlimited"`, which will split the starting balance into `max_open_trades` pieces.
-Profits from early trades will result in subsequent higher stake amounts, resulting in compounding of profits over the backtesting period.
+回测支持 [动态投注金额](configuration.md#dynamic-stake-amount)，通过将 `stake_amount` 配置为 `"unlimited"`，这将把起始余额分成 `max_open_trades` 份。
+早期交易的利润将导致后续更高的投注金额，从而在回测期间产生复利效应。
 
 ### Example backtesting commands
 

@@ -1,52 +1,51 @@
-# Recursive analysis
+# 递归分析
 
-This page explains how to validate your strategy for inaccuracies due to recursive issues with certain indicators.
+本页解释如何验证策略中由于某些指标的递归问题而导致的不准确性。
 
-A recursive formula defines any term of a sequence relative to its preceding term(s). An example of a recursive formula is a<sub>n</sub> = a<sub>n-1</sub> + b.
+递归公式定义序列的任何项相对于其前一项（或几项）。递归公式的一个例子是 a<sub>n</sub> = a<sub>n-1</sub> + b。
 
-Why does this matter for Freqtrade? In backtesting, the bot will get full data of the pairs according to the timerange specified. But in a dry/live run, the bot will be limited by the amount of data each exchanges gives.
+这对 Freqtrade 为什么重要？在回测中，机器人将根据指定的时间范围获取交易对的完整数据。但在模拟/实盘运行中，机器人将受到每个交易所提供的数据量限制。
 
-For example, to calculate a very basic indicator called `steps`, the first row's value is always 0, while the following rows' values are equal to the value of the previous row plus 1. If I were to calculate it using the latest 1000 candles, then the `steps` value of the first row is 0, and the `steps` value at the last closed candle is 999.
+例如，要计算一个非常基本的指标 `steps`，第一行的值始终为 0，而后续行的值等于前一行加 1 的值。如果我使用最新的 1000 根蜡烛来计算它，那么第一行的 `steps` 值是 0，最后关闭蜡烛的 `steps` 值是 999。
 
-What happens if the calculation is using only the latest 500 candles? Then instead of 999, the `steps` value at last closed candle is 499. The difference of the value means your backtest result can differ from your dry/live run result.
+如果计算仅使用最新的 500 根蜡烛会发生什么？那么最后关闭蜡烛的 `steps` 值是 499，而不是 999。值的差异意味着您的回测结果可能与您的模拟/实盘运行结果不同。
 
-The `recursive-analysis` command requires historic data to be available. To learn how to get data for the pairs and exchange you're interested in,
-head over to the [Data Downloading](data-download.md) section of the documentation.
+`recursive-analysis` 命令需要历史数据可用。要了解如何获取您感兴趣的交易对和交易所的数据，请转到文档的[数据下载](data-download.md)部分。
 
-This command is built upon preparing different lengths of data and calculates indicators based on them.
-This does not backtest the strategy itself, but rather only calculates the indicators. After calculating the indicators of different startup candle values (`startup_candle_count`) are done, the values of last rows across all specified `startup_candle_count` are compared to see how much variance they show compared to the base calculation.
+此命令基于准备不同长度的数据并基于它们计算指标。
+这不会回测策略本身，而只是计算指标。在计算不同启动蜡烛值（`startup_candle_count`）的指标完成后，会比较所有指定的 `startup_candle_count` 的最后一行值，以查看它们与基础计算相比显示多少差异。
 
-Command settings:
+命令设置：
 
-- Use the `-p` option to set your desired pair to analyze. Since we are only looking at indicator values, using more than one pair is redundant. Preferably use a pair with a relatively high price and at least moderate volatility, such as BTC or ETH, to avoid rounding issues that can make the results inaccurate. If no pair is set on the command, the pair used for this analysis is the first pair in the whitelist.
-- It is recommended to set a long timerange (at least 5000 candles) so that the initial indicators' calculation that is going to be used as a benchmark has very small or no recursive issues itself. For example, for a 5m timeframe, a timerange of 5000 candles would be equal to 18 days.
-- `--cache` is forced to "none" to avoid loading previous indicators calculation automatically.
+- 使用 `-p` 选项设置您要分析的交易对。由于我们只查看指标值，使用多个交易对是多余的。最好使用价格相对较高且至少具有中等波动性的交易对，例如 BTC 或 ETH，以避免可能使结果不准确的舍入问题。如果命令中未设置交易对，则用于此分析的交易对是白名单中的第一个交易对。
+- 建议设置较长的时间范围（至少 5000 根蜡烛），以便将要用作基准的初始指标计算本身具有非常小或没有递归问题。例如，对于 5 分钟时间框架，5000 根蜡烛的时间范围等于 18 天。
+- `--cache` 被强制设置为 "none"，以避免自动加载先前的指标计算。
 
-In addition to the recursive formula check, this command also carries out a simple lookahead bias check on the indicator values only. For a full lookahead check, use [Lookahead-analysis](lookahead-analysis.md).
+除了递归公式检查外，此命令还对指标值进行简单的前瞻偏差检查。要进行完整的前瞻检查，请使用[前瞻分析](lookahead-analysis.md)。
 
-## Recursive-analysis command reference
+## 递归分析命令参考
 
 --8<-- "commands/recursive-analysis.md"
 
-### Why are odd-numbered default startup candles used?
+### 为什么使用奇数默认启动蜡烛？
 
-The default value for startup candles are odd numbers. When the bot fetches candle data from the exchange's API, the last candle is the one being checked by the bot and the rest of the data are the "startup candles".
+启动蜡烛的默认值是奇数。当机器人从交易所的 API 获取蜡烛数据时，最后一根蜡烛是机器人正在检查的蜡烛，其余数据是"启动蜡烛"。
 
-For example, Binance allows 1000 candles per API call. When the bot receives 1000 candles, the last candle is the "current candle", and the preceding 999 candles are the "startup candles". By setting the startup candle count as 1000 instead of 999, the bot will try to fetch 1001 candles instead. The exchange API will then send candle data in a paginated form, i.e. in case of the Binance API, this will be two groups- one of length 1000 and another of length 1. This results in the bot thinking the strategy needs 1001 candles of data, and so it will download 2000 candles worth of data instead, which means there will be 1 "current candle" and 1999 "startup candles".
+例如，Binance 每次 API 调用允许 1000 根蜡烛。当机器人接收 1000 根蜡烛时，最后一根蜡烛是"当前蜡烛"，前面的 999 根蜡烛是"启动蜡烛"。通过将启动蜡烛计数设置为 1000 而不是 999，机器人将尝试获取 1001 根蜡烛。然后，交易所 API 将以分页形式发送蜡烛数据，即在 Binance API 的情况下，这将是两个组 - 一个长度为 1000，另一个长度为 1。这导致机器人认为策略需要 1001 根蜡烛的数据，因此它将下载 2000 根蜡烛的数据，这意味着将有 1 根"当前蜡烛"和 1999 根"启动蜡烛"。
 
-Furthermore, exchanges limit the number of consecutive bulk API calls, e.g. Binance allows 5 calls. In this case, only 5000 candles can be downloaded from Binance API without hitting the API rate limit, which means the max `startup_candle_count` you can have is 4999.
+此外，交易所限制连续批量 API 调用的数量，例如 Binance 允许 5 次调用。在这种情况下，只能从 Binance API 下载 5000 根蜡烛而不会达到 API 速率限制，这意味着您可以拥有的最大 `startup_candle_count` 是 4999。
 
-Please note that this candle limit may be changed in the future by the exchanges without any prior notice.
+请注意，交易所可能会在未来更改此蜡烛限制，恕不另行通知。
 
-### How does the command work?
+### 命令如何工作？
 
-- Firstly an initial indicator calculation is carried out using the supplied timerange to generate a benchmark for indicator values.
-- After setting the benchmark it will then carry out additional runs for each of the different startup candle count values.
-- The command will then compare the indicator values at the last candle rows and report the differences in a table.
+- 首先使用提供的时间范围进行初始指标计算，以生成指标值的基准。
+- 设置基准后，它将为每个不同的启动蜡烛计数值执行额外的运行。
+- 然后命令将比较最后蜡烛行的指标值并在表格中报告差异。
 
-## Understanding the recursive-analysis output
+## 理解递归分析输出
 
-This is an example of an output results table where at least one indicator has a recursive formula issue:
+这是一个输出结果表示例，其中至少有一个指标具有递归公式问题：
 
 ```
 | indicators   | 20      | 40      | 80     | 100    | 150     | 300     | 999    |

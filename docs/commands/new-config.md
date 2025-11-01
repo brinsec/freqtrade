@@ -1,12 +1,12 @@
 ```
-usage: freqtrade new-config [-h] [-c PATH]
+用法: freqtrade new-config [-h] [-c PATH]
 
-options:
-  -h, --help            show this help message and exit
+选项:
+  -h, --help            显示此帮助消息并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在者为准）。
+                        可以使用多个 --config 选项。可以
+                        设置为 `-` 以从 stdin 读取配置。
 
 ```

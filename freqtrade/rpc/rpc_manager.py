@@ -104,7 +104,7 @@ class RPCManager:
             self.send_msg(
                 {
                     "type": RPCMessageType.WARNING,
-                    "status": "Dry run is enabled. All trades are simulated.",
+                    "status": "模拟运行已启用。所有交易都是模拟的。",
                 }
             )
         stake_currency = config["stake_currency"]
@@ -119,24 +119,23 @@ class RPCManager:
         self.send_msg(
             {
                 "type": RPCMessageType.STARTUP,
-                "status": f"*Exchange:* `{exchange_name}`\n"
-                f"*Stake per trade:* `{stake_amount} {stake_currency}`\n"
-                f"*Minimum ROI:* `{minimal_roi}`\n"
-                f"*{'Trailing ' if trailing_stop else ''}Stoploss:* `{stoploss}`\n"
-                f"*Position adjustment:* `{pos_adjust_enabled}`\n"
-                f"*Timeframe:* `{timeframe}`\n"
-                f"*Strategy:* `{strategy_name}`",
+                "status": f"*交易所:* `{exchange_name}`\n"
+                f"*每笔交易金额:* `{stake_amount} {stake_currency}`\n"
+                f"*最小 ROI:* `{minimal_roi}`\n"
+                f"*{'追踪' if trailing_stop else ''}止损:* `{stoploss}`\n"
+                f"*仓位调整:* `{pos_adjust_enabled}`\n"
+                f"*时间周期:* `{timeframe}`\n"
+                f"*策略:* `{strategy_name}`",
             }
         )
         self.send_msg(
             {
                 "type": RPCMessageType.STARTUP,
-                "status": f"Searching for {stake_currency} pairs to buy and sell "
-                f"based on {pairlist.short_desc()}",
+                "status": f"正在搜索基于 {pairlist.short_desc()} 的 {stake_currency} 交易对进行买卖",
             }
         )
         if len(protections.name_list) > 0:
             prots = "\n".join([p for prot in protections.short_desc() for k, p in prot.items()])
             self.send_msg(
-                {"type": RPCMessageType.STARTUP, "status": f"Using Protections: \n{prots}"}
+                {"type": RPCMessageType.STARTUP, "status": f"使用保护功能: \n{prots}"}
             )

@@ -1,40 +1,40 @@
-# Development Help
+# 开发帮助
 
-This page is intended for developers of Freqtrade, people who want to contribute to the Freqtrade codebase or documentation, or people who want to understand the source code of the application they're running.
+本页面向 Freqtrade 的开发人员、想要为 Freqtrade 代码库或文档做出贡献的人员，或想要了解他们正在运行的应用程序的源代码的人员。
 
-All contributions, bug reports, bug fixes, documentation improvements, enhancements and ideas are welcome. We [track issues](https://github.com/freqtrade/freqtrade/issues) on [GitHub](https://github.com) and also have a dev channel on [discord](https://discord.gg/p7nuUNVfP7) where you can ask questions.
+欢迎所有贡献、错误报告、错误修复、文档改进、增强和想法。我们在 [GitHub](https://github.com) 上[跟踪问题](https://github.com/freqtrade/freqtrade/issues)，并在 [discord](https://discord.gg/p7nuUNVfP7) 上有一个开发频道，您可以在那里提问。
 
-## Documentation
+## 文档
 
-Documentation is available at [https://freqtrade.io](https://www.freqtrade.io/) and needs to be provided with every new feature PR.
+文档可在 [https://freqtrade.io](https://www.freqtrade.io/) 获得，需要随每个新功能 PR 一起提供。
 
-Special fields for the documentation (like Note boxes, ...) can be found [here](https://squidfunk.github.io/mkdocs-material/reference/admonitions/).
+文档的特殊字段（如注释框等）可以在[这里](https://squidfunk.github.io/mkdocs-material/reference/admonitions/)找到。
 
-To test the documentation locally use the following commands.
+要在本地测试文档，请使用以下命令。
 
 ``` bash
 pip install -r docs/requirements-docs.txt
 mkdocs serve
 ```
 
-This will spin up a local server (usually on port 8000) so you can see if everything looks as you'd like it to.
+这将启动一个本地服务器（通常在端口 8000 上），因此您可以看到一切是否符合您的要求。
 
-## Developer setup
+## 开发者设置
 
-To configure a development environment, you can either use the provided [DevContainer](#devcontainer-setup), or use the `setup.sh` script and answer "y" when asked "Do you want to install dependencies for dev [y/N]? ".
-Alternatively (e.g. if your system is not supported by the setup.sh script), follow the manual installation process and run `pip3 install -r requirements-dev.txt` - followed by `pip3 install -e .[all]`.
+要配置开发环境，您可以使用提供的 [DevContainer](#devcontainer-setup)，或使用 `setup.sh` 脚本并在询问"您想安装开发依赖项 [y/N]？"时回答"y"。
+或者（例如，如果您的系统不受 setup.sh 脚本支持），请遵循手动安装过程并运行 `pip3 install -r requirements-dev.txt` - 然后是 `pip3 install -e .[all]`。
 
-This will install all required tools for development, including `pytest`, `ruff`, `mypy`, and `coveralls`.
+这将安装开发所需的所有工具，包括 `pytest`、`ruff`、`mypy` 和 `coveralls`。
 
-Then install the git hook scripts by running `pre-commit install`, so your changes will be verified locally before committing.
-This avoids a lot of waiting for CI already, as some basic formatting checks are done locally on your machine.
+然后通过运行 `pre-commit install` 安装 git hook 脚本，这样您的更改将在提交前在本地进行验证。
+这已经避免了很多等待 CI 的时间，因为一些基本的格式检查是在您的机器上本地完成的。
 
-Before opening a pull request, please familiarize yourself with our [Contributing Guidelines](https://github.com/freqtrade/freqtrade/blob/develop/CONTRIBUTING.md).
+在打开拉取请求之前，请熟悉我们的[贡献指南](https://github.com/freqtrade/freqtrade/blob/develop/CONTRIBUTING.md)。
 
-### Devcontainer setup
+### Devcontainer 设置
 
-The fastest and easiest way to get started is to use [VSCode](https://code.visualstudio.com/) with the Remote container extension.
-This gives developers the ability to start the bot with all required dependencies *without* needing to install any freqtrade specific dependencies on your local machine.
+最快、最简单的入门方法是使用带有 Remote container 扩展的 [VSCode](https://code.visualstudio.com/)。
+这使开发人员能够在*不需要*在本地计算机上安装任何 freqtrade 特定依赖项的情况下启动具有所有必需依赖项的机器人。
 
 #### Devcontainer dependencies
 

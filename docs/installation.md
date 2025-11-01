@@ -1,93 +1,93 @@
-# Installation
+# 安装
 
-This page explains how to prepare your environment for running the bot.
+本页说明如何准备运行机器人的环境。
 
-The freqtrade documentation describes various ways to install freqtrade
+freqtrade 文档描述了多种安装 freqtrade 的方法
 
-* [Docker images](docker_quickstart.md) (separate page)
-* [Script Installation](#script-installation)
-* [Manual Installation](#manual-installation)
-* [Installation with Conda](#installation-with-conda)
+* [Docker 镜像](docker_quickstart.md)（单独页面）
+* [脚本安装](#script-installation)
+* [手动安装](#manual-installation)
+* [使用 Conda 安装](#installation-with-conda)
 
-Please consider using the prebuilt [docker images](docker_quickstart.md) to get started quickly while evaluating how freqtrade works.
-
-------
-
-## Information
-
-For Windows installation, please use the [windows installation guide](windows_installation.md).
-
-The easiest way to install and run Freqtrade is to clone the bot Github repository and then run the `./setup.sh` script, if it's available for your platform.
-
-!!! Note "Version considerations"
-    When cloning the repository the default working branch has the name `develop`. This branch contains all last features (can be considered as relatively stable, thanks to automated tests).
-    The `stable` branch contains the code of the last release (done usually once per month on an approximately one week old snapshot of the `develop` branch to prevent packaging bugs, so potentially it's more stable).
-
-!!! Note
-    Either [uv](https://docs.astral.sh/uv/), or Python3.11 or higher and the corresponding `pip` are assumed to be available. The install-script will warn you and stop if that's not the case. `git` is also needed to clone the Freqtrade repository.  
-    Also, python headers (`python<yourversion>-dev` / `python<yourversion>-devel`) must be available for the installation to complete successfully.
-
-!!! Warning "Up-to-date clock"
-    The clock on the system running the bot must be accurate, synchronized to a NTP server frequently enough to avoid problems with communication to the exchanges.
+在评估 freqtrade 的工作原理时，请考虑使用预构建的 [docker 镜像](docker_quickstart.md) 快速开始。
 
 ------
 
-## Requirements
+## 信息
 
-These requirements apply to both [Script Installation](#script-installation) and [Manual Installation](#manual-installation).
+对于 Windows 安装，请使用 [Windows 安装指南](windows_installation.md)。
 
-!!! Note "ARM64 systems"
-    If you are running an ARM64 system (like a MacOS M1 or an Oracle VM), please use [docker](docker_quickstart.md) to run freqtrade.
-    While native installation is possible with some manual effort, this is not supported at the moment.
+安装和运行 Freqtrade 的最简单方法是克隆机器人的 Github 仓库，然后运行 `./setup.sh` 脚本（如果您的平台支持）。
 
-### Install guide
+!!! Note "版本说明"
+    克隆仓库时，默认工作分支名为 `develop`。此分支包含所有最新功能（由于自动化测试，可以认为是相对稳定的）。
+    `stable` 分支包含最新版本的代码（通常每月一次，基于大约一周前的 `develop` 分支快照，以防止打包错误，因此可能更稳定）。
+
+!!! Note "注意"
+    假设已安装 [uv](https://docs.astral.sh/uv/) 或 Python3.11 或更高版本以及相应的 `pip`。如果不是这样，安装脚本会警告您并停止。还需要 `git` 来克隆 Freqtrade 仓库。
+    此外，必须安装 python 头文件（`python<yourversion>-dev` / `python<yourversion>-devel`）才能成功完成安装。
+
+!!! Warning "时钟同步"
+    运行机器人的系统时钟必须准确，频繁与 NTP 服务器同步，以避免与交易所通信时出现问题。
+
+------
+
+## 要求
+
+这些要求适用于 [脚本安装](#script-installation) 和 [手动安装](#manual-installation)。
+
+!!! Note "ARM64 系统"
+    如果您运行 ARM64 系统（如 MacOS M1 或 Oracle VM），请使用 [docker](docker_quickstart.md) 运行 freqtrade。
+    虽然可以通过一些手动操作进行原生安装，但目前不支持。
+
+### 安装指南
 
 * [Python >= 3.11](http://docs.python-guide.org/en/latest/starting/installation/)
 * [pip](https://pip.pypa.io/en/stable/installing/)
 * [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-* [virtualenv](https://virtualenv.pypa.io/en/stable/installation.html) (Recommended)
+* [virtualenv](https://virtualenv.pypa.io/en/stable/installation.html)（推荐）
 
-### Install code
+### 安装代码
 
-We've included/collected install instructions for Ubuntu, MacOS, and Windows. These are guidelines and your success may vary with other distros.
-OS Specific steps are listed first, the common section below is necessary for all systems.
+我们已包含/收集了 Ubuntu、MacOS 和 Windows 的安装说明。这些是指南，您在其他发行版上的成功情况可能有所不同。
+首先列出特定操作系统的步骤，下面的通用部分对所有系统都是必需的。
 
-!!! Note
-    Python3.11 or higher and the corresponding pip are assumed to be available.
+!!! Note "注意"
+    假设已安装 Python3.11 或更高版本以及相应的 pip。
 
 === "Debian/Ubuntu"
-    #### Install necessary dependencies
+    #### 安装必要的依赖
 
     ```bash
-    # update repository
+    # 更新仓库
     sudo apt-get update
 
-    # install packages
+    # 安装软件包
     sudo apt install -y python3-pip python3-venv python3-dev python3-pandas git curl
     ```
 
 === "MacOS"
-    #### Install necessary dependencies
+    #### 安装必要的依赖
 
-    Install [Homebrew](https://brew.sh/) if you don't have it already.
+    如果您还没有安装，请安装 [Homebrew](https://brew.sh/)。
 
     ```bash
-    # install packages
+    # 安装软件包
     brew install gettext libomp
     ```
-    !!! Note
-        The `setup.sh` script will install these dependencies for you - assuming brew is installed on your system.
+    !!! Note "注意"
+        `setup.sh` 脚本会为您安装这些依赖 - 假设您的系统上已安装 brew。
 
 === "RaspberryPi/Raspbian"
-    The following assumes the latest [Raspbian Buster lite image](https://www.raspberrypi.org/downloads/raspbian/).
-    This image comes with python3.11 preinstalled, making it easy to get freqtrade up and running.
+    以下假设使用最新的 [Raspbian Buster lite 镜像](https://www.raspberrypi.org/downloads/raspbian/)。
+    此镜像预装了 python3.11，使 freqtrade 易于启动和运行。
 
-    Tested using a Raspberry Pi 3 with the Raspbian Buster lite image, all updates applied.
+    使用 Raspbian Buster lite 镜像的 Raspberry Pi 3 进行测试，所有更新已应用。
 
 
     ```bash
     sudo apt-get install python3-venv libatlas-base-dev cmake curl libffi-dev
-    # Use piwheels.org to speed up installation
+    # 使用 piwheels.org 加速安装
     sudo echo "[global]\nextra-index-url=https://www.piwheels.org/simple" > tee /etc/pip.conf
 
     git clone https://github.com/freqtrade/freqtrade.git
@@ -96,40 +96,40 @@ OS Specific steps are listed first, the common section below is necessary for al
     bash setup.sh -i
     ```
 
-    !!! Note "Installation duration"
-        Depending on your internet speed and the Raspberry Pi version, installation can take multiple hours to complete.
-        Due to this, we recommend to use the pre-build docker-image for Raspberry, by following the [Docker quickstart documentation](docker_quickstart.md)
+    !!! Note "安装时长"
+        根据您的网络速度和 Raspberry Pi 版本，安装可能需要数小时才能完成。
+        因此，我们建议通过遵循 [Docker 快速开始文档](docker_quickstart.md) 使用预构建的 Raspberry docker 镜像。
 
-    !!! Note
-        The above does not install hyperopt dependencies. To install these, please use `python3 -m pip install -e .[hyperopt]`.
-        We do not advise to run hyperopt on a Raspberry Pi, since this is a very resource-heavy operation, which should be done on powerful machine.
+    !!! Note "注意"
+        以上不会安装 hyperopt 依赖。要安装这些，请使用 `python3 -m pip install -e .[hyperopt]`。
+        我们不建议在 Raspberry Pi 上运行 hyperopt，因为这是一个资源密集型操作，应该在功能强大的机器上完成。
 
 ------
 
-## Freqtrade repository
+## Freqtrade 仓库
 
-Freqtrade is an open source crypto-currency trading bot, whose code is hosted on `github.com`
+Freqtrade 是一个开源加密货币交易机器人，其代码托管在 `github.com` 上
 
 ```bash
-# Download `develop` branch of freqtrade repository
+# 下载 freqtrade 仓库的 `develop` 分支
 git clone https://github.com/freqtrade/freqtrade.git
 
-# Enter downloaded directory
+# 进入下载的目录
 cd freqtrade
 
-# your choice (1): novice user
+# 您的选择 (1)：新手用户
 git checkout stable
 
-# your choice (2): advanced user
+# 您的选择 (2)：高级用户
 git checkout develop
 ```
 
-(1) This command switches the cloned repository to the use of the `stable` branch. It's not needed, if you wish to stay on the (2) `develop` branch.
+(1) 此命令将克隆的仓库切换到使用 `stable` 分支。如果您希望保留在 (2) `develop` 分支上，则不需要此操作。
 
-You may later switch between branches at any time with the `git checkout stable`/`git checkout develop` commands.
+您以后可以随时使用 `git checkout stable`/`git checkout develop` 命令在分支之间切换。
 
-??? Note "Install from pypi"
-    An alternative way to install Freqtrade is from [pypi](https://pypi.org/project/freqtrade/). The downside is that this method requires ta-lib to be correctly installed beforehand, and is therefore currently not the recommended way to install Freqtrade.
+??? Note "从 pypi 安装"
+    安装 Freqtrade 的另一种方法是从 [pypi](https://pypi.org/project/freqtrade/) 安装。缺点是此方法需要事先正确安装 ta-lib，因此目前不是推荐的安装 Freqtrade 的方法。
 
     ``` bash
     pip install freqtrade
@@ -137,61 +137,61 @@ You may later switch between branches at any time with the `git checkout stable`
 
 ------
 
-## Script Installation
+## 脚本安装
 
-First of the ways to install Freqtrade, is to use provided the Linux/MacOS `./setup.sh` script, which install all dependencies and help you configure the bot.
+安装 Freqtrade 的第一种方法是使用提供的 Linux/MacOS `./setup.sh` 脚本，该脚本会安装所有依赖并帮助您配置机器人。
 
-Make sure you fulfill the [Requirements](#requirements) and have downloaded the [Freqtrade repository](#freqtrade-repository).
+确保您满足 [要求](#requirements) 并已下载 [Freqtrade 仓库](#freqtrade-repository)。
 
-### Use /setup.sh -install (Linux/MacOS)
+### 使用 /setup.sh -install (Linux/MacOS)
 
-If you are on Debian, Ubuntu or MacOS, freqtrade provides the script to install freqtrade.
+如果您在 Debian、Ubuntu 或 MacOS 上，freqtrade 提供了安装 freqtrade 的脚本。
 
 ```bash
-# --install, Install freqtrade from scratch
+# --install，从头开始安装 freqtrade
 ./setup.sh -i
 ```
 
-### Activate your virtual environment
+### 激活您的虚拟环境
 
-Each time you open a new terminal, you must run `source .venv/bin/activate` to activate your virtual environment.
+每次打开新终端时，您必须运行 `source .venv/bin/activate` 来激活您的虚拟环境。
 
 ```bash
-# activate virtual environment
+# 激活虚拟环境
 source ./.venv/bin/activate
 ```
 
-[You are now ready](#you-are-ready) to run the bot.
+[您现在已准备好](#you-are-ready) 运行机器人。
 
-### Other options of /setup.sh script
+### /setup.sh 脚本的其他选项
 
-You can as well update, configure and reset the codebase of your bot with `./script.sh`
+您还可以使用 `./script.sh` 更新、配置和重置机器人的代码库
 
 ```bash
-# --update, Command git pull to update.
+# --update，执行 git pull 更新。
 ./setup.sh -u
-# --reset, Hard reset your develop/stable branch.
+# --reset，硬重置您的 develop/stable 分支。
 ./setup.sh -r
 ```
 
 ```
 ** --install **
 
-With this option, the script will install the bot and most dependencies:
-You will need to have git and python3.11+ installed beforehand for this to work.
+使用此选项，脚本将安装机器人和大多数依赖项：
+您需要事先安装 git 和 python3.11+ 才能使用。
 
-* Mandatory software as: `ta-lib`
-* Setup your virtualenv under `.venv/`
+* 必需软件：`ta-lib`
+* 在 `.venv/` 下设置您的 virtualenv
 
-This option is a combination of installation tasks and `--reset`
+此选项是安装任务和 `--reset` 的组合
 
 ** --update **
 
-This option will pull the last version of your current branch and update your virtualenv. Run the script with this option periodically to update your bot.
+此选项将拉取当前分支的最新版本并更新您的 virtualenv。定期使用此选项运行脚本以更新您的机器人。
 
 ** --reset **
 
-This option will hard reset your branch (only if you are on either `stable` or `develop`) and recreate your virtualenv.
+此选项将硬重置您的分支（仅当您在 `stable` 或 `develop` 上时）并重新创建您的 virtualenv。
 ```
 
 -----

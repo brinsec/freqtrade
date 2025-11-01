@@ -1,86 +1,86 @@
-# Strategy Migration between V2 and V3
+# V2 和 V3 之间的策略迁移
 
-To support new markets and trade-types (namely short trades / trades with leverage), some things had to change in the interface.
-If you intend on using markets other than spot markets, please migrate your strategy to the new format.
+为了支持新市场和交易类型（即做空交易/杠杆交易），接口中的某些内容必须更改。
+如果您打算使用现货市场以外的市场，请将您的策略迁移到新格式。
 
-We have put a great effort into keeping compatibility with existing strategies, so if you just want to continue using freqtrade in __spot markets__, there should be no changes necessary for now.
+我们已经努力保持与现有策略的兼容性，因此如果您只想在__现货市场__中继续使用 freqtrade，目前应该不需要更改。
 
-You can use the quick summary as checklist. Please refer to the detailed sections below for full migration details.
+您可以使用快速摘要作为检查清单。请参阅下面的详细部分以获取完整的迁移详细信息。
 
-## Quick summary / migration checklist
+## 快速摘要 / 迁移检查清单
 
-Note : `forcesell`, `forcebuy`, `emergencysell` are changed to `force_exit`, `force_enter`, `emergency_exit` respectively.
+注意：`forcesell`、`forcebuy`、`emergencysell` 分别更改为 `force_exit`、`force_enter`、`emergency_exit`。
 
-* Strategy methods:
+* 策略方法：
   * [`populate_buy_trend()` -> `populate_entry_trend()`](#populate_buy_trend)
   * [`populate_sell_trend()` -> `populate_exit_trend()`](#populate_sell_trend)
   * [`custom_sell()` -> `custom_exit()`](#custom_sell)
   * [`check_buy_timeout()` -> `check_entry_timeout()`](#custom_entry_timeout)
   * [`check_sell_timeout()` -> `check_exit_timeout()`](#custom_entry_timeout)
-  * New `side` argument to callbacks without trade object
+  * 没有交易对象的回调的新 `side` 参数
     * [`custom_stake_amount`](#custom_stake_amount)
     * [`confirm_trade_entry`](#confirm_trade_entry)
     * [`custom_entry_price`](#custom_entry_price)
-  * [Changed argument name in `confirm_trade_exit`](#confirm_trade_exit)
-* Dataframe columns:
+  * [`confirm_trade_exit` 中更改的参数名称](#confirm_trade_exit)
+* 数据框列：
   * [`buy` -> `enter_long`](#populate_buy_trend)
   * [`sell` -> `exit_long`](#populate_sell_trend)
-  * [`buy_tag` -> `enter_tag` (used for both long and short trades)](#populate_buy_trend)
-  * [New column `enter_short` and corresponding new column `exit_short`](#populate_sell_trend)
-* trade-object now has the following new properties:
+  * [`buy_tag` -> `enter_tag`（用于多头和空头交易）](#populate_buy_trend)
+  * [新列 `enter_short` 和相应的新列 `exit_short`](#populate_sell_trend)
+* 交易对象现在具有以下新属性：
   * `is_short`
   * `entry_side`
   * `exit_side`
   * `trade_direction`
-  * renamed: `sell_reason` -> `exit_reason`
-* [Renamed `trade.nr_of_successful_buys` to `trade.nr_of_successful_entries` (mostly relevant for `adjust_trade_position()`)](#adjust-trade-position-changes)
-* Introduced new [`leverage` callback](strategy-callbacks.md#leverage-callback).
-* Informative pairs can now pass a 3rd element in the Tuple, defining the candle type.
-* `@informative` decorator now takes an optional `candle_type` argument.
-* [helper methods](#helper-methods) `stoploss_from_open` and `stoploss_from_absolute` now take `is_short` as additional argument.
-* `INTERFACE_VERSION` should be set to 3.
-* [Strategy/Configuration settings](#strategyconfiguration-settings).
-  * `order_time_in_force` buy -> entry, sell -> exit.
-  * `order_types` buy -> entry, sell -> exit.
-  * `unfilledtimeout` buy -> entry, sell -> exit.
-  * `ignore_buying_expired_candle_after` -> moved to root level instead of "ask_strategy/exit_pricing"
-* Terminology changes
-  * Sell reasons changed to reflect the new naming of "exit" instead of sells. Be careful in your strategy if you're using `exit_reason` checks and eventually update your strategy.
+  * 重命名：`sell_reason` -> `exit_reason`
+* [将 `trade.nr_of_successful_buys` 重命名为 `trade.nr_of_successful_entries`（主要与 `adjust_trade_position()` 相关）](#adjust-trade-position-changes)
+* 引入了新的 [`leverage` 回调](strategy-callbacks.md#leverage-callback)。
+* 信息性交易对现在可以在元组中传递第 3 个元素，定义蜡烛类型。
+* `@informative` 装饰器现在接受可选的 `candle_type` 参数。
+* [辅助方法](#helper-methods) `stoploss_from_open` 和 `stoploss_from_absolute` 现在接受 `is_short` 作为附加参数。
+* `INTERFACE_VERSION` 应设置为 3。
+* [策略/配置设置](#strategyconfiguration-settings)。
+  * `order_time_in_force` buy -> entry, sell -> exit。
+  * `order_types` buy -> entry, sell -> exit。
+  * `unfilledtimeout` buy -> entry, sell -> exit。
+  * `ignore_buying_expired_candle_after` -> 移动到根级别而不是 "ask_strategy/exit_pricing"
+* 术语更改
+  * 卖出原因已更改以反映"出场"而不是"卖出"的新命名。如果您在策略中使用 `exit_reason` 检查，请小心并最终更新您的策略。
     * `sell_signal` -> `exit_signal`
     * `custom_sell` -> `custom_exit`
     * `force_sell` -> `force_exit`
     * `emergency_sell` -> `emergency_exit`
-  * Order pricing
+  * 订单定价
     * `bid_strategy` -> `entry_pricing`
     * `ask_strategy` -> `exit_pricing`
     * `ask_last_balance` -> `price_last_balance`
     * `bid_last_balance` -> `price_last_balance`
-  * Webhook terminology changed from "sell" to "exit", and from "buy" to entry
+  * Webhook 术语从 "sell" 更改为 "exit"，从 "buy" 更改为 entry
     * `webhookbuy` -> `entry`
     * `webhookbuyfill` -> `entry_fill`
     * `webhookbuycancel` -> `entry_cancel`
     * `webhooksell` -> `exit`
     * `webhooksellfill` -> `exit_fill`
     * `webhooksellcancel` -> `exit_cancel`
-  * Telegram notification settings
+  * Telegram 通知设置
     * `buy` -> `entry`
     * `buy_fill` -> `entry_fill`
     * `buy_cancel` -> `entry_cancel`
     * `sell` -> `exit`
     * `sell_fill` -> `exit_fill`
     * `sell_cancel` -> `exit_cancel`
-  * Strategy/config settings:
+  * 策略/配置设置：
     * `use_sell_signal` -> `use_exit_signal`
     * `sell_profit_only` -> `exit_profit_only`
     * `sell_profit_offset` -> `exit_profit_offset`
     * `ignore_roi_if_buy_signal` -> `ignore_roi_if_entry_signal`
     * `forcebuy_enable` -> `force_entry_enable`
 
-## Extensive explanation
+## 详细说明
 
 ### `populate_buy_trend`
 
-In `populate_buy_trend()` - you will want to change the columns you assign from `'buy`' to `'enter_long'`, as well as the method name from `populate_buy_trend` to `populate_entry_trend`.
+在 `populate_buy_trend()` 中 - 您需要将分配的列从 `'buy'` 更改为 `'enter_long'`，并将方法名称从 `populate_buy_trend` 更改为 `populate_entry_trend`。
 
 ```python hl_lines="1 9"
 def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -96,7 +96,7 @@ def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
     return dataframe
 ```
 
-After:
+之后：
 
 ```python hl_lines="1 9"
 def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -112,12 +112,12 @@ def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFram
     return dataframe
 ```
 
-Please refer to the [Strategy documentation](strategy-customization.md#entry-signal-rules) on how to enter and exit short trades.
+请参阅[策略文档](strategy-customization.md#entry-signal-rules)了解如何进入和退出空头交易。
 
 ### `populate_sell_trend`
 
-Similar to `populate_buy_trend`, `populate_sell_trend()` will be renamed to `populate_exit_trend()`.
-We'll also change the column from `'sell'` to `'exit_long'`.
+与 `populate_buy_trend` 类似，`populate_sell_trend()` 将重命名为 `populate_exit_trend()`。
+我们还将列从 `'sell'` 更改为 `'exit_long'`。
 
 ``` python hl_lines="1 9"
 def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -132,7 +132,7 @@ def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame
     return dataframe
 ```
 
-After
+之后
 
 ``` python hl_lines="1 9"
 def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -147,12 +147,12 @@ def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame
     return dataframe
 ```
 
-Please refer to the [Strategy documentation](strategy-customization.md#exit-signal-rules) on how to enter and exit short trades.
+请参阅[策略文档](strategy-customization.md#exit-signal-rules)了解如何进入和退出空头交易。
 
 ### `custom_sell`
 
-`custom_sell` has been renamed to `custom_exit`.
-It's now also being called for every iteration, independent of current profit and `exit_profit_only` settings.
+`custom_sell` 已重命名为 `custom_exit`。
+它现在也在每次迭代时被调用，独立于当前利润和 `exit_profit_only` 设置。
 
 ``` python hl_lines="2"
 class AwesomeStrategy(IStrategy):
@@ -174,7 +174,7 @@ class AwesomeStrategy(IStrategy):
 
 ### `custom_entry_timeout`
 
-`check_buy_timeout()` has been renamed to `check_entry_timeout()`, and `check_sell_timeout()` has been renamed to `check_exit_timeout()`.
+`check_buy_timeout()` 已重命名为 `check_entry_timeout()`，`check_sell_timeout()` 已重命名为 `check_exit_timeout()`。
 
 ``` python hl_lines="2 6"
 class AwesomeStrategy(IStrategy):
@@ -200,7 +200,7 @@ class AwesomeStrategy(IStrategy):
 
 ### `custom_stake_amount`
 
-New string argument `side` - which can be either `"long"` or `"short"`.
+新的字符串参数 `side` - 可以是 `"long"` 或 `"short"`。
 
 ``` python hl_lines="4"
 class AwesomeStrategy(IStrategy):
@@ -222,7 +222,7 @@ class AwesomeStrategy(IStrategy):
 
 ### `confirm_trade_entry`
 
-New string argument `side` - which can be either `"long"` or `"short"`.
+新的字符串参数 `side` - 可以是 `"long"` 或 `"short"`。
 
 ``` python hl_lines="4"
 class AwesomeStrategy(IStrategy):
@@ -232,7 +232,7 @@ class AwesomeStrategy(IStrategy):
       return True
 ```
 
-After: 
+之后：
 
 ``` python hl_lines="4"
 class AwesomeStrategy(IStrategy):
@@ -244,8 +244,8 @@ class AwesomeStrategy(IStrategy):
 
 ### `confirm_trade_exit`
 
-Changed argument `sell_reason` to `exit_reason`.
-For compatibility, `sell_reason` will still be provided for a limited time.
+参数 `sell_reason` 更改为 `exit_reason`。
+为了兼容性，`sell_reason` 仍将在有限时间内提供。
 
 ``` python hl_lines="3"
 class AwesomeStrategy(IStrategy):
@@ -255,7 +255,7 @@ class AwesomeStrategy(IStrategy):
     return True
 ```
 
-After:
+之后：
 
 ``` python hl_lines="3"
 class AwesomeStrategy(IStrategy):
@@ -267,7 +267,7 @@ class AwesomeStrategy(IStrategy):
 
 ### `custom_entry_price`
 
-New string argument `side` - which can be either `"long"` or `"short"`.
+新的字符串参数 `side` - 可以是 `"long"` 或 `"short"`。
 
 ``` python hl_lines="3"
 class AwesomeStrategy(IStrategy):
@@ -276,7 +276,7 @@ class AwesomeStrategy(IStrategy):
       return proposed_rate
 ```
 
-After:
+之后：
 
 ``` python hl_lines="3"
 class AwesomeStrategy(IStrategy):
@@ -285,14 +285,14 @@ class AwesomeStrategy(IStrategy):
       return proposed_rate
 ```
 
-### Adjust trade position changes
+### 调整交易头寸更改
 
-While adjust-trade-position itself did not change, you should no longer use `trade.nr_of_successful_buys` - and instead use `trade.nr_of_successful_entries`, which will also include short entries.
+虽然 adjust-trade-position 本身没有改变，但您不应该再使用 `trade.nr_of_successful_buys` - 而应该使用 `trade.nr_of_successful_entries`，这将包括空头入场。
 
-### Helper methods
+### 辅助方法
 
-Added argument "is_short" to `stoploss_from_open` and `stoploss_from_absolute`.
-This should be given the value of `trade.is_short`.
+为 `stoploss_from_open` 和 `stoploss_from_absolute` 添加了参数 "is_short"。
+这应该被赋予 `trade.is_short` 的值。
 
 ``` python hl_lines="5 7"
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
@@ -307,7 +307,7 @@ This should be given the value of `trade.is_short`.
 
 ```
 
-After:
+之后：
 
 ``` python hl_lines="5 7"
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
@@ -322,11 +322,11 @@ After:
 
 ```
 
-### Strategy/Configuration settings
+### 策略/配置设置
 
 #### `order_time_in_force`
 
-`order_time_in_force` attributes changed from `"buy"` to `"entry"` and `"sell"` to `"exit"`.
+`order_time_in_force` 属性从 `"buy"` 更改为 `"entry"`，从 `"sell"` 更改为 `"exit"`。
 
 ``` python
     order_time_in_force: dict = {
@@ -335,7 +335,7 @@ After:
     }
 ```
 
-After:
+之后：
 
 ``` python hl_lines="2 3"
     order_time_in_force: dict = {
@@ -346,8 +346,8 @@ After:
 
 #### `order_types`
 
-`order_types` have changed all wordings from `buy` to `entry` - and `sell` to `exit`.
-And two words are joined with `_`. 
+`order_types` 已将所有措辞从 `buy` 更改为 `entry` - 从 `sell` 更改为 `exit`。
+并且两个单词用 `_` 连接。
 
 ``` python hl_lines="2-6"
     order_types = {
@@ -362,7 +362,7 @@ And two words are joined with `_`.
     }
 ```
 
-After:
+之后：
 
 ``` python hl_lines="2-6"
     order_types = {
@@ -377,7 +377,7 @@ After:
     }
 ```
 
-#### Strategy level settings
+#### 策略级别设置
 
 * `use_sell_signal` -> `use_exit_signal`
 * `sell_profit_only` -> `exit_profit_only`
@@ -385,17 +385,17 @@ After:
 * `ignore_roi_if_buy_signal` -> `ignore_roi_if_entry_signal`
 
 ``` python hl_lines="2-5"
-    # These values can be overridden in the config.
+    # 这些值可以在配置中覆盖。
     use_sell_signal = True
     sell_profit_only = True
     sell_profit_offset: 0.01
     ignore_roi_if_buy_signal = False
 ```
 
-After:
+之后：
 
 ``` python hl_lines="2-5"
-    # These values can be overridden in the config.
+    # 这些值可以在配置中覆盖。
     use_exit_signal = True
     exit_profit_only = True
     exit_profit_offset: 0.01
@@ -404,7 +404,7 @@ After:
 
 #### `unfilledtimeout`
 
-`unfilledtimeout` have changed all wordings from `buy` to `entry` - and `sell` to `exit`.
+`unfilledtimeout` 已将所有措辞从 `buy` 更改为 `entry` - 从 `sell` 更改为 `exit`。
 
 ``` python hl_lines="2-3"
 unfilledtimeout = {
@@ -415,7 +415,7 @@ unfilledtimeout = {
     }
 ```
 
-After:
+之后：
 
 ``` python hl_lines="2-3"
 unfilledtimeout = {
@@ -426,12 +426,12 @@ unfilledtimeout = {
     }
 ```
 
-#### `order pricing`
+#### `订单定价`
 
-Order pricing changed in 2 ways. `bid_strategy` was renamed to `entry_pricing` and `ask_strategy` was renamed to `exit_pricing`.
-The attributes `ask_last_balance` -> `price_last_balance` and `bid_last_balance` -> `price_last_balance` were renamed as well.
-Also, price-side can now be defined as `ask`, `bid`, `same` or `other`.
-Please refer to the [pricing documentation](configuration.md#prices-used-for-orders) for more information.
+订单定价在两个方面发生了变化。`bid_strategy` 被重命名为 `entry_pricing`，`ask_strategy` 被重命名为 `exit_pricing`。
+属性 `ask_last_balance` -> `price_last_balance` 和 `bid_last_balance` -> `price_last_balance` 也被重命名。
+此外，价格侧现在可以定义为 `ask`、`bid`、`same` 或 `other`。
+有关更多信息，请参阅[定价文档](configuration.md#prices-used-for-orders)。
 
 ``` json hl_lines="2-3 6 12-13 16"
 {
@@ -455,7 +455,7 @@ Please refer to the [pricing documentation](configuration.md#prices-used-for-ord
 }
 ```
 
-after:
+之后：
 
 ``` json  hl_lines="2-3 6 12-13 16"
 {
@@ -479,14 +479,14 @@ after:
 }
 ```
 
-## FreqAI strategy
+## FreqAI 策略
 
-The `populate_any_indicators()` method has been split into `feature_engineering_expand_all()`, `feature_engineering_expand_basic()`, `feature_engineering_standard()` and`set_freqai_targets()`.
+`populate_any_indicators()` 方法已被拆分为 `feature_engineering_expand_all()`、`feature_engineering_expand_basic()`、`feature_engineering_standard()` 和 `set_freqai_targets()`。
 
-For each new function, the pair (and timeframe where necessary) will be automatically added to the column.
-As such, the definition of features becomes much simpler with the new logic.
+对于每个新函数，交易对（以及在必要时的时间框架）将自动添加到列中。
+因此，使用新逻辑，特征的定义变得更加简单。
 
-For a full explanation of each method, please go to the corresponding [freqAI documentation page](freqai-feature-engineering.md#defining-the-features)
+有关每个方法的完整说明，请访问相应的 [freqAI 文档页面](freqai-feature-engineering.md#defining-the-features)
 
 ``` python linenums="1" hl_lines="12-37 39-42 63-65 67-75"
 
@@ -569,14 +569,14 @@ def populate_any_indicators(
         return df
 ```
 
-1. Features - Move to `feature_engineering_expand_all`
-2. Basic features, not expanded across `indicator_periods_candles` - move to`feature_engineering_expand_basic()`.
-3. Standard features which should not be expanded - move to `feature_engineering_standard()`.
-4. Targets - Move this part to `set_freqai_targets()`.
+1. 特征 - 移动到 `feature_engineering_expand_all`
+2. 基本特征，不在 `indicator_periods_candles` 上扩展 - 移动到 `feature_engineering_expand_basic()`。
+3. 不应扩展的标准特征 - 移动到 `feature_engineering_standard()`。
+4. 目标 - 将此部分移动到 `set_freqai_targets()`。
 
-### freqai - feature engineering expand all
+### FreqAI - 特征工程扩展全部
 
-Features will now expand automatically. As such, the expansion loops, as well as the `{pair}` / `{timeframe}` parts will need to be removed.
+特征现在将自动扩展。因此，需要删除扩展循环以及 `{pair}` / `{timeframe}` 部分。
 
 ``` python linenums="1"
     def feature_engineering_expand_all(self, dataframe, period, **kwargs) -> DataFrame::
@@ -634,9 +634,9 @@ Features will now expand automatically. As such, the expansion loops, as well as
 
 ```
 
-### Freqai - feature engineering basic
+### FreqAI - 特征工程基础
 
-Basic features. Make sure to remove the `{pair}` part from your features.
+基本特征。确保从特征中删除 `{pair}` 部分。
 
 ``` python linenums="1"
     def feature_engineering_expand_basic(self, dataframe: DataFrame, **kwargs) -> DataFrame::
@@ -671,7 +671,7 @@ Basic features. Make sure to remove the `{pair}` part from your features.
         return dataframe
 ```
 
-### FreqAI - feature engineering standard
+### FreqAI - 特征工程标准
 
 ``` python linenums="1"
     def feature_engineering_standard(self, dataframe: DataFrame, **kwargs) -> DataFrame:
@@ -700,9 +700,9 @@ Basic features. Make sure to remove the `{pair}` part from your features.
         return dataframe
 ```
 
-### FreqAI - set Targets
+### FreqAI - 设置目标
 
-Targets now get their own, dedicated method.
+目标现在有了自己专用的方法。
 
 ``` python linenums="1"
     def set_freqai_targets(self, dataframe: DataFrame, **kwargs) -> DataFrame:
@@ -731,11 +731,11 @@ Targets now get their own, dedicated method.
 ```
 
 
-### FreqAI - New data Pipeline
+### FreqAI - 新数据管道
 
-If you have created your own custom `IFreqaiModel` with a custom `train()`/`predict()` function, *and* you still rely on `data_cleaning_train/predict()`, then you will need to migrate to the new pipeline. If your model does *not* rely on `data_cleaning_train/predict()`, then you do not need to worry about this migration. That means that this migration guide is relevant for a very small percentage of power-users. If you stumbled upon this guide by mistake, feel free to inquire in depth about your problem in the Freqtrade discord server.
+如果您创建了自己的自定义 `IFreqaiModel`，带有自定义 `train()`/`predict()` 函数，*并且*您仍然依赖 `data_cleaning_train/predict()`，那么您需要迁移到新管道。如果您的模型*不*依赖 `data_cleaning_train/predict()`，那么您不需要担心此迁移。这意味着此迁移指南仅适用于很少一部分高级用户。如果您误入此指南，欢迎在 Freqtrade discord 服务器中深入询问您的问题。
 
-The conversion involves first removing `data_cleaning_train/predict()` and replacing them with a `define_data_pipeline()` and `define_label_pipeline()` function to your `IFreqaiModel` class:
+转换涉及首先删除 `data_cleaning_train/predict()` 并用 `define_data_pipeline()` 和 `define_label_pipeline()` 函数替换它们到您的 `IFreqaiModel` 类中：
 
 ```python  linenums="1" hl_lines="11-14 47-49 55-57"
 class MyCoolFreqaiModel(BaseRegressionModel):
@@ -809,6 +809,6 @@ class MyCoolFreqaiModel(BaseRegressionModel):
 ```
 
 
-1. Data normalization and cleaning is now homogenized with the new pipeline definition. This is created in the new `define_data_pipeline()` and `define_label_pipeline()` functions. The `data_cleaning_train()` and `data_cleaning_predict()` functions are no longer used. You can override `define_data_pipeline()` to create your own custom pipeline if you wish.
-2. Data normalization and cleaning is now homogenized with the new pipeline definition. This is created in the new `define_data_pipeline()` and `define_label_pipeline()` functions. The `data_cleaning_train()` and `data_cleaning_predict()` functions are no longer used. You can override `define_data_pipeline()` to create your own custom pipeline if you wish.
-3. Data denormalization is done with the new pipeline. Replace this with the lines below.
+1. 数据归一化和清理现在与新管道定义统一。这在新 `define_data_pipeline()` 和 `define_label_pipeline()` 函数中创建。`data_cleaning_train()` 和 `data_cleaning_predict()` 函数不再使用。如果您愿意，可以覆盖 `define_data_pipeline()` 以创建您自己的自定义管道。
+2. 数据归一化和清理现在与新管道定义统一。这在新 `define_data_pipeline()` 和 `define_label_pipeline()` 函数中创建。`data_cleaning_train()` 和 `data_cleaning_predict()` 函数不再使用。如果您愿意，可以覆盖 `define_data_pipeline()` 以创建您自己的自定义管道。
+3. 数据反归一化使用新管道完成。用下面的行替换它。

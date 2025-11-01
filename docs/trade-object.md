@@ -1,15 +1,15 @@
-# Trade Object
+# 交易对象
 
-## Trade
+## Trade（交易）
 
-A position freqtrade enters is stored in a `Trade` object - which is persisted to the database.
-It's a core concept of freqtrade - and something you'll come across in many sections of the documentation, which will most likely point you to this location.
+freqtrade 进入的头寸存储在 `Trade` 对象中 - 该对象会持久化到数据库。
+这是 freqtrade 的核心概念 - 您会在文档的许多部分中遇到它，这些部分很可能会指向此位置。
 
-It will be passed to the strategy in many [strategy callbacks](strategy-callbacks.md). The object passed to the strategy cannot be modified directly. Indirect modifications may occur based on callback results.
+它将在许多[策略回调](strategy-callbacks.md)中传递给策略。传递给策略的对象不能直接修改。可能会根据回调结果进行间接修改。
 
-## Trade - Available attributes
+## Trade - 可用属性
 
-The following attributes / properties are available for each individual trade - and can be used with `trade.<property>` (e.g. `trade.pair`).
+以下属性可用于每个单独的交易 - 可以与 `trade.<property>` 一起使用（例如 `trade.pair`）。
 
 |  Attribute | DataType | Description |
 |------------|-------------|-------------|
@@ -71,28 +71,28 @@ The following attributes / properties are available for each individual trade - 
 | `stoploss_last_update_utc` | datetime | Timestamp of the last stoploss on exchange order update. |
 | `stoploss_or_liquidation` | float | Returns the more restrictive of stoploss or liquidation price and corresponds to the price a stoploss would trigger at. |
 
-### Futures/Margin trading attributes
+### 期货/保证金交易属性
 
-|  Attribute | DataType | Description |
+|  属性 | 数据类型 | 描述 |
 |------------|-------------|-------------|
-| `liquidation_price` | float | Liquidation price for leveraged trades. |
-| `interest_rate` | float | Interest rate for margin trades. |
-| `funding_fees` | float | Total funding fees for futures trades. |
+| `liquidation_price` | float | 杠杆交易的清算价格。 |
+| `interest_rate` | float | 保证金交易的利率。 |
+| `funding_fees` | float | 期货交易的总资金费率。 |
 
-## Class methods
+## 类方法
 
-The following are class methods - which return generic information, and usually result in an explicit query against the database.
-They can be used as `Trade.<method>` - e.g. `open_trades = Trade.get_open_trade_count()`
+以下是类方法 - 它们返回通用信息，通常会导致对数据库的显式查询。
+它们可以作为 `Trade.<method>` 使用 - 例如 `open_trades = Trade.get_open_trade_count()`
 
-!!! Warning "Backtesting/hyperopt"
-    Most methods will work in both backtesting / hyperopt and live/dry modes.
-    During backtesting, it's limited to usage in [strategy callbacks](strategy-callbacks.md). Usage in `populate_*()` methods is not supported and will result in wrong results.
+!!! Warning "回测/超参数优化"
+    大多数方法在回测/超参数优化和实盘/模拟模式下都能工作。
+    在回测期间，它仅限于在[策略回调](strategy-callbacks.md)中使用。在 `populate_*()` 方法中使用不受支持，将导致错误的结果。
 
 ### get_trades_proxy
 
-When your strategy needs some information on existing (open or close) trades - it's best to use `Trade.get_trades_proxy()`.
+当您的策略需要有关现有（开放或关闭）交易的一些信息时 - 最好使用 `Trade.get_trades_proxy()`。
 
-Usage:
+用法：
 
 ``` python
 from freqtrade.persistence import Trade
@@ -103,16 +103,16 @@ trade_hist = Trade.get_trades_proxy(pair='ETH/USDT', is_open=False, open_date=cu
 
 ```
 
-`get_trades_proxy()` supports the following keyword arguments. All arguments are optional - calling `get_trades_proxy()` without arguments will return a list of all trades in the database.
+`get_trades_proxy()` 支持以下关键字参数。所有参数都是可选的 - 不带参数调用 `get_trades_proxy()` 将返回数据库中的所有交易列表。
 
-* `pair` e.g. `pair='ETH/USDT'`
-* `is_open` e.g. `is_open=False`
-* `open_date` e.g. `open_date=current_date - timedelta(days=2)`
-* `close_date` e.g. `close_date=current_date - timedelta(days=5)`
+* `pair` 例如 `pair='ETH/USDT'`
+* `is_open` 例如 `is_open=False`
+* `open_date` 例如 `open_date=current_date - timedelta(days=2)`
+* `close_date` 例如 `close_date=current_date - timedelta(days=5)`
 
 ### get_open_trade_count
 
-Get the number of currently open trades
+获取当前开放交易的数量
 
 ``` python
 from freqtrade.persistence import Trade
@@ -122,8 +122,8 @@ open_trades = Trade.get_open_trade_count()
 
 ### get_total_closed_profit
 
-Retrieve the total profit the bot has generated so far.
-Aggregates `close_profit_abs` for all closed trades.
+检索机器人到目前为止产生的总利润。
+汇总所有已关闭交易的 `close_profit_abs`。
 
 ``` python
 from freqtrade.persistence import Trade
@@ -134,7 +134,7 @@ profit = Trade.get_total_closed_profit()
 
 ### total_open_trades_stakes
 
-Retrieve the total stake_amount that's currently in trades.
+检索当前交易中的总 stake_amount。
 
 ``` python
 from freqtrade.persistence import Trade
@@ -143,13 +143,13 @@ from freqtrade.persistence import Trade
 profit = Trade.total_open_trades_stakes()
 ```
 
-## Class methods not supported in backtesting/hyperopt
+## 回测/超参数优化中不支持的类方法
 
-The following class methods are not supported in backtesting/hyperopt mode.
+以下类方法在回测/超参数优化模式下不受支持。
 
 ### get_overall_performance
 
-Retrieve the overall performance - similar to the `/performance` telegram command.
+检索整体性能 - 类似于 `/performance` telegram 命令。
 
 ``` python
 from freqtrade.persistence import Trade
@@ -159,7 +159,7 @@ if self.config['runmode'].value in ('live', 'dry_run'):
     performance = Trade.get_overall_performance()
 ```
 
-Sample return value: ETH/BTC had 5 trades, with a total profit of 1.5% (ratio of 0.015).
+示例返回值：ETH/BTC 有 5 笔交易，总利润为 1.5%（比率为 0.015）。
 
 ``` json
 {"pair": "ETH/BTC", "profit": 0.015, "count": 5}
@@ -167,7 +167,7 @@ Sample return value: ETH/BTC had 5 trades, with a total profit of 1.5% (ratio of
 
 ### get_trading_volume
 
-Get total trading volume based on orders.
+根据订单获取总交易量。
 
 ``` python
 from freqtrade.persistence import Trade
@@ -176,15 +176,15 @@ from freqtrade.persistence import Trade
 volume = Trade.get_trading_volume()
 ```
 
-## Order Object
+## 订单对象
 
-An `Order` object represents an order on the exchange (or a simulated order in dry-run mode).
-An `Order` object will always be tied to it's corresponding [`Trade`](#trade-object), and only really makes sense in the context of a trade.
+`Order` 对象表示交易所上的订单（或模拟模式下的模拟订单）。
+`Order` 对象将始终与其对应的 [`Trade`](#trade-object) 绑定，并且仅在交易上下文中才有意义。
 
-### Order - Available attributes
+### Order - 可用属性
 
-an Order object is typically attached to a trade.
-Most properties here can be None as they are dependent on the exchange response.
+订单对象通常附加到交易。
+这里的大多数属性可以是 None，因为它们依赖于交易所响应。
 
 |  Attribute | DataType | Description |
 |------------|-------------|-------------|

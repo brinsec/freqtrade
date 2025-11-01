@@ -1,15 +1,15 @@
-# Producer / Consumer mode
+# 生产者 / 消费者模式
 
-freqtrade provides a mechanism whereby an instance (also called `consumer`) may listen to messages from an upstream freqtrade instance (also called `producer`) using the message websocket. Mainly, `analyzed_df` and `whitelist` messages. This allows the reuse of computed indicators (and signals) for pairs in multiple bots without needing to compute them multiple times.
+freqtrade 提供一种机制，其中实例（也称为 `consumer`）可以使用消息 WebSocket 监听来自上游 freqtrade 实例（也称为 `producer`）的消息。主要是 `analyzed_df` 和 `whitelist` 消息。这允许在多个机器人中重用计算的指标（和信号），而无需多次计算它们。
 
-See [Message Websocket](rest-api.md#message-websocket) in the Rest API docs for setting up the `api_server` configuration for your message websocket (this will be your producer).
+请参阅 REST API 文档中的[消息 WebSocket](rest-api.md#message-websocket) 来设置消息 WebSocket 的 `api_server` 配置（这将是您的生产者）。
 
-!!! Note
-    We strongly recommend to set `ws_token` to something random and known only to yourself to avoid unauthorized access to your bot.
+!!! Note "注意"
+    我们强烈建议将 `ws_token` 设置为只有您自己知道的随机值，以避免未经授权访问您的机器人。
 
-## Configuration
+## 配置
 
-Enable subscribing to an instance by adding the `external_message_consumer` section to the consumer's config file.
+通过将 `external_message_consumer` 部分添加到消费者配置文件中来启用订阅实例。
 
 ```json
 {
@@ -36,32 +36,32 @@ Enable subscribing to an instance by adding the `external_message_consumer` sect
 }
 ```
 
-|  Parameter | Description |
+|  参数 | 描述 |
 |------------|-------------|
-| `enabled` | **Required.** Enable consumer mode. If set to false, all other settings in this section are ignored.<br>*Defaults to `false`.*<br> **Datatype:** boolean .
-| `producers` | **Required.** List of producers <br> **Datatype:** Array.
-| `producers.name` | **Required.** Name of this producer. This name must be used in calls to `get_producer_pairs()` and `get_producer_df()` if more than one producer is used.<br> **Datatype:** string
-| `producers.host` | **Required.** The hostname or IP address from your producer.<br> **Datatype:** string
-| `producers.port` | **Required.** The port matching the above host.<br>*Defaults to `8080`.*<br> **Datatype:** Integer
-| `producers.secure` | **Optional.**  Use ssl in websockets connection. Default False.<br> **Datatype:** string
-| `producers.ws_token` | **Required.**  `ws_token` as configured on the producer.<br> **Datatype:** string
-| | **Optional settings**
-| `wait_timeout` | Timeout until we ping again if no message is received. <br>*Defaults to `300`.*<br> **Datatype:** Integer - in seconds.
-| `ping_timeout` | Ping timeout <br>*Defaults to `10`.*<br> **Datatype:** Integer - in seconds.
-| `sleep_time` | Sleep time before retrying to connect.<br>*Defaults to `10`.*<br> **Datatype:** Integer - in seconds.
-| `remove_entry_exit_signals` | Remove signal columns from the dataframe (set them to 0) on dataframe receipt.<br>*Defaults to `false`.*<br> **Datatype:** Boolean.
-| `initial_candle_limit` | Initial candles to expect from the Producer.<br>*Defaults to `1500`.*<br> **Datatype:** Integer - Number of candles.
-| `message_size_limit` | Size limit per message<br>*Defaults to `8`.*<br> **Datatype:** Integer - Megabytes.
+| `enabled` | **必需。** 启用消费者模式。如果设置为 false，本节中的所有其他设置将被忽略。<br>*默认为 `false`。*<br> **数据类型：** boolean。
+| `producers` | **必需。** 生产者列表 <br> **数据类型：** Array。
+| `producers.name` | **必需。** 此生产者的名称。如果使用多个生产者，必须在调用 `get_producer_pairs()` 和 `get_producer_df()` 时使用此名称。<br> **数据类型：** string
+| `producers.host` | **必需。** 来自生产者的主机名或 IP 地址。<br> **数据类型：** string
+| `producers.port` | **必需。** 与上述主机匹配的端口。<br>*默认为 `8080`。*<br> **数据类型：** Integer
+| `producers.secure` | **可选。** 在 websockets 连接中使用 ssl。默认 False。<br> **数据类型：** string
+| `producers.ws_token` | **必需。** 在生产者上配置的 `ws_token`。<br> **数据类型：** string
+| | **可选设置**
+| `wait_timeout` | 如果没有收到消息，超时直到我们再次 ping。<br>*默认为 `300`。*<br> **数据类型：** Integer - 以秒为单位。
+| `ping_timeout` | Ping 超时 <br>*默认为 `10`。*<br> **数据类型：** Integer - 以秒为单位。
+| `sleep_time` | 重试连接之前的睡眠时间。<br>*默认为 `10`。*<br> **数据类型：** Integer - 以秒为单位。
+| `remove_entry_exit_signals` | 在收到 dataframe 时从 dataframe 中删除信号列（将它们设置为 0）。<br>*默认为 `false`。*<br> **数据类型：** Boolean。
+| `initial_candle_limit` | 从生产者期望的初始蜡烛数。<br>*默认为 `1500`。*<br> **数据类型：** Integer - 蜡烛数。
+| `message_size_limit` | 每条消息的大小限制<br>*默认为 `8`。*<br> **数据类型：** Integer - 兆字节。
 
-Instead of (or as well as) calculating indicators in `populate_indicators()` the follower instance listens on the connection to a producer instance's messages (or multiple producer instances in advanced configurations) and requests the producer's most recently analyzed dataframes for each pair in the active whitelist.
+与在 `populate_indicators()` 中计算指标不同（或除此之外），跟随者实例监听连接到生产者实例的消息（或在高级配置中的多个生产者实例），并请求生产者针对活动白名单中每个交易对最近分析的数据框。
 
-A consumer instance will then have a full copy of the analyzed dataframes without the need to calculate them itself.
+然后，消费者实例将拥有已分析数据框的完整副本，无需自己计算它们。
 
 ## Examples
 
-### Example - Producer Strategy
+### 示例 - 生产者策略
 
-A simple strategy with multiple indicators. No special considerations are required in the strategy itself.
+一个包含多个指标的简单策略。策略本身不需要特殊考虑。
 
 ```py
 class ProducerStrategy(IStrategy):
@@ -96,12 +96,12 @@ class ProducerStrategy(IStrategy):
 ```
 
 !!! Tip "FreqAI"
-    You can use this to setup [FreqAI](freqai.md) on a powerful machine, while you run consumers on simple machines like raspberries, which can interpret the signals generated from the producer in different ways.
+    您可以使用它在强大的机器上设置 [FreqAI](freqai.md)，同时在像树莓派这样的简单机器上运行消费者，这些机器可以以不同的方式解释生产者生成的信号。
 
 
-### Example - Consumer Strategy
+### 示例 - 消费者策略
 
-A logically equivalent strategy which calculates no indicators itself, but will have the same analyzed dataframes available to make trading decisions based on the indicators calculated in the producer. In this example the consumer has the same entry criteria, however this is not necessary. The consumer may use different logic to enter/exit trades, and only use the indicators as specified.
+一个逻辑上等效的策略，它本身不计算指标，但将具有相同的已分析数据框，以基于生产器中计算的指标做出交易决策。在此示例中，消费者具有相同的入场标准，但这并非必需。消费者可以使用不同的逻辑进入/退出交易，并且仅使用指定的指标。
 
 ```py
 class ConsumerStrategy(IStrategy):

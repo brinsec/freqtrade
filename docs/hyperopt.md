@@ -1,102 +1,101 @@
-# Hyperopt
+# 超参数优化
 
-This page explains how to tune your strategy by finding the optimal
-parameters, a process called hyperparameter optimization. The bot uses algorithms included in the `optuna` package to accomplish this.
-The search will burn all your CPU cores, make your laptop sound like a fighter jet and still take a long time.
+本页说明如何通过找到最佳参数来调整您的策略，这个过程称为超参数优化。机器人使用 `optuna` 包中包含的算法来完成此操作。
+搜索会消耗所有 CPU 核心，让您的笔记本电脑听起来像战斗机，但仍然需要很长时间。
 
-In general, the search for best parameters starts with a few random combinations (see [below](#reproducible-results) for more details) and then uses one of optuna's sampler algorithms (currently NSGAIIISampler) to quickly find a combination of parameters in the search hyperspace that minimizes the value of the [loss function](#loss-functions).
+通常，搜索最佳参数从一些随机组合开始（有关更多详细信息，请参阅 [下方](#reproducible-results)），然后使用 optuna 的采样器算法之一（当前为 NSGAIIISampler）快速找到搜索超空间中最小化 [损失函数](#loss-functions) 值的参数组合。
 
-Hyperopt requires historic data to be available, just as backtesting does (hyperopt runs backtesting many times with different parameters).
-To learn how to get data for the pairs and exchange you're interested in, head over to the [Data Downloading](data-download.md) section of the documentation.
+超参数优化需要历史数据可用，就像回测一样（超参数优化使用不同参数运行回测多次）。
+要了解如何获取您感兴趣的交易对和交易所的数据，请前往文档的 [数据下载](data-download.md) 部分。
 
-!!! Bug
-    Hyperopt can crash when used with only 1 CPU Core as found out in [Issue #1133](https://github.com/freqtrade/freqtrade/issues/1133)
+!!! Bug "错误"
+    当仅使用 1 个 CPU 核心时，超参数优化可能会崩溃，如 [Issue #1133](https://github.com/freqtrade/freqtrade/issues/1133) 中发现
 
-!!! Note
-    Since 2021.4 release you no longer have to write a separate hyperopt class, but can configure the parameters directly in the strategy.
-    The legacy method was supported up to 2021.8 and has been removed in 2021.9.
+!!! Note "注意"
+    自 2021.4 版本以来，您不再需要编写单独的超参数优化类，而是可以直接在策略中配置参数。
+    旧方法支持到 2021.8，已在 2021.9 中移除。
 
-## Install hyperopt dependencies
+## 安装超参数优化依赖项
 
-Since Hyperopt dependencies are not needed to run the bot itself, are heavy, can not be easily built on some platforms (like Raspberry PI), they are not installed by default. Before you run Hyperopt, you need to install the corresponding dependencies, as described in this section below.
+由于超参数优化依赖项不是运行机器人本身所需的，很重，无法在某些平台上轻松构建（如 Raspberry PI），它们默认不安装。在运行超参数优化之前，您需要安装相应的依赖项，如下文本节所述。
 
-!!! Note
-    Since Hyperopt is a resource intensive process, running it on a Raspberry Pi is not recommended nor supported.
+!!! Note "注意"
+    由于超参数优化是一个资源密集型过程，不建议也不支持在 Raspberry Pi 上运行它。
 
 ### Docker
 
-The docker-image includes hyperopt dependencies, no further action needed.
+Docker 镜像包含超参数优化依赖项，无需进一步操作。
 
-### Easy installation script (setup.sh) / Manual installation
+### 简单安装脚本 (setup.sh) / 手动安装
 
 ```bash
 source .venv/bin/activate
 pip install -r requirements-hyperopt.txt
 ```
 
-## Hyperopt command reference
+## 超参数优化命令参考
 
 --8<-- "commands/hyperopt.md"
 
-### Hyperopt checklist
+### 超参数优化检查清单
 
-Checklist on all tasks / possibilities in hyperopt
+超参数优化中所有任务/可能性的检查清单
 
-Depending on the space you want to optimize, only some of the below are required:
+根据您要优化的空间，只需要以下部分：
 
-* define parameters with `space='buy'` - for entry signal optimization
-* define parameters with `space='sell'` - for exit signal optimization
+* 定义 `space='buy'` 的参数 - 用于入场信号优化
+* 定义 `space='sell'` 的参数 - 用于出场信号优化
 
-!!! Note
-    `populate_indicators` needs to create all indicators any of the spaces may use, otherwise hyperopt will not work.
+!!! Note "注意"
+    `populate_indicators` 需要创建任何空间可能使用的所有指标，否则超参数优化将不起作用。
 
-Rarely you may also need to create a [nested class](advanced-hyperopt.md#overriding-pre-defined-spaces) named `HyperOpt` and implement
+很少情况下，您可能还需要创建一个名为 `HyperOpt` 的 [嵌套类](advanced-hyperopt.md#overriding-pre-defined-spaces) 并实现
 
-* `roi_space` - for custom ROI optimization (if you need the ranges for the ROI parameters in the optimization hyperspace that differ from default)
-* `generate_roi_table` - for custom ROI optimization (if you need the ranges for the values in the ROI table that differ from default or the number of entries (steps) in the ROI table which differs from the default 4 steps)
-* `stoploss_space` - for custom stoploss optimization (if you need the range for the stoploss parameter in the optimization hyperspace that differs from default)
-* `trailing_space` - for custom trailing stop optimization (if you need the ranges for the trailing stop parameters in the optimization hyperspace that differ from default)
-* `max_open_trades_space` - for custom max_open_trades optimization (if you need the ranges for the max_open_trades parameter in the optimization hyperspace that differ from default)
+* `roi_space` - 用于自定义 ROI 优化（如果您需要优化超空间中与默认值不同的 ROI 参数范围）
+* `generate_roi_table` - 用于自定义 ROI 优化（如果您需要 ROI 表中与默认值不同的值范围，或 ROI 表中与默认 4 步不同的条目（步数）数量）
+* `stoploss_space` - 用于自定义止损优化（如果您需要优化超空间中与默认值不同的止损参数范围）
+* `trailing_space` - 用于自定义追踪止损优化（如果您需要优化超空间中与默认值不同的追踪止损参数范围）
+* `max_open_trades_space` - 用于自定义 max_open_trades 优化（如果您需要优化超空间中与默认值不同的 max_open_trades 参数范围）
 
-!!! Tip "Quickly optimize ROI, stoploss and trailing stoploss"
-    You can quickly optimize the spaces `roi`, `stoploss` and `trailing` without changing anything in your strategy.
+!!! Tip "快速优化 ROI、止损和追踪止损"
+    您可以快速优化空间 `roi`、`stoploss` 和 `trailing`，而无需更改策略中的任何内容。
 
     ``` bash
-    # Have a working strategy at hand.
+    # 准备好一个可用的策略。
     freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily --spaces roi stoploss trailing --strategy MyWorkingStrategy --config config.json -e 100
     ```
 
-### Hyperopt execution logic
+### 超参数优化执行逻辑
 
-Hyperopt will first load your data into memory and will then run `populate_indicators()` once per Pair to generate all indicators, unless `--analyze-per-epoch` is specified.
+超参数优化将首先将您的数据加载到内存中，然后为每个交易对运行一次 `populate_indicators()` 以生成所有指标，除非指定 `--analyze-per-epoch`。
 
-Hyperopt will then spawn into different processes (number of processors, or `-j <n>`), and run backtesting over and over again, changing the parameters that are part of the `--spaces` defined.
+超参数优化然后将生成到不同进程（处理器数量，或 `-j <n>`），并一遍又一遍地运行回测，更改作为定义的 `--spaces` 一部分的参数。
 
-For every new set of parameters, freqtrade will run first `populate_entry_trend()` followed by `populate_exit_trend()`, and then run the regular backtesting process to simulate trades.
+对于每一组新参数，freqtrade 将首先运行 `populate_entry_trend()`，然后运行 `populate_exit_trend()`，然后运行常规回测过程以模拟交易。
 
-After backtesting, the results are passed into the [loss function](#loss-functions), which will evaluate if this result was better or worse than previous results.  
-Based on the loss function result, hyperopt will determine the next set of parameters to try in the next round of backtesting.
+回测后，结果被传递到 [损失函数](#loss-functions)，它将评估此结果是否比之前的结果更好或更差。
+根据损失函数结果，超参数优化将确定在下一轮回测中尝试的下一组参数。
 
-### Configure your Guards and Triggers
+### 配置您的 Guards 和 Triggers
 
-There are two places you need to change in your strategy file to add a new buy hyperopt for testing:
+您需要在策略文件中更改两个地方来添加新的买入超参数优化以进行测试：
 
-* Define the parameters at the class level hyperopt shall be optimizing.
-* Within `populate_entry_trend()` - use defined parameter values instead of raw constants.
+* 在类级别定义超参数优化应优化的参数。
+* 在 `populate_entry_trend()` 中 - 使用定义的参数值而不是原始常量。
 
-There you have two different types of indicators: 1. `guards` and 2. `triggers`.
+那里您有两种不同类型的指标：1. `guards` 和 2. `triggers`。
 
-1. Guards are conditions like "never buy if ADX < 10", or never buy if current price is over EMA10.
-2. Triggers are ones that actually trigger buy in specific moment, like "buy when EMA5 crosses over EMA10" or "buy when close price touches lower Bollinger band".
+1. Guards 是像"如果 ADX < 10 则永远不买入"这样的条件，或者如果当前价格超过 EMA10 则永远不买入。
+2. Triggers 是在特定时刻实际触发买入的条件，例如"当 EMA5 越过 EMA10 时买入"或"当收盘价触及下布林带时买入"。
 
-!!! Hint "Guards and Triggers"
-    Technically, there is no difference between Guards and Triggers.  
-    However, this guide will make this distinction to make it clear that signals should not be "sticking".
-    Sticking signals are signals that are active for multiple candles. This can lead into entering a signal late (right before the signal disappears - which means that the chance of success is a lot lower than right at the beginning).
+!!! Hint "Guards 和 Triggers"
+    从技术上讲，Guards 和 Triggers 之间没有区别。
+    但是，本指南将进行此区分，以明确信号不应是"粘性的"。
+    粘性信号是在多根蜡烛上保持活跃的信号。这可能导致信号进入较晚（就在信号消失之前 - 这意味着成功的机会比一开始要低得多）。
 
-Hyper-optimization will, for each epoch round, pick one trigger and possibly multiple guards.
+超优化将为每个 epoch 轮次选择一个 trigger 和可能的多个 guards。
 
-#### Exit signal optimization
+#### 出场信号优化
 
 Similar to the entry-signal above, exit-signals can also be optimized.
 Place the corresponding settings into the following methods

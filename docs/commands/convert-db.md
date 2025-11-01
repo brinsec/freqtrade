@@ -1,12 +1,11 @@
 ```
-usage: freqtrade convert-db [-h] [--db-url PATH] [--db-url-from PATH]
+用法: freqtrade convert-db [-h] [--db-url PATH] [--db-url-from PATH]
 
-options:
-  -h, --help          show this help message and exit
-  --db-url PATH       Override trades database URL, this is useful in custom
-                      deployments (default: `sqlite:///tradesv3.sqlite` for
-                      Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for
-                      Dry Run).
-  --db-url-from PATH  Source db url to use when migrating a database.
+选项:
+  -h, --help            显示此帮助消息并退出
+  --db-url PATH         覆盖交易数据库 URL，这在自定义部署中很有用
+                        （默认：实盘模式为 `sqlite:///tradesv3.sqlite`，
+                        模拟运行模式为 `sqlite:///tradesv3.dryrun.sqlite`）。
+  --db-url-from PATH    迁移数据库时使用的源数据库 URL。
 
 ```

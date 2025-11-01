@@ -1,22 +1,22 @@
 ```
-usage: freqtrade test-pairlist [-h] [--userdir PATH] [-v] [-c PATH]
+用法: freqtrade test-pairlist [-h] [--userdir PATH] [-v] [-c PATH]
                                [--quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]]
                                [-1] [--print-json] [--exchange EXCHANGE]
 
-options:
-  -h, --help            show this help message and exit
+选项:
+  -h, --help            显示此帮助消息并退出
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
+                        用户数据目录路径。
+  -v, --verbose         详细模式（-vv 获取更多信息，-vvv 获取所有消息）。
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在者为准）。
+                        可以使用多个 --config 选项。可以
+                        设置为 `-` 以从 stdin 读取配置。
   --quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]
-                        Specify quote currency(-ies). Space-separated list.
-  -1, --one-column      Print output in one column.
-  --print-json          Print list of pairs or market symbols in JSON format.
-  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.
+                        指定报价货币。空格分隔的列表。
+  -1, --one-column      在一列中打印输出。
+  --print-json          以 JSON 格式打印交易对或市场符号列表。
+  --exchange EXCHANGE   交易所名称。仅在未提供配置时有效。
 
 ```

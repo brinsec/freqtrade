@@ -366,7 +366,7 @@ class Arguments:
 
         # Build main command
         self.parser = ArgumentParser(
-            prog="freqtrade", description="Free, open source crypto trading bot"
+            prog="freqtrade", description="免费开源加密货币交易机器人"
         )
         self._build_args(optionlist=ARGS_MAIN, parser=self.parser)
 
@@ -414,7 +414,7 @@ class Arguments:
 
         # Add trade subcommand
         trade_cmd = subparsers.add_parser(
-            "trade", help="Trade module.", parents=[_common_parser, _strategy_parser]
+            "trade", help="交易模块。", parents=[_common_parser, _strategy_parser]
         )
         trade_cmd.set_defaults(func=start_trading)
         self._build_args(optionlist=ARGS_TRADE, parser=trade_cmd)
@@ -422,7 +422,7 @@ class Arguments:
         # add create-userdir subcommand
         create_userdir_cmd = subparsers.add_parser(
             "create-userdir",
-            help="Create user-data directory.",
+            help="创建用户数据目录。",
         )
         create_userdir_cmd.set_defaults(func=start_create_userdir)
         self._build_args(optionlist=ARGS_CREATE_USERDIR, parser=create_userdir_cmd)
@@ -430,7 +430,7 @@ class Arguments:
         # add new-config subcommand
         build_config_cmd = subparsers.add_parser(
             "new-config",
-            help="Create new config",
+            help="创建新配置",
         )
         build_config_cmd.set_defaults(func=start_new_config)
         self._build_args(optionlist=ARGS_BUILD_CONFIG, parser=build_config_cmd)
@@ -438,7 +438,7 @@ class Arguments:
         # add show-config subcommand
         show_config_cmd = subparsers.add_parser(
             "show-config",
-            help="Show resolved config",
+            help="显示解析后的配置",
         )
         show_config_cmd.set_defaults(func=start_show_config)
         self._build_args(optionlist=ARGS_SHOW_CONFIG, parser=show_config_cmd)
@@ -446,7 +446,7 @@ class Arguments:
         # add new-strategy subcommand
         build_strategy_cmd = subparsers.add_parser(
             "new-strategy",
-            help="Create new strategy",
+            help="创建新策略",
         )
         build_strategy_cmd.set_defaults(func=start_new_strategy)
         self._build_args(optionlist=ARGS_BUILD_STRATEGY, parser=build_strategy_cmd)
@@ -454,7 +454,7 @@ class Arguments:
         # Add download-data subcommand
         download_data_cmd = subparsers.add_parser(
             "download-data",
-            help="Download backtesting data.",
+            help="下载回测数据。",
             parents=[_common_parser],
         )
         download_data_cmd.set_defaults(func=start_download_data)
@@ -463,7 +463,7 @@ class Arguments:
         # Add convert-data subcommand
         convert_data_cmd = subparsers.add_parser(
             "convert-data",
-            help="Convert candle (OHLCV) data from one format to another.",
+            help="将蜡烛图（OHLCV）数据从一种格式转换为另一种格式。",
             parents=[_common_parser],
         )
         convert_data_cmd.set_defaults(func=partial(start_convert_data, ohlcv=True))
@@ -472,7 +472,7 @@ class Arguments:
         # Add convert-trade-data subcommand
         convert_trade_data_cmd = subparsers.add_parser(
             "convert-trade-data",
-            help="Convert trade data from one format to another.",
+            help="将交易数据从一种格式转换为另一种格式。",
             parents=[_common_parser],
         )
         convert_trade_data_cmd.set_defaults(func=partial(start_convert_data, ohlcv=False))
@@ -481,7 +481,7 @@ class Arguments:
         # Add trades-to-ohlcv subcommand
         convert_trade_data_cmd = subparsers.add_parser(
             "trades-to-ohlcv",
-            help="Convert trade data to OHLCV data.",
+            help="将交易数据转换为 OHLCV 数据。",
             parents=[_common_parser],
         )
         convert_trade_data_cmd.set_defaults(func=start_convert_trades)
@@ -490,7 +490,7 @@ class Arguments:
         # Add list-data subcommand
         list_data_cmd = subparsers.add_parser(
             "list-data",
-            help="List downloaded data.",
+            help="列出已下载的数据。",
             parents=[_common_parser],
         )
         list_data_cmd.set_defaults(func=start_list_data)
@@ -498,7 +498,7 @@ class Arguments:
 
         # Add backtesting subcommand
         backtesting_cmd = subparsers.add_parser(
-            "backtesting", help="Backtesting module.", parents=[_common_parser, _strategy_parser]
+            "backtesting", help="回测模块。", parents=[_common_parser, _strategy_parser]
         )
         backtesting_cmd.set_defaults(func=start_backtesting)
         self._build_args(optionlist=ARGS_BACKTEST, parser=backtesting_cmd)
@@ -506,7 +506,7 @@ class Arguments:
         # Add backtesting-show subcommand
         backtesting_show_cmd = subparsers.add_parser(
             "backtesting-show",
-            help="Show past Backtest results",
+            help="显示过去的回测结果",
             parents=[_common_parser],
         )
         backtesting_show_cmd.set_defaults(func=start_backtesting_show)
@@ -514,7 +514,7 @@ class Arguments:
 
         # Add backtesting analysis subcommand
         analysis_cmd = subparsers.add_parser(
-            "backtesting-analysis", help="Backtest Analysis module.", parents=[_common_parser]
+            "backtesting-analysis", help="回测分析模块。", parents=[_common_parser]
         )
         analysis_cmd.set_defaults(func=start_analysis_entries_exits)
         self._build_args(optionlist=ARGS_ANALYZE_ENTRIES_EXITS, parser=analysis_cmd)
@@ -522,7 +522,7 @@ class Arguments:
         # Add edge subcommand
         edge_cmd = subparsers.add_parser(
             "edge",
-            help="Edge module. No longer part of Freqtrade",
+            help="边缘模块。不再是 Freqtrade 的一部分",
             parents=[_common_parser, _strategy_parser],
         )
         edge_cmd.set_defaults(func=start_edge)
@@ -531,7 +531,7 @@ class Arguments:
         # Add hyperopt subcommand
         hyperopt_cmd = subparsers.add_parser(
             "hyperopt",
-            help="Hyperopt module.",
+            help="超参数优化模块。",
             parents=[_common_parser, _strategy_parser],
         )
         hyperopt_cmd.set_defaults(func=start_hyperopt)
@@ -540,7 +540,7 @@ class Arguments:
         # Add hyperopt-list subcommand
         hyperopt_list_cmd = subparsers.add_parser(
             "hyperopt-list",
-            help="List Hyperopt results",
+            help="列出超参数优化结果",
             parents=[_common_parser],
         )
         hyperopt_list_cmd.set_defaults(func=start_hyperopt_list)
@@ -549,7 +549,7 @@ class Arguments:
         # Add hyperopt-show subcommand
         hyperopt_show_cmd = subparsers.add_parser(
             "hyperopt-show",
-            help="Show details of Hyperopt results",
+            help="显示超参数优化结果的详细信息",
             parents=[_common_parser],
         )
         hyperopt_show_cmd.set_defaults(func=start_hyperopt_show)
@@ -558,7 +558,7 @@ class Arguments:
         # Add list-exchanges subcommand
         list_exchanges_cmd = subparsers.add_parser(
             "list-exchanges",
-            help="Print available exchanges.",
+            help="打印可用的交易所。",
             parents=[_common_parser],
         )
         list_exchanges_cmd.set_defaults(func=start_list_exchanges)
@@ -567,7 +567,7 @@ class Arguments:
         # Add list-markets subcommand
         list_markets_cmd = subparsers.add_parser(
             "list-markets",
-            help="Print markets on exchange.",
+            help="打印交易所上的市场。",
             parents=[_common_parser],
         )
         list_markets_cmd.set_defaults(func=partial(start_list_markets, pairs_only=False))
@@ -576,7 +576,7 @@ class Arguments:
         # Add list-pairs subcommand
         list_pairs_cmd = subparsers.add_parser(
             "list-pairs",
-            help="Print pairs on exchange.",
+            help="打印交易所上的交易对。",
             parents=[_common_parser],
         )
         list_pairs_cmd.set_defaults(func=partial(start_list_markets, pairs_only=True))
@@ -585,7 +585,7 @@ class Arguments:
         # Add list-strategies subcommand
         list_strategies_cmd = subparsers.add_parser(
             "list-strategies",
-            help="Print available strategies.",
+            help="打印可用的策略。",
             parents=[_common_parser],
         )
         list_strategies_cmd.set_defaults(func=start_list_strategies)
@@ -594,7 +594,7 @@ class Arguments:
         # Add list-Hyperopt loss subcommand
         list_hyperopt_loss_cmd = subparsers.add_parser(
             "list-hyperoptloss",
-            help="Print available hyperopt loss functions.",
+            help="打印可用的超参数优化损失函数。",
             parents=[_common_parser],
         )
         list_hyperopt_loss_cmd.set_defaults(func=start_list_hyperopt_loss_functions)
@@ -603,7 +603,7 @@ class Arguments:
         # Add list-freqAI Models subcommand
         list_freqaimodels_cmd = subparsers.add_parser(
             "list-freqaimodels",
-            help="Print available freqAI models.",
+            help="打印可用的 freqAI 模型。",
             parents=[_common_parser],
         )
         list_freqaimodels_cmd.set_defaults(func=start_list_freqAI_models)
@@ -612,7 +612,7 @@ class Arguments:
         # Add list-timeframes subcommand
         list_timeframes_cmd = subparsers.add_parser(
             "list-timeframes",
-            help="Print available timeframes for the exchange.",
+            help="打印交易所的可用时间框架。",
             parents=[_common_parser],
         )
         list_timeframes_cmd.set_defaults(func=start_list_timeframes)
@@ -621,7 +621,7 @@ class Arguments:
         # Add show-trades subcommand
         show_trades = subparsers.add_parser(
             "show-trades",
-            help="Show trades.",
+            help="显示交易。",
             parents=[_common_parser],
         )
         show_trades.set_defaults(func=start_show_trades)
@@ -630,7 +630,7 @@ class Arguments:
         # Add test-pairlist subcommand
         test_pairlist_cmd = subparsers.add_parser(
             "test-pairlist",
-            help="Test your pairlist configuration.",
+            help="测试您的交易对列表配置。",
         )
         test_pairlist_cmd.set_defaults(func=start_test_pairlist)
         self._build_args(optionlist=ARGS_TEST_PAIRLIST, parser=test_pairlist_cmd)
@@ -638,7 +638,7 @@ class Arguments:
         # Add db-convert subcommand
         convert_db = subparsers.add_parser(
             "convert-db",
-            help="Migrate database to different system",
+            help="将数据库迁移到不同系统",
         )
         convert_db.set_defaults(func=start_convert_db)
         self._build_args(optionlist=ARGS_CONVERT_DB, parser=convert_db)
@@ -646,7 +646,7 @@ class Arguments:
         # Add install-ui subcommand
         install_ui_cmd = subparsers.add_parser(
             "install-ui",
-            help="Install FreqUI",
+            help="安装 FreqUI",
         )
         install_ui_cmd.set_defaults(func=start_install_ui)
         self._build_args(optionlist=ARGS_INSTALL_UI, parser=install_ui_cmd)
@@ -654,7 +654,7 @@ class Arguments:
         # Add Plotting subcommand
         plot_dataframe_cmd = subparsers.add_parser(
             "plot-dataframe",
-            help="Plot candles with indicators.",
+            help="绘制带有指标的蜡烛图。",
             parents=[_common_parser, _strategy_parser],
         )
         plot_dataframe_cmd.set_defaults(func=start_plot_dataframe)
@@ -663,7 +663,7 @@ class Arguments:
         # Plot profit
         plot_profit_cmd = subparsers.add_parser(
             "plot-profit",
-            help="Generate plot showing profits.",
+            help="生成显示利润的图表。",
             parents=[_common_parser, _strategy_parser],
         )
         plot_profit_cmd.set_defaults(func=start_plot_profit)
@@ -671,7 +671,7 @@ class Arguments:
 
         # Add webserver subcommand
         webserver_cmd = subparsers.add_parser(
-            "webserver", help="Webserver module.", parents=[_common_parser]
+            "webserver", help="Web 服务器模块。", parents=[_common_parser]
         )
         webserver_cmd.set_defaults(func=start_webserver)
         self._build_args(optionlist=ARGS_WEBSERVER, parser=webserver_cmd)
@@ -679,7 +679,7 @@ class Arguments:
         # Add strategy_updater subcommand
         strategy_updater_cmd = subparsers.add_parser(
             "strategy-updater",
-            help="updates outdated strategy files to the current version",
+            help="将过时的策略文件更新到当前版本",
             parents=[_common_parser],
         )
         strategy_updater_cmd.set_defaults(func=start_strategy_update)
@@ -688,7 +688,7 @@ class Arguments:
         # Add lookahead_analysis subcommand
         lookahead_analayis_cmd = subparsers.add_parser(
             "lookahead-analysis",
-            help="Check for potential look ahead bias.",
+            help="检查潜在的前瞻性偏差。",
             parents=[_common_parser, _strategy_parser],
         )
         lookahead_analayis_cmd.set_defaults(func=start_lookahead_analysis)
@@ -698,7 +698,7 @@ class Arguments:
         # Add recursive_analysis subcommand
         recursive_analayis_cmd = subparsers.add_parser(
             "recursive-analysis",
-            help="Check for potential recursive formula issue.",
+            help="检查潜在的递归公式问题。",
             parents=[_common_parser, _strategy_parser],
         )
         recursive_analayis_cmd.set_defaults(func=start_recursive_analysis)

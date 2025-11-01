@@ -1,5 +1,5 @@
 ```
-usage: freqtrade download-data [-h] [-v] [--no-color] [--logfile FILE] [-V]
+用法: freqtrade download-data [-h] [-v] [--no-color] [--logfile FILE] [-V]
                                [-c PATH] [-d PATH] [--userdir PATH]
                                [-p PAIRS [PAIRS ...]] [--pairs-file FILE]
                                [--days INT] [--new-pairs-days INT]
@@ -13,64 +13,59 @@ usage: freqtrade download-data [-h] [-v] [--no-color] [--logfile FILE] [-V]
                                [--trading-mode {spot,margin,futures}]
                                [--prepend]
 
-options:
-  -h, --help            show this help message and exit
+选项:
+  -h, --help            显示此帮助消息并退出
   -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
-  --pairs-file FILE     File containing a list of pairs. Takes precedence over
-                        --pairs or pairs configured in the configuration.
-  --days INT            Download data for given number of days.
-  --new-pairs-days INT  Download data of new pairs for given number of days.
-                        Default: `None`.
+                        将此命令限制为这些交易对。交易对用空格分隔。
+  --pairs-file FILE     包含交易对列表的文件。优先于
+                        --pairs 或配置中配置的交易对。
+  --days INT            下载给定天数的数据。
+  --new-pairs-days INT  为新交易对下载给定天数的数据。
+                        默认：`None`。
   --include-inactive-pairs
-                        Also download data from inactive pairs.
+                        同时下载非活跃交易对的数据。
   --no-parallel-download
-                        Disable parallel startup download. Only use this if
-                        you experience issues.
+                        禁用并行启动下载。仅在您遇到问题时使用此选项。
   --timerange TIMERANGE
-                        Specify what timerange of data to use.
-  --dl-trades           Download trades instead of OHLCV data.
-  --convert             Convert downloaded trades to OHLCV data. Only
-                        applicable in combination with `--dl-trades`. Will be
-                        automatic for exchanges which don't have historic
-                        OHLCV (e.g. Kraken). If not provided, use `trades-to-
-                        ohlcv` to convert trades data to OHLCV data.
-  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.
+                        指定要使用的数据时间范围。
+  --dl-trades           下载交易数据而不是 OHLCV 数据。
+  --convert             将下载的交易数据转换为 OHLCV 数据。仅
+                        与 `--dl-trades` 结合使用时适用。对于没有历史
+                        OHLCV 的交易所（例如 Kraken），这将自动执行。
+                        如果未提供，请使用 `trades-to-
+                        ohlcv` 将交易数据转换为 OHLCV 数据。
+  --exchange EXCHANGE   交易所名称。仅在未提供配置时有效。
   -t TIMEFRAMES [TIMEFRAMES ...], --timeframes TIMEFRAMES [TIMEFRAMES ...]
-                        Specify which tickers to download. Space-separated
-                        list. Default: `1m 5m`.
-  --erase               Clean all existing data for the selected
-                        exchange/pairs/timeframes.
+                        指定要下载的时间框架。空格分隔的
+                        列表。默认：`1m 5m`。
+  --erase               清理所选交易所/交易对/时间框架的所有现有数据。
   --data-format-ohlcv {json,jsongz,feather,parquet}
-                        Storage format for downloaded candle (OHLCV) data.
-                        (default: `feather`).
+                        下载的蜡烛图（OHLCV）数据的存储格式。
+                        （默认：`feather`）。
   --data-format-trades {json,jsongz,feather,parquet}
-                        Storage format for downloaded trades data. (default:
-                        `feather`).
+                        下载的交易数据的存储格式。（默认：
+                        `feather`）。
   --trading-mode {spot,margin,futures}, --tradingmode {spot,margin,futures}
-                        Select Trading mode
-  --prepend             Allow data prepending. (Data-appending is disabled)
+                        选择交易模式
+  --prepend             允许数据前置。（数据追加已禁用）
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+通用参数:
+  -v, --verbose         详细模式（-vv 获取更多信息，-vvv 获取所有消息）。
+  --no-color            禁用超参数优化结果的着色。如果您将
+                        输出重定向到文件，这可能很有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        记录到指定的文件。特殊值为：
+                        'syslog'、'journald'。有关更多详细信息，请参阅文档。
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在者为准）。
+                        可以使用多个 --config 选项。可以
+                        设置为 `-` 以从 stdin 读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
+                        包含历史回测数据的交易所基础目录路径。
+                        要查看期货数据，请另外使用交易模式。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        用户数据目录路径。
 
 ```

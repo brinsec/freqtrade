@@ -1,102 +1,93 @@
-# Freqtrade FAQ
+# Freqtrade 常见问题
 
-## Supported Markets
+## 支持的市场
 
-Freqtrade supports spot trading, as well as (isolated) futures trading for some selected exchanges. Please refer to the [documentation start page](index.md#supported-futures-exchanges-experimental) for an up-to-date list of supported exchanges.
+Freqtrade 支持现货交易，以及某些选定交易所的（隔离）期货交易。请参阅 [文档起始页](index.md#supported-futures-exchanges-experimental) 以获取最新的支持交易所列表。
 
-### Can my bot open short positions?
+### 我的机器人可以开空头头寸吗？
 
-Freqtrade can open short positions in futures markets.
-This requires the strategy to be made for this - and `"trading_mode": "futures"` in the configuration.
-Please make sure to read the [relevant documentation page](leverage.md) first.
+Freqtrade 可以在期货市场中开空头头寸。
+这需要为策略设计，并在配置中设置 `"trading_mode": "futures"`。
+请确保先阅读 [相关文档页面](leverage.md)。
 
-In spot markets, you can in some cases use leveraged spot tokens, which reflect an inverted pair (eg. BTCUP/USD, BTCDOWN/USD, ETHBULL/USD, ETHBEAR/USD,...) which can be traded with Freqtrade.
+在现货市场中，您在某些情况下可以使用杠杆现货代币，这些代币反映反向交易对（例如 BTCUP/USD、BTCDOWN/USD、ETHBULL/USD、ETHBEAR/USD 等），可以使用 Freqtrade 进行交易。
 
-### Can my bot trade options or futures?
+### 我的机器人可以交易期权或期货吗？
 
-Futures trading is supported for selected exchanges. Please refer to the [documentation start page](index.md#supported-futures-exchanges-experimental) for an up-to-date list of supported exchanges.
+某些交易所支持期货交易。请参阅 [文档起始页](index.md#supported-futures-exchanges-experimental) 以获取最新的支持交易所列表。
 
-## Beginner Tips & Tricks
+## 新手提示和技巧
 
-* When you work with your strategy & hyperopt file you should use a proper code editor like VSCode or PyCharm. A good code editor will provide syntax highlighting as well as line numbers, making it easy to find syntax errors (most likely pointed out by Freqtrade during startup).
+* 当您使用策略和超参数优化文件时，应使用适当的代码编辑器，如 VSCode 或 PyCharm。好的代码编辑器将提供语法高亮以及行号，使查找语法错误变得容易（Freqtrade 在启动时最有可能指出这些错误）。
 
-## Freqtrade common questions
+## Freqtrade 常见问题
 
-### Can freqtrade open multiple positions on the same pair in parallel?
+### Freqtrade 可以并行在同一交易对上开多个头寸吗？
 
-No. Freqtrade will only open one position per pair at a time.
-You can however use the [`adjust_trade_position()` callback](strategy-callbacks.md#adjust-trade-position) to adjust an open position.
+不可以。Freqtrade 一次只能为每个交易对开一个头寸。
+但是，您可以使用 [`adjust_trade_position()` 回调](strategy-callbacks.md#adjust-trade-position) 来调整未平仓头寸。
 
-Backtesting provides an option for this in `--eps` - however this is only there to highlight "hidden" signals, and will not work in live.
+回测在 `--eps` 中提供了此选项 - 但这只是为了突出显示"隐藏"信号，在实盘中不起作用。
 
-### The bot does not start
+### 机器人无法启动
 
-Running the bot with `freqtrade trade --config config.json` shows the output `freqtrade: command not found`.
+使用 `freqtrade trade --config config.json` 运行机器人时显示输出 `freqtrade: command not found`。
 
-This could be caused by the following reasons:
+这可能是由以下原因引起的：
 
-* The virtual environment is not active.
-  * Run `source .venv/bin/activate` to activate the virtual environment.
-* The installation did not complete successfully.
-  * Please check the [Installation documentation](installation.md).
+* 虚拟环境未激活。
+  * 运行 `source .venv/bin/activate` 以激活虚拟环境。
+* 安装未成功完成。
+  * 请检查 [安装文档](installation.md)。
 
-### The bot starts, but in STOPPED mode
+### 机器人启动，但处于 STOPPED 模式
 
-Make sure you set the `initial_state` config option to `"running"` in your config.json
+确保在 config.json 中将 `initial_state` 配置选项设置为 `"running"`
 
-### I have waited 5 minutes, why hasn't the bot made any trades yet?
+### 我已经等了 5 分钟，为什么机器人还没有进行任何交易？
 
-* Depending on the entry strategy, the amount of whitelisted coins, the
-situation of the market etc, it can take up to hours or days to find a good entry
-position for a trade. Be patient!
+* 根据入场策略、白名单币种数量、市场情况等，找到良好的入场位置可能需要数小时或数天。请耐心等待！
 
-* Backtesting will tell you roughly how many trades to expect - but that won't guarantee that they'll be distributed evenly across time - so you could have 20 trades on one day, and 0 for the rest of the week.
+* 回测会告诉您大致预期的交易数量 - 但这不能保证它们会在时间上均匀分布 - 因此您可能在某一天有 20 笔交易，而本周其余时间为 0 笔。
 
-* It may be because of a configuration error. It's best to check the logs, they usually tell you if the bot is simply not getting buy signals (only heartbeat messages), or if there is something wrong (errors / exceptions in the log).
+* 这可能是由于配置错误。最好检查日志，它们通常会告诉您机器人是否根本没有收到买入信号（只有心跳消息），或者是否有问题（日志中的错误/异常）。
 
-### I have made 12 trades already, why is my total profit negative?
+### 我已经做了 12 笔交易，为什么我的总利润是负数？
 
-I understand your disappointment but unfortunately 12 trades is just
-not enough to say anything. If you run backtesting, you can see that the
-current algorithm does leave you on the plus side, but that is after
-thousands of trades and even there, you will be left with losses on
-specific coins that you have traded tens if not hundreds of times. We
-of course constantly aim to improve the bot but it will _always_ be a
-gamble, which should leave you with modest wins on monthly basis but
-you can't say much from few trades.
+我理解您的失望，但不幸的是，12 笔交易不足以说明任何问题。如果您运行回测，您可以看到当前算法确实会让您处于盈利状态，但这是在数千笔交易之后，即使在那里，您也会在特定币种上留下亏损，这些币种您已经交易了数十次甚至数百次。我们当然不断努力提高机器人，但它将_始终_是一场赌博，应该让您在月度基础上获得适度的收益，但您无法从少数交易中得出太多结论。
 
-### I’d like to make changes to the config. Can I do that without having to kill the bot?
+### 我想更改配置。我可以不杀死机器人就做到这一点吗？
 
-Yes. You can edit your config and use the `/reload_config` command to reload the configuration. The bot will stop, reload the configuration and strategy and will restart with the new configuration and strategy.
+是的。您可以编辑配置并使用 `/reload_config` 命令重新加载配置。机器人将停止，重新加载配置和策略，并使用新的配置和策略重新启动。
 
-### Why does my bot not sell everything it bought?
+### 为什么我的机器人不卖出它购买的所有东西？
 
-This is called "coin dust" and can happen on all exchanges.
-It happens because many exchanges subtract fees from the "receiving currency" - so you buy 100 COIN - but you only get 99.9 COIN.
-As COIN is trading in full lot sizes (1COIN steps), you cannot sell 0.9 COIN (or 99.9 COIN) - but you need to round down to 99 COIN.
+这称为"币种零头"，可能发生在所有交易所。
+发生这种情况是因为许多交易所从"接收货币"中扣除手续费 - 所以您购买 100 COIN - 但您只能得到 99.9 COIN。
+由于 COIN 以整批大小（1COIN 步长）进行交易，您不能卖出 0.9 COIN（或 99.9 COIN）- 但您需要向下舍入到 99 COIN。
 
-This is not a bot-problem, but will also happen while manual trading.
+这不是机器人问题，但在手动交易时也会发生。
 
-While freqtrade can handle this (it'll sell 99 COIN), fees are often below the minimum tradable lot-size (you can only trade full COIN, not 0.9 COIN).
-Leaving the dust (0.9 COIN) on the exchange makes usually sense, as the next time freqtrade buys COIN, it'll eat into the remaining small balance, this time selling everything it bought, and therefore slowly declining the dust balance (although it most likely will never reach exactly 0).
+虽然 freqtrade 可以处理这个问题（它会卖出 99 COIN），但手续费通常低于最低可交易批量（您只能交易整 COIN，不能交易 0.9 COIN）。
+将零头（0.9 COIN）留在交易所通常是有意义的，因为下次 freqtrade 购买 COIN 时，它会消耗剩余的少量余额，这次会卖出它购买的所有东西，因此零头余额会慢慢下降（尽管它很可能永远不会达到正好 0）。
 
-Where possible (e.g. on binance), the use of the exchange's dedicated fee currency will fix this.
-On binance, it's sufficient to have BNB in your account, and have "Pay fees in BNB" enabled in your profile. Your BNB balance will slowly decline (as it's used to pay fees) - but you'll no longer encounter dust (Freqtrade will include the fees in the profit calculations).
-Other exchanges don't offer such possibilities, where it's simply something you'll have to accept or move to a different exchange.
+在可能的情况下（例如在 binance 上），使用交易所的专用手续费货币将解决此问题。
+在 binance 上，只需在您的账户中拥有 BNB，并在您的个人资料中启用"使用 BNB 支付手续费"。您的 BNB 余额将慢慢下降（因为它用于支付手续费）- 但您将不再遇到零头（Freqtrade 将在利润计算中包括手续费）。
+其他交易所不提供这种可能性，这只是您必须接受或转移到不同交易所的事情。
 
-### I deposited more funds to the exchange, but my bot doesn't recognize this
+### 我向交易所存入了更多资金，但我的机器人没有识别这一点
 
-Freqtrade will update the exchange balance when necessary (Before placing an order).
-RPC calls (Telegram's `/balance`, API calls to `/balance`) can trigger an update at max. once per hour.
+Freqtrade 将在必要时更新交易所余额（在下单之前）。
+RPC 调用（Telegram 的 `/balance`、对 `/balance` 的 API 调用）最多每小时可以触发一次更新。
 
-If `adjust_trade_position` is enabled (and the bot has open trades eligible for position adjustments) - then the wallets will be refreshed once per hour.
-To force an immediate update, you can use `/reload_config` - which will restart the bot.
+如果启用了 `adjust_trade_position`（并且机器人有符合条件的未平仓交易进行调整）- 那么钱包将每小时刷新一次。
+要强制立即更新，您可以使用 `/reload_config` - 这将重启机器人。
 
-### I want to use incomplete candles
+### 我想使用不完整的蜡烛图
 
-Freqtrade will not provide incomplete candles to strategies. Using incomplete candles will lead to repainting and consequently to strategies with "ghost" buys, which are impossible to both backtest, and verify after they happened.
+Freqtrade 不会向策略提供不完整的蜡烛图。使用不完整的蜡烛图会导致重绘，从而导致策略中出现"幽灵"买入，这在回测中以及在发生之后都无法验证。
 
-You can use "current" market data by using the [dataprovider](strategy-customization.md#orderbookpair-maximum)'s orderbook or ticker methods - which however cannot be used during backtesting.
+您可以使用 [dataprovider](strategy-customization.md#orderbookpair-maximum) 的订单簿或行情方法使用"当前"市场数据 - 但这不能在回测期间使用。
 
 ### Is there a setting to only Exit the trades being held and not perform any new Entries?
 

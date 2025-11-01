@@ -1,20 +1,20 @@
-# Stop Loss
+# 止损
 
-The `stoploss` configuration parameter is loss as ratio that should trigger a sale.
-For example, value `-0.10` will cause immediate sell if the profit dips below -10% for a given trade. This parameter is optional.
-Stoploss calculations do include fees, so a stoploss of -10% is placed exactly 10% below the entry point.
+`stoploss` 配置参数是应触发卖出的损失比率。
+例如，值 `-0.10` 将在给定交易的利润低于 -10% 时立即卖出。此参数是可选的。
+止损计算确实包括手续费，因此 -10% 的止损正好放在入场点下方 10% 处。
 
-Most of the strategy files already include the optimal `stoploss` value.
+大多数策略文件已包含最佳 `stoploss` 值。
 
-!!! Info
-    All stoploss properties mentioned in this file can be set in the Strategy, or in the configuration.  
-    <ins>Configuration values will override the strategy values.</ins>
+!!! Info "信息"
+    本文件中提到的所有止损属性可以在策略中或在配置中设置。
+    <ins>配置值将覆盖策略值。</ins>
 
-## Stop Loss On-Exchange/Freqtrade
+## 交易所止损 / Freqtrade 止损
 
-Those stoploss modes can be *on exchange* or *off exchange*.
+这些止损模式可以是*交易所上*或*交易所外*。
 
-These modes can be configured with these values:
+可以使用以下值配置这些模式：
 
 ``` python
     'emergency_exit': 'market',
@@ -23,67 +23,67 @@ These modes can be configured with these values:
     'stoploss_on_exchange_limit_ratio': 0.99
 ```
 
-Stoploss on exchange is only supported for the following exchanges, and not all exchanges support both stop-limit and stop-market.
-The Order-type will be ignored if only one mode is available.
+交易所止损仅支持以下交易所，并非所有交易所都支持止损限价和止损市价。
+如果只有一种模式可用，订单类型将被忽略。
 
 ??? info "Supported exchanges and stoploss types"
     
     --8<-- "includes/exchange-features.md"
 
-!!! Note "Tight stoploss"
-    <ins>Do not set too low/tight stoploss value when using stop loss on exchange!</ins>  
-    If set to low/tight you will have greater risk of missing fill on the order and stoploss will not work.
+!!! Note "紧密止损"
+    <ins>使用交易所止损时，不要设置太低/太紧的止损值！</ins>
+    如果设置得太低/太紧，您将面临订单无法成交的更大风险，止损将不起作用。
 
-### stoploss_on_exchange and stoploss_on_exchange_limit_ratio
+### stoploss_on_exchange 和 stoploss_on_exchange_limit_ratio
 
-Enable or Disable stop loss on exchange.
-If the stoploss is *on exchange* it means a stoploss limit order is placed on the exchange immediately after buy order fills. This will protect you against sudden crashes in market, as the order execution happens purely within the exchange, and has no potential network overhead.
+启用或禁用交易所止损。
+如果止损在*交易所上*，这意味着在买入订单成交后立即在交易所放置止损限价订单。这将保护您免受市场突然崩盘的影响，因为订单执行完全在交易所内进行，没有潜在的网络开销。
 
-If `stoploss_on_exchange` uses limit orders, the exchange needs 2 prices, the stoploss_price and the Limit price.  
-`stoploss` defines the stop-price where the limit order is placed - and limit should be slightly below this.  
-If an exchange supports both limit and market stoploss orders, then the value of `stoploss` will be used to determine the stoploss type.  
+如果 `stoploss_on_exchange` 使用限价订单，交易所需要 2 个价格，止损价格和限价。
+`stoploss` 定义放置限价订单的止损价格 - 限价应略低于此价格。
+如果交易所同时支持限价和市价止损订单，则 `stoploss` 的值将用于确定止损类型。
 
-Calculation example: we bought the asset at 100\$.  
-Stop-price is 95\$, then limit would be `95 * 0.99 = 94.05$` - so the limit order fill can happen between 95$ and 94.05$.  
+计算示例：我们以 100\$ 购买资产。
+止损价格为 95\$，则限价将是 `95 * 0.99 = 94.05$` - 因此限价订单成交可能发生在 95$ 和 94.05$ 之间。
 
-For example, assuming the stoploss is on exchange, and trailing stoploss is enabled, and the market is going up, then the bot automatically cancels the previous stoploss order and puts a new one with a stop value higher than the previous stoploss order.
+例如，假设止损在交易所上，并且启用了追踪止损，市场正在上涨，那么机器人会自动取消先前的止损订单并放置一个新的止损值高于先前止损订单的订单。
 
-!!! Note
-    If `stoploss_on_exchange` is enabled and the stoploss is cancelled manually on the exchange, then the bot will create a new stoploss order.
+!!! Note "注意"
+    如果启用了 `stoploss_on_exchange` 并且在交易所手动取消了止损，则机器人将创建新的止损订单。
 
 ### stoploss_on_exchange_interval
 
-In case of stoploss on exchange there is another parameter called `stoploss_on_exchange_interval`. This configures the interval in seconds at which the bot will check the stoploss and update it if necessary.  
-The bot cannot do these every 5 seconds (at each iteration), otherwise it would get banned by the exchange.
-So this parameter will tell the bot how often it should update the stoploss order. The default value is 60 (1 minute).
-This same logic will reapply a stoploss order on the exchange should you cancel it accidentally.
+对于交易所止损，还有另一个参数称为 `stoploss_on_exchange_interval`。这配置了机器人检查止损并在必要时更新的间隔（以秒为单位）。
+机器人不能每 5 秒（每次迭代）执行这些操作，否则它会被交易所封禁。
+因此，此参数将告诉机器人应该多久更新一次止损订单。默认值为 60（1 分钟）。
+如果您意外取消止损订单，此相同逻辑将在交易所上重新应用止损订单。
 
 ### stoploss_price_type
 
-!!! Warning "Only applies to futures"
-    `stoploss_price_type` only applies to futures markets (on exchanges where it's available).
-    Freqtrade will perform a validation of this setting on startup, failing to start if an invalid setting for your exchange has been selected.
-    Supported price types are gonna differs between each exchanges. Please check with your exchange on which price types it supports.
+!!! Warning "仅适用于期货"
+    `stoploss_price_type` 仅适用于期货市场（在支持的交易所上）。
+    Freqtrade 将在启动时验证此设置，如果为您的交易所选择了无效设置，将无法启动。
+    支持的价格类型因交易所而异。请与您的交易所确认它支持哪些价格类型。
 
-Stoploss on exchange on futures markets can trigger on different price types.
-The naming for these prices in exchange terminology often varies, but is usually something around "last" (or "contract price" ), "mark" and "index".
+期货市场上的交易所止损可以在不同的价格类型上触发。
+交易所术语中这些价格的命名通常不同，但通常围绕"last"（或"contract price"）、"mark"和"index"。
 
-Acceptable values for this setting are `"last"`, `"mark"` and `"index"` - which freqtrade will transfer automatically to the corresponding API type, and place the [stoploss on exchange](#stoploss_on_exchange-and-stoploss_on_exchange_limit_ratio) order correspondingly.
+此设置的可接受值是 `"last"`、`"mark"` 和 `"index"` - freqtrade 将自动将其转换为相应的 API 类型，并相应地放置[交易所止损](#stoploss_on_exchange-and-stoploss_on_exchange_limit_ratio)订单。
 
 ### force_exit
 
-`force_exit` is an optional value, which defaults to the same value as `exit` and is used when sending a `/forceexit` command from Telegram or from the Rest API.
+`force_exit` 是一个可选值，默认与 `exit` 相同，在从 Telegram 或 Rest API 发送 `/forceexit` 命令时使用。
 
 ### force_entry
 
-`force_entry` is an optional value, which defaults to the same value as `entry` and is used when sending a `/forceentry` command from Telegram or from the Rest API.
+`force_entry` 是一个可选值，默认与 `entry` 相同，在从 Telegram 或 Rest API 发送 `/forceentry` 命令时使用。
 
 ### emergency_exit
 
-`emergency_exit` is an optional value, which defaults to `market` and is used when creating stop loss on exchange orders fails.
-The below is the default which is used if not changed in strategy or configuration file.
+`emergency_exit` 是一个可选值，默认为 `market`，在创建交易所止损订单失败时使用。
+以下是如果在策略或配置文件中未更改则使用的默认值。
 
-Example from strategy file:
+策略文件示例：
 
 ``` python
 order_types = {
@@ -97,89 +97,89 @@ order_types = {
 }
 ```
 
-## Stop Loss Types
+## 止损类型
 
-At this stage the bot contains the following stoploss support modes:
+目前机器人包含以下止损支持模式：
 
-1. Static stop loss.
-2. Trailing stop loss.
-3. Trailing stop loss, custom positive loss.
-4. Trailing stop loss only once the trade has reached a certain offset.
-5. [Custom stoploss function](strategy-callbacks.md#custom-stoploss)
+1. 静态止损。
+2. 追踪止损。
+3. 追踪止损，自定义正亏损。
+4. 仅在交易达到某个偏移后追踪止损。
+5. [自定义止损函数](strategy-callbacks.md#custom-stoploss)
 
-### Static Stop Loss
+### 静态止损
 
-This is very simple, you define a stop loss of x (as a ratio of price, i.e. x * 100% of price). This will try to sell the asset once the loss exceeds the defined loss.
+这非常简单，您定义止损为 x（作为价格的比率，即价格的 x * 100%）。一旦损失超过定义的损失，这将尝试卖出资产。
 
-Example of stop loss:
+止损示例：
 
 ``` python
     stoploss = -0.10
 ```
 
-For example, simplified math:
+例如，简化数学：
 
-* the bot buys an asset at a price of 100$
-* the stop loss is defined at -10%
-* the stop loss would get triggered once the asset drops below 90$
+* 机器人以 100$ 的价格购买资产
+* 止损定义为 -10%
+* 一旦资产跌破 90$，止损将被触发
 
-### Trailing Stop Loss
+### 追踪止损
 
-The initial value for this is `stoploss`, just as you would define your static Stop loss.
-To enable trailing stoploss:
+此的初始值是 `stoploss`，就像您定义静态止损一样。
+要启用追踪止损：
 
 ``` python
     stoploss = -0.10
     trailing_stop = True
 ```
 
-This will now activate an algorithm, which automatically moves the stop loss up every time the price of your asset increases.
+这将激活一个算法，每次资产价格上涨时自动向上移动止损。
 
-For example, simplified math:
+例如，简化数学：
 
-* the bot buys an asset at a price of 100$
-* the stop loss is defined at -10%
-* the stop loss would get triggered once the asset drops below 90$
-* assuming the asset now increases to 102$
-* the stop loss will now be -10% of 102$ = 91.8$
-* now the asset drops in value to 101\$, the stop loss will still be 91.8$ and would trigger at 91.8$.
+* 机器人以 100$ 的价格购买资产
+* 止损定义为 -10%
+* 一旦资产跌破 90$，止损将被触发
+* 假设资产现在增加到 102$
+* 止损现在将是 102$ 的 -10% = 91.8$
+* 现在资产价值下降到 101\$，止损仍将是 91.8$，并将在 91.8$ 触发。
 
-In summary: The stoploss will be adjusted to be always be -10% of the highest observed price.
+总结：止损将调整为始终是最观察价格的 -10%。
 
-### Trailing stop loss, different positive loss
+### 追踪止损，不同的正亏损
 
-You could also have a default stop loss when you are in the red with your buy (buy - fee), but once you hit a positive result (or an offset you define) the system will utilize a new stop loss, with a different value.
-For example, your default stop loss is -10%, but once you have reached profitability (example 0.1%) a different trailing stoploss will be used.
+您也可以在买入处于亏损状态（买入 - 手续费）时设置默认止损，但一旦达到正收益（或您定义的偏移），系统将使用具有不同值的新止损。
+例如，您的默认止损是 -10%，但一旦达到盈利（例如 0.1%），将使用不同的追踪止损。
 
-!!! Note
-    If you want the stoploss to only be changed when you break even of making a profit (what most users want) please refer to next section with [offset enabled](#trailing-stop-loss-only-once-the-trade-has-reached-a-certain-offset).
+!!! Note "注意"
+    如果您希望止损仅在达到盈亏平衡或盈利时更改（大多数用户想要的），请参阅下一节，启用[偏移](#trailing-stop-loss-only-once-the-trade-has-reached-a-certain-offset)。
 
-Both values require `trailing_stop` to be set to true and `trailing_stop_positive` with a value.
+这两个值都需要将 `trailing_stop` 设置为 true，并且 `trailing_stop_positive` 具有值。
 
 ``` python
     stoploss = -0.10
     trailing_stop = True
     trailing_stop_positive = 0.02
     trailing_stop_positive_offset = 0.0
-    trailing_only_offset_is_reached = False  # Default - not necessary for this example
+    trailing_only_offset_is_reached = False  # 默认 - 此示例不需要
 ```
 
-For example, simplified math:
+例如，简化数学：
 
-* the bot buys an asset at a price of 100$
-* the stop loss is defined at -10%
-* the stop loss would get triggered once the asset drops below 90$
-* assuming the asset now increases to 102$
-* the stop loss will now be -2% of 102$ = 99.96$ (99.96$ stop loss will be locked in and will follow asset price increments with -2%)
-* now the asset drops in value to 101\$, the stop loss will still be 99.96$ and would trigger at 99.96$
+* 机器人以 100$ 的价格购买资产
+* 止损定义为 -10%
+* 一旦资产跌破 90$，止损将被触发
+* 假设资产现在增加到 102$
+* 止损现在将是 102$ 的 -2% = 99.96$（99.96$ 止损将被锁定，并将跟随资产价格上涨，保持 -2%）
+* 现在资产价值下降到 101\$，止损仍将是 99.96$，并将在 99.96$ 触发
 
-The 0.02 would translate to a -2% stop loss.
-Before this, `stoploss` is used for the trailing stoploss.
+0.02 将转换为 -2% 止损。
+在此之前，`stoploss` 用于追踪止损。
 
-!!! Tip "Use an offset to change your stoploss"
-    Use `trailing_stop_positive_offset` to ensure that your new trailing stoploss will be in profit by setting `trailing_stop_positive_offset` higher than `trailing_stop_positive`. Your first new stoploss value will then already have locked in profits.
+!!! Tip "使用偏移来更改止损"
+    使用 `trailing_stop_positive_offset` 通过将 `trailing_stop_positive_offset` 设置为高于 `trailing_stop_positive` 来确保您的新追踪止损将处于盈利状态。然后，您的第一个新止损值将已经锁定利润。
 
-    Example with simplified math:
+    简化数学示例：
 
     ``` python
         stoploss = -0.10
@@ -188,24 +188,24 @@ Before this, `stoploss` is used for the trailing stoploss.
         trailing_stop_positive_offset = 0.03
     ```
 
-    * the bot buys an asset at a price of 100$
-    * the stop loss is defined at -10%, so the stop loss would get triggered once the asset drops below 90$
-    * assuming the asset now increases to 102$
-    * the stoploss will now be at 91.8$ - 10% below the highest observed rate
-    * assuming the asset now increases to 103.5$ (above the offset configured)
-    * the stop loss will now be -2% of 103.5$ = 101.43$
-    * now the asset drops in value to 102\$, the stop loss will still be 101.43$ and would trigger once price breaks below 101.43$
+    * 机器人以 100$ 的价格购买资产
+    * 止损定义为 -10%，因此一旦资产跌破 90$，止损将被触发
+    * 假设资产现在增加到 102$
+    * 止损现在将在 91.8$ - 最高观察价格的 10% 以下
+    * 假设资产现在增加到 103.5$（高于配置的偏移）
+    * 止损现在将是 103.5$ 的 -2% = 101.43$
+    * 现在资产价值下降到 102\$，止损仍将是 101.43$，一旦价格跌破 101.43$ 将触发
 
-### Trailing stop loss only once the trade has reached a certain offset
+### 仅在交易达到某个偏移后追踪止损
 
-You can also keep a static stoploss until the offset is reached, and then trail the trade to take profits once the market turns.
+您也可以保持静态止损直到达到偏移，然后在市场转向时追踪交易以获利。
 
-If `trailing_only_offset_is_reached = True` then the trailing stoploss is only activated once the offset is reached. Until then, the stoploss remains at the configured `stoploss` and is not trailing.
-Leaving this value as `trailing_only_offset_is_reached=False` will allow the trailing stoploss to start trailing as soon as the asset price increases above the initial entry price.
+如果 `trailing_only_offset_is_reached = True`，则仅在达到偏移后激活追踪止损。在此之前，止损保持在配置的 `stoploss` 处，不追踪。
+将此值保留为 `trailing_only_offset_is_reached=False` 将允许追踪止损在资产价格超过初始入场价格时立即开始追踪。
 
-This option can be used with or without `trailing_stop_positive`, but uses `trailing_stop_positive_offset` as offset.
+此选项可以与或没有 `trailing_stop_positive` 一起使用，但使用 `trailing_stop_positive_offset` 作为偏移。
 
-Configuration (offset is buy-price + 3%):
+配置（偏移是买入价格 + 3%）：
 
 ``` python
     stoploss = -0.10
@@ -215,36 +215,36 @@ Configuration (offset is buy-price + 3%):
     trailing_only_offset_is_reached = True
 ```
 
-For example, simplified math:
+例如，简化数学：
 
-* the bot buys an asset at a price of 100$
-* the stop loss is defined at -10%
-* the stop loss would get triggered once the asset drops below 90$
-* stoploss will remain at 90$ unless asset increases to or above the configured offset
-* assuming the asset now increases to 103$ (where we have the offset configured)
-* the stop loss will now be -2% of 103$ = 100.94$
-* now the asset drops in value to 101\$, the stop loss will still be 100.94$ and would trigger at 100.94$
+* 机器人以 100$ 的价格购买资产
+* 止损定义为 -10%
+* 一旦资产跌破 90$，止损将被触发
+* 除非资产增加到配置的偏移或以上，止损将保持在 90$
+* 假设资产现在增加到 103$（我们配置偏移的地方）
+* 止损现在将是 103$ 的 -2% = 100.94$
+* 现在资产价值下降到 101\$，止损仍将是 100.94$，并将在 100.94$ 触发
 
-!!! Tip
-    Make sure to have this value (`trailing_stop_positive_offset`) lower than minimal ROI, otherwise minimal ROI will apply first and sell the trade.
+!!! Tip "提示"
+    确保此值（`trailing_stop_positive_offset`）低于最小 ROI，否则最小 ROI 将首先应用并卖出交易。
 
-## Stoploss and Leverage
+## 止损和杠杆
 
-Stoploss should be thought of as "risk on this trade" - so a stoploss of 10% on a 100$ trade means you are willing to lose 10$ (10%) on this trade - which would trigger if the price moves 10% to the downside.
+止损应该被视为"此交易的风险" - 因此，100$ 交易上 10% 的止损意味着您愿意在此交易上损失 10$（10%） - 如果价格向下跌 10%，这将触发。
 
-When using leverage, the same principle is applied - with stoploss defining the risk on the trade (the amount you are willing to lose).
+使用杠杆时，应用相同的原则 - 止损定义交易的风险（您愿意损失的金额）。
 
-Therefore, a stoploss of 10% on a 10x trade would trigger on a 1% price move.
-If your stake amount (own capital) was 100$ - this trade would be 1000$ at 10x (after leverage).
-If price moves 1% - you've lost 10$ of your own capital - therefore stoploss will trigger in this case.
+因此，10 倍交易上 10% 的止损将在价格移动 1% 时触发。
+如果您的入金金额（自有资金）是 100$ - 此交易在 10 倍（杠杆后）将是 1000$。
+如果价格移动 1% - 您已经损失了 10$ 的自有资金 - 因此在这种情况下止损将触发。
 
-Make sure to be aware of this, and avoid using too tight stoploss (at 10x leverage, 10% risk may be too little to allow the trade to "breath" a little).
+请务必了解这一点，并避免使用太紧的止损（在 10 倍杠杆下，10% 的风险可能太少，无法让交易"呼吸"一点）。
 
-## Changing stoploss on open trades
+## 更改未平仓交易的止损
 
-A stoploss on an open trade can be changed by changing the value in the configuration or strategy and use the `/reload_config` command (alternatively, completely stopping and restarting the bot also works).
+可以通过更改配置或策略中的值并使用 `/reload_config` 命令来更改未平仓交易的止损（或者，完全停止并重新启动机器人也可以）。
 
-The new stoploss value will be applied to open trades (and corresponding log-messages will be generated).
+新的止损值将应用于未平仓交易（并将生成相应的日志消息）。
 
 ### Limitations
 

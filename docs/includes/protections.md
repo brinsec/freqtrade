@@ -1,51 +1,51 @@
-## Protections
+## 保护
 
-Protections will protect your strategy from unexpected events and market conditions by temporarily stop trading for either one pair, or for all pairs.
-All protection end times are rounded up to the next candle to avoid sudden, unexpected intra-candle buys.
+保护将通过暂时停止一个交易对或所有交易对的交易来保护您的策略免受意外事件和市场条件的影响。
+所有保护结束时间都会向上舍入到下一个蜡烛，以避免突然、意外的蜡烛内买入。
 
-!!! Tip "Usage tips"
-    Not all Protections will work for all strategies, and parameters will need to be tuned for your strategy to improve performance.  
+!!! Tip "使用提示"
+    并非所有保护都适用于所有策略，需要为您的策略调整参数以提高性能。
+  
+    每个保护都可以使用不同参数配置多次，以允许不同级别的保护（短期/长期）。
 
-    Each Protection can be configured multiple times with different parameters, to allow different levels of protection (short-term / long-term).
+!!! Note "回测"
+    回测和超参数优化支持保护，但必须通过使用 `--enable-protections` 标志显式启用。
 
-!!! Note "Backtesting"
-    Protections are supported by backtesting and hyperopt, but must be explicitly enabled by using the `--enable-protections` flag.
+### 可用的保护
 
-### Available Protections
+* [`StoplossGuard`](#stoploss-guard) 如果在某个时间窗口内发生一定数量的止损，则停止交易。
+* [`MaxDrawdown`](#maxdrawdown) 如果达到最大回撤，则停止交易。
+* [`LowProfitPairs`](#low-profit-pairs) 锁定利润较低的交易对
+* [`CooldownPeriod`](#cooldown-period) 卖出交易后不要立即进入交易。
 
-* [`StoplossGuard`](#stoploss-guard) Stop trading if a certain amount of stoploss occurred within a certain time window.
-* [`MaxDrawdown`](#maxdrawdown) Stop trading if max-drawdown is reached.
-* [`LowProfitPairs`](#low-profit-pairs) Lock pairs with low profits
-* [`CooldownPeriod`](#cooldown-period) Don't enter a trade right after selling a trade.
+### 所有保护的通用设置
 
-### Common settings to all Protections
-
-|  Parameter| Description |
+|  参数 | 描述 |
 |------------|-------------|
-| `method` | Protection name to use. <br> **Datatype:** String, selected from [available Protections](#available-protections)
-| `stop_duration_candles` | For how many candles should the lock be set? <br> **Datatype:** Positive integer (in candles)
-| `stop_duration` | how many minutes should protections be locked. <br>Cannot be used together with `stop_duration_candles`. <br> **Datatype:** Float (in minutes)
-| `lookback_period_candles` | Only trades that completed within the last `lookback_period_candles` candles will be considered. This setting may be ignored by some Protections. <br> **Datatype:** Positive integer (in candles).
-| `lookback_period` | Only trades that completed after `current_time - lookback_period` will be considered. <br>Cannot be used together with `lookback_period_candles`. <br>This setting may be ignored by some Protections. <br> **Datatype:**  Float (in minutes)
-| `trade_limit` | Number of trades required at minimum (not used by all Protections). <br> **Datatype:** Positive integer
-| `unlock_at` | Time when trading will be unlocked regularly (not used by all Protections). <br> **Datatype:** string <br>**Input Format:** "HH:MM" (24-hours)
+| `method` | 要使用的保护名称。<br> **数据类型：** String，从[可用的保护](#available-protections)中选择
+| `stop_duration_candles` | 锁定应该设置多少个蜡烛？<br> **数据类型：** 正整数（以蜡烛为单位）
+| `stop_duration` | 保护应该锁定多少分钟。<br>不能与 `stop_duration_candles` 一起使用。<br> **数据类型：** Float（以分钟为单位）
+| `lookback_period_candles` | 只有在过去 `lookback_period_candles` 蜡烛内完成的交易才会被考虑。某些保护可能会忽略此设置。<br> **数据类型：** 正整数（以蜡烛为单位）。
+| `lookback_period` | 只有 `current_time - lookback_period` 之后完成的交易才会被考虑。<br>不能与 `lookback_period_candles` 一起使用。<br>某些保护可能会忽略此设置。<br> **数据类型：** Float（以分钟为单位）
+| `trade_limit` | 所需的最少交易数（并非所有保护都使用）。<br> **数据类型：** 正整数
+| `unlock_at` | 交易将定期解锁的时间（并非所有保护都使用）。<br> **数据类型：** string <br>**输入格式：** "HH:MM"（24 小时制）
 
-!!! Note "Durations"
-    Durations (`stop_duration*` and `lookback_period*` can be defined in either minutes or candles).
-    For more flexibility when testing different timeframes, all below examples will use the "candle" definition.
+!!! Note "持续时间"
+    持续时间（`stop_duration*` 和 `lookback_period*` 可以用分钟或蜡烛定义）。
+    为了在测试不同时间框架时获得更大的灵活性，下面的所有示例都将使用"蜡烛"定义。
 
-#### Stoploss Guard
+#### 止损保护
 
-`StoplossGuard` selects all trades within `lookback_period` in minutes (or in candles when using `lookback_period_candles`).
-If `trade_limit` or more trades resulted in stoploss, trading will stop for `stop_duration` in minutes (or in candles when using `stop_duration_candles`, or until the set time when using `unlock_at`).
+`StoplossGuard` 选择在 `lookback_period` 分钟内（或使用 `lookback_period_candles` 时的蜡烛数内）的所有交易。
+如果 `trade_limit` 或更多交易导致止损，交易将停止 `stop_duration` 分钟（或使用 `stop_duration_candles` 时的蜡烛数，或使用 `unlock_at` 时直到设定时间）。
 
-This applies across all pairs, unless `only_per_pair` is set to true, which will then only look at one pair at a time.
+这适用于所有交易对，除非 `only_per_pair` 设置为 true，这将一次只查看一个交易对。
 
-Similarly, this protection will by default look at all trades (long and short). For futures bots, setting `only_per_side` will make the bot only consider one side, and will then only lock this one side, allowing for example shorts to continue after a series of long stoplosses.
+同样，此保护默认将查看所有交易（多头和空头）。对于期货机器人，设置 `only_per_side` 将使机器人只考虑一侧，然后只锁定这一侧，允许例如在一系列多头止损后继续空头。
 
-`required_profit` will determine the required relative profit (or loss) for stoplosses to consider. This should normally not be set and defaults to 0.0 - which means all losing stoplosses will be triggering a block.
+`required_profit` 将确定止损考虑所需的相对利润（或损失）。这通常不应该设置，默认为 0.0 - 这意味着所有亏损的止损都将触发锁定。
 
-The below example stops trading for all pairs for 4 candles after the last trade if the bot hit stoploss 4 times within the last 24 candles.
+下面的示例如果机器人在过去 24 个蜡烛内触发了 4 次止损，则在最后一次交易后停止所有交易对交易 4 个蜡烛。
 
 ``` python
 @property
@@ -63,15 +63,15 @@ def protections(self):
     ]
 ```
 
-!!! Note
-    `StoplossGuard` considers all trades with the results `"stop_loss"`, `"stoploss_on_exchange"` and `"trailing_stop_loss"` if the resulting profit was negative.
-    `trade_limit` and `lookback_period` will need to be tuned for your strategy.
+!!! Note "注意"
+    `StoplossGuard` 考虑所有结果为 `"stop_loss"`、`"stoploss_on_exchange"` 和 `"trailing_stop_loss"` 的交易，如果结果利润为负。
+    `trade_limit` 和 `lookback_period` 需要为您的策略进行调整。
 
-#### MaxDrawdown
+#### 最大回撤
 
-`MaxDrawdown` uses all trades within `lookback_period` in minutes (or in candles when using `lookback_period_candles`) to determine the maximum drawdown. If the drawdown is below `max_allowed_drawdown`, trading will stop for `stop_duration` in minutes (or in candles when using `stop_duration_candles`) after the last trade - assuming that the bot needs some time to let markets recover.
+`MaxDrawdown` 使用 `lookback_period` 分钟内（或使用 `lookback_period_candles` 时的蜡烛数内）的所有交易来确定最大回撤。如果回撤低于 `max_allowed_drawdown`，交易将在最后一次交易后停止 `stop_duration` 分钟（或使用 `stop_duration_candles` 时的蜡烛数）- 假设机器人需要一些时间让市场恢复。
 
-The below sample stops trading for 12 candles if max-drawdown is > 20% considering all pairs - with a minimum of `trade_limit` trades - within the last 48 candles. If desired, `lookback_period` and/or `stop_duration` can be used.
+下面的示例如果在过去 48 个蜡烛内考虑所有交易对 - 最少 `trade_limit` 笔交易 - 最大回撤 > 20%，则停止交易 12 个蜡烛。如果需要，可以使用 `lookback_period` 和/或 `stop_duration`。
 
 ``` python
 @property
@@ -87,14 +87,14 @@ def protections(self):
     ]
 ```
 
-#### Low Profit Pairs
+#### 低利润交易对
 
-`LowProfitPairs` uses all trades for a pair within `lookback_period` in minutes (or in candles when using `lookback_period_candles`) to determine the overall profit ratio.
-If that ratio is below `required_profit`, that pair will be locked for `stop_duration` in minutes (or in candles when using `stop_duration_candles`, or until the set time when using `unlock_at`).
+`LowProfitPairs` 使用交易对在 `lookback_period` 分钟内（或使用 `lookback_period_candles` 时的蜡烛数内）的所有交易来确定总体利润比率。
+如果该比率低于 `required_profit`，该交易对将被锁定 `stop_duration` 分钟（或使用 `stop_duration_candles` 时的蜡烛数，或使用 `unlock_at` 时直到设定时间）。
 
-For futures bots, setting `only_per_side` will make the bot only consider one side, and will then only lock this one side, allowing for example shorts to continue after a series of long losses.
+对于期货机器人，设置 `only_per_side` 将使机器人只考虑一侧，然后只锁定这一侧，允许例如在一系列多头亏损后继续空头。
 
-The below example will stop trading a pair for 60 minutes if the pair does not have a required profit of 2% (and a minimum of 2 trades) within the last 6 candles.
+下面的示例如果交易对在过去 6 个蜡烛内没有达到所需的 2% 利润（并且最少 2 笔交易），则将停止交易该交易对 60 分钟。
 
 ``` python
 @property
@@ -111,11 +111,11 @@ def protections(self):
     ]
 ```
 
-#### Cooldown Period
+#### 冷却期
 
-`CooldownPeriod` locks a pair for `stop_duration` in minutes (or in candles when using `stop_duration_candles`, or until the set time when using `unlock_at`) after exiting, avoiding a re-entry for this pair for `stop_duration` minutes.
+`CooldownPeriod` 在退出后锁定交易对 `stop_duration` 分钟（或使用 `stop_duration_candles` 时的蜡烛数，或使用 `unlock_at` 时直到设定时间），避免该交易对在 `stop_duration` 分钟内重新进入。
 
-The below example will stop trading a pair for 2 candles after closing a trade, allowing this pair to "cool down".
+下面的示例将在关闭交易后停止交易该交易对 2 个蜡烛，允许该交易对"冷却"。
 
 ``` python
 @property
@@ -128,22 +128,22 @@ def protections(self):
     ]
 ```
 
-!!! Note
-    This Protection applies only at pair-level, and will never lock all pairs globally.
-    This Protection does not consider `lookback_period` as it only looks at the latest trade.
+!!! Note "注意"
+    此保护仅在交易对级别应用，永远不会全局锁定所有交易对。
+    此保护不考虑 `lookback_period`，因为它只查看最新交易。
 
-### Full example of Protections
+### 保护的完整示例
 
-All protections can be combined at will, also with different parameters, creating a increasing wall for under-performing pairs.
-All protections are evaluated in the sequence they are defined.
+所有保护都可以随意组合，也可以使用不同的参数，为表现不佳的交易对创建一个递增的壁垒。
+所有保护都按照它们定义的顺序进行评估。
 
-The below example assumes a timeframe of 1 hour:
+下面的示例假设时间框架为 1 小时：
 
-* Locks each pair after selling for an additional 5 candles (`CooldownPeriod`), giving other pairs a chance to get filled.
-* Stops trading for 4 hours (`4 * 1h candles`) if the last 2 days (`48 * 1h candles`) had 20 trades, which caused a max-drawdown of more than 20%. (`MaxDrawdown`).
-* Stops trading if more than 4 stoploss occur for all pairs within a 1 day (`24 * 1h candles`) limit (`StoplossGuard`).
-* Locks all pairs that had 2 Trades within the last 6 hours (`6 * 1h candles`) with a combined profit ratio of below 0.02 (<2%) (`LowProfitPairs`).
-* Locks all pairs for 2 candles that had a profit of below 0.01 (<1%) within the last 24h (`24 * 1h candles`), a minimum of 4 trades.
+* 在卖出后为每个交易对额外锁定 5 个蜡烛（`CooldownPeriod`），给其他交易对一个成交的机会。
+* 如果过去 2 天（`48 * 1h 蜡烛`）有 20 笔交易，导致最大回撤超过 20%，则停止交易 4 小时（`4 * 1h 蜡烛`）。（`MaxDrawdown`）。
+* 如果所有交易对在 1 天（`24 * 1h 蜡烛`）内发生超过 4 次止损，则停止交易（`StoplossGuard`）。
+* 锁定在过去 6 小时（`6 * 1h 蜡烛`）内有 2 笔交易且合并利润比率低于 0.02（<2%）的所有交易对（`LowProfitPairs`）。
+* 锁定在过去 24 小时（`24 * 1h 蜡烛`）内利润低于 0.01（<1%）的所有交易对 2 个蜡烛，最少 4 笔交易。
 
 ``` python
 from freqtrade.strategy import IStrategy

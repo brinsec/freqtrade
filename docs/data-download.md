@@ -1,104 +1,104 @@
-# Data Downloading
+# 数据下载
 
-## Getting data for backtesting and hyperopt
+## 获取回测和超参数优化的数据
 
-To download data (candles / OHLCV) needed for backtesting and hyperoptimization use the `freqtrade download-data` command.
+要下载回测和超参数优化所需的数据（蜡烛图 / OHLCV），请使用 `freqtrade download-data` 命令。
 
-If no additional parameter is specified, freqtrade will download data for `"1m"` and `"5m"` timeframes for the last 30 days.
-Exchange and pairs will come from `config.json` (if specified using `-c/--config`).
-Without provided configuration, `--exchange` becomes mandatory.
+如果未指定其他参数，freqtrade 将下载最后 30 天的 `"1m"` 和 `"5m"` 时间框架的数据。
+交易所和交易对将来自 `config.json`（如果使用 `-c/--config` 指定）。
+如果没有提供配置，`--exchange` 将成为必需。
 
-You can use a relative timerange (`--days 20`) or an absolute starting point (`--timerange 20200101-`). For incremental downloads, the relative approach should be used.
+您可以使用相对时间范围（`--days 20`）或绝对起始点（`--timerange 20200101-`）。对于增量下载，应使用相对方法。
 
-!!! Tip "Tip: Updating existing data"
-    If you already have backtesting data available in your data-directory and would like to refresh this data up to today, freqtrade will automatically calculate the missing timerange for the existing pairs and the download will occur from the latest available point until "now", neither `--days` or `--timerange` parameters are required. Freqtrade will keep the available data and only download the missing data.  
-    If you are updating existing data after inserting new pairs that you have no data for, use the `--new-pairs-days xx` parameter. Specified number of days will be downloaded for new pairs while old pairs will be updated with missing data only.  
+!!! Tip "提示：更新现有数据"
+    如果您已经有可用的回测数据在数据目录中，并且希望将数据刷新到今天，freqtrade 将自动计算现有交易对的缺失时间范围，下载将从最新可用点开始直到"现在"，不需要 `--days` 或 `--timerange` 参数。Freqtrade 将保留可用数据并仅下载缺失的数据。
+    如果您在插入新交易对（没有数据）后更新现有数据，请使用 `--new-pairs-days xx` 参数。将为新交易对下载指定天数的数据，而旧交易对将仅更新缺失的数据。
 
-### Usage
+### 用法
 
 --8<-- "commands/download-data.md"
 
-!!! Tip "Downloading all data for one quote currency"
-    Often, you'll want to download data for all pairs of a specific quote-currency. In such cases, you can use the following shorthand:
-    `freqtrade download-data --exchange binance --pairs ".*/USDT" <...>`. The provided "pairs" string will be expanded to contain all active pairs on the exchange.
-    To also download data for inactive (delisted) pairs, add `--include-inactive-pairs` to the command.
+!!! Tip "下载一个计价货币的所有数据"
+    通常，您会想要下载特定计价货币的所有交易对的数据。在这种情况下，您可以使用以下简写：
+    `freqtrade download-data --exchange binance --pairs ".*/USDT" <...>`。提供的"pairs"字符串将扩展为包含交易所上的所有活跃交易对。
+    要同时下载非活跃（已下架）交易对的数据，请在命令中添加 `--include-inactive-pairs`。
 
-!!! Note "Startup period"
-    `download-data` is a strategy-independent command. The idea is to download a big chunk of data once, and then iteratively increase the amount of data stored.
+!!! Note "启动周期"
+    `download-data` 是一个独立于策略的命令。其想法是一次下载大量数据，然后迭代增加存储的数据量。
 
-    For that reason, `download-data` does not care about the "startup-period" defined in a strategy. It's up to the user to download additional days if the backtest should start at a specific point in time (while respecting startup period).
+    因此，`download-data` 不关心策略中定义的"启动周期"。如果回测应该在特定时间点开始（同时尊重启动周期），则由用户下载额外的天数。
 
-### Start download
+### 开始下载
 
-A very simple command (assuming an available `config.json` file) can look as follows.
+一个非常简单的命令（假设有可用的 `config.json` 文件）可以如下所示。
 
 ```bash
 freqtrade download-data --exchange binance
 ```
 
-This will download historical candle (OHLCV) data for all the currency pairs defined in the configuration.
+这将下载配置中定义的所有货币对的历史蜡烛图（OHLCV）数据。
 
-Alternatively, specify the pairs directly
+或者，直接指定交易对
 
 ```bash
 freqtrade download-data --exchange binance --pairs ETH/USDT XRP/USDT BTC/USDT
 ```
 
-or as regex (in this case, to download all active USDT pairs)
+或作为正则表达式（在这种情况下，下载所有活跃的 USDT 交易对）
 
 ```bash
 freqtrade download-data --exchange binance --pairs ".*/USDT"
 ```
 
-### Other Notes
+### 其他说明
 
-* To use a different directory than the exchange specific default, use `--datadir user_data/data/some_directory`.
-* To change the exchange used to download the historical data from, either use `--exchange <exchange>` - or specify a different configuration file.
-* To use `pairs.json` from some other directory, use `--pairs-file some_other_dir/pairs.json`.
-* To download historical candle (OHLCV) data for only 10 days, use `--days 10` (defaults to 30 days).
-* To download historical candle (OHLCV) data from a fixed starting point, use `--timerange 20200101-` - which will download all data from January 1st, 2020.
-* Given starting points are ignored if data is already available, downloading only missing data up to today.
-* Use `--timeframes` to specify what timeframe download the historical candle (OHLCV) data for. Default is `--timeframes 1m 5m` which will download 1-minute and 5-minute data.
-* To use exchange, timeframe and list of pairs as defined in your configuration file, use the `-c/--config` option. With this, the script uses the whitelist defined in the config as the list of currency pairs to download data for and does not require the pairs.json file. You can combine `-c/--config` with most other options.
+* 要使用与交易所特定默认目录不同的目录，请使用 `--datadir user_data/data/some_directory`。
+* 要更改用于下载历史数据的交易所，请使用 `--exchange <exchange>` - 或指定不同的配置文件。
+* 要从其他目录使用 `pairs.json`，请使用 `--pairs-file some_other_dir/pairs.json`。
+* 要仅下载 10 天的历史蜡烛图（OHLCV）数据，请使用 `--days 10`（默认为 30 天）。
+* 要从固定起始点下载历史蜡烛图（OHLCV）数据，请使用 `--timerange 20200101-` - 这将下载从 2020 年 1 月 1 日起的所有数据。
+* 如果数据已可用，给定的起始点将被忽略，仅下载到今天为止的缺失数据。
+* 使用 `--timeframes` 指定要下载的历史蜡烛图（OHLCV）数据的时间框架。默认是 `--timeframes 1m 5m`，将下载 1 分钟和 5 分钟数据。
+* 要使用配置文件中定义的交易所、时间框架和交易对列表，请使用 `-c/--config` 选项。这样，脚本使用配置中定义的白名单作为要下载数据的货币对列表，不需要 pairs.json 文件。您可以将 `-c/--config` 与大多数其他选项组合使用。
 
-??? Note "Permission denied errors"
-    If your configuration directory `user_data` was made by docker, you may get the following error:
+??? Note "权限拒绝错误"
+    如果您的配置目录 `user_data` 是由 docker 创建的，您可能会遇到以下错误：
 
     ```
     cp: cannot create regular file 'user_data/data/binance/pairs.json': Permission denied
     ```
 
-    You can fix the permissions of your user-data directory as follows:
+    您可以按如下方式修复用户数据目录的权限：
 
     ```
     sudo chown -R $UID:$GID user_data
     ```
 
-### Download additional data before the current timerange
+### 在当前时间范围之前下载其他数据
 
-Assuming you downloaded all data from 2022 (`--timerange 20220101-`) - but you'd now like to also backtest with earlier data.
-You can do so by using the `--prepend` flag, combined with `--timerange` - specifying an end-date.
+假设您下载了从 2022 年开始的所有数据（`--timerange 20220101-`）- 但现在您还想使用更早的数据进行回测。
+您可以使用 `--prepend` 标志，结合 `--timerange` - 指定结束日期。
 
 ``` bash
 freqtrade download-data --exchange binance --pairs ETH/USDT XRP/USDT BTC/USDT --prepend --timerange 20210101-20220101
 ```
 
-!!! Note
-    Freqtrade will ignore the end-date in this mode if data is available, updating the end-date to the existing data start point.
+!!! Note "注意"
+    如果数据可用，Freqtrade 将忽略此模式下的结束日期，将结束日期更新为现有数据的起始点。
 
-### Data format
+### 数据格式
 
-Freqtrade currently supports the following data-formats:
+Freqtrade 目前支持以下数据格式：
 
-* `feather` - a dataformat based on Apache Arrow
-* `json` -  plain "text" json files
-* `jsongz` - a gzip-zipped version of json files
-* `parquet` - columnar datastore (OHLCV only)
+* `feather` - 基于 Apache Arrow 的数据格式
+* `json` - 纯"文本"json 文件
+* `jsongz` - json 文件的 gzip 压缩版本
+* `parquet` - 列式数据存储（仅 OHLCV）
 
-By default, both OHLCV data and trades data are stored in the `feather` format.
+默认情况下，OHLCV 数据和交易数据都以 `feather` 格式存储。
 
-This can be changed via the `--data-format-ohlcv` and `--data-format-trades` command line arguments respectively.
-To persist this change, you should also add the following snippet to your configuration, so you don't have to insert the above arguments each time:
+这可以分别通过 `--data-format-ohlcv` 和 `--data-format-trades` 命令行参数更改。
+要持久化此更改，您还应该在配置中添加以下代码片段，这样您就不必每次都插入上述参数：
 
 ``` jsonc
     // ...
@@ -107,19 +107,19 @@ To persist this change, you should also add the following snippet to your config
     // ...
 ```
 
-If the default data-format has been changed during download, then the keys `dataformat_ohlcv` and `dataformat_trades` in the configuration file need to be adjusted to the selected dataformat as well.
+如果下载期间默认数据格式已更改，则配置文件中的 `dataformat_ohlcv` 和 `dataformat_trades` 键也需要调整为所选的数据格式。
 
-!!! Note
-    You can convert between data-formats using the [convert-data](#sub-command-convert-data) and [convert-trade-data](#sub-command-convert-trade-data) methods.
+!!! Note "注意"
+    您可以使用 [convert-data](#sub-command-convert-data) 和 [convert-trade-data](#sub-command-convert-trade-data) 方法在数据格式之间转换。
 
-#### Dataformat comparison
+#### 数据格式比较
 
-The following comparisons have been made with the following data, and by using the linux `time` command.
+以下比较是使用以下数据和 linux `time` 命令进行的。
 
 ```
-Found 6 pair / timeframe combinations.
+找到 6 个交易对 / 时间框架组合。
 +----------+-------------+--------+---------------------+---------------------+
-|     Pair |   Timeframe |   Type |                From |                  To |
+|     交易对 |    时间框架 |   类型 |                 从 |                   到 |
 |----------+-------------+--------+---------------------+---------------------|
 | BTC/USDT |          5m |   spot | 2017-08-17 04:00:00 | 2022-09-13 19:25:00 |
 | ETH/USDT |          1m |   spot | 2017-08-17 04:00:00 | 2022-09-13 19:26:00 |
@@ -130,38 +130,38 @@ Found 6 pair / timeframe combinations.
 +----------+-------------+--------+---------------------+---------------------+
 ```
 
-Timings have been taken in a not very scientific way with the following command, which forces reading the data into memory.
+使用以下命令以不太科学的方式测量了时间，该命令强制将数据读入内存。
 
 ``` bash
 time freqtrade list-data --show-timerange --data-format-ohlcv <dataformat>
 ```
 
-|  Format | Size | timing |
+|  格式 | 大小 | 时间 |
 |------------|-------------|-------------|
 | `feather` | 72Mb | 3.5s |
 | `json` | 149Mb | 25.6s |
 | `jsongz` | 39Mb | 27s |
 | `parquet` | 83Mb | 3.8s |
 
-Size has been taken from the BTC/USDT 1m spot combination for the timerange specified above.
+大小取自上述时间范围的 BTC/USDT 1m 现货组合。
 
-To have a best performance/size mix, we recommend using the default feather format, or parquet.
+为了获得最佳的性能/大小组合，我们建议使用默认的 feather 格式或 parquet。
 
-### Pairs file
+### 交易对文件
 
-In alternative to the whitelist from `config.json`, a `pairs.json` file can be used.
-If you are using Binance for example:
+作为 `config.json` 中白名单的替代方案，可以使用 `pairs.json` 文件。
+例如，如果您使用 Binance：
 
-* create a directory `user_data/data/binance` and copy or create the `pairs.json` file in that directory.
-* update the `pairs.json` file to contain the currency pairs you are interested in.
+* 创建目录 `user_data/data/binance` 并在该目录中复制或创建 `pairs.json` 文件。
+* 更新 `pairs.json` 文件以包含您感兴趣的货币对。
 
 ```bash
 mkdir -p user_data/data/binance
 touch user_data/data/binance/pairs.json
 ```
 
-The format of the `pairs.json` file is a simple json list.
-Mixing different stake-currencies is allowed for this file, since it's only used for downloading.
+`pairs.json` 文件的格式是一个简单的 json 列表。
+允许在此文件中混合不同的投注货币，因为它仅用于下载。
 
 ``` json
 [
@@ -172,63 +172,63 @@ Mixing different stake-currencies is allowed for this file, since it's only used
 ]
 ```
 
-!!! Note
-    The `pairs.json` file is only used when no configuration is loaded (implicitly by naming, or via `--config` flag).
-    You can force the usage of this file via `--pairs-file pairs.json` - however we recommend to use the pairlist from within the configuration, either via `exchange.pair_whitelist` or `pairs` setting in the configuration.
+!!! Note "注意"
+    `pairs.json` 文件仅在未加载配置时使用（通过命名隐式加载，或通过 `--config` 标志）。
+    您可以通过 `--pairs-file pairs.json` 强制使用此文件 - 但我们建议使用配置中的交易对列表，通过 `exchange.pair_whitelist` 或配置中的 `pairs` 设置。
 
-## Sub-command convert data
+## 子命令 convert data
 
 --8<-- "commands/convert-data.md"
 
-### Example converting data
+### 转换数据示例
 
-The following command will convert all candle (OHLCV) data available in `~/.freqtrade/data/binance` from json to jsongz, saving diskspace in the process.
-It'll also remove original json data files (`--erase` parameter).
+以下命令将 `~/.freqtrade/data/binance` 中所有可用的蜡烛图（OHLCV）数据从 json 转换为 jsongz，在此过程中节省磁盘空间。
+它还会删除原始 json 数据文件（`--erase` 参数）。
 
 ``` bash
 freqtrade convert-data --format-from json --format-to jsongz --datadir ~/.freqtrade/data/binance -t 5m 15m --erase
 ```
 
-## Sub-command convert trade data
+## 子命令 convert trade data
 
 --8<-- "commands/convert-trade-data.md"
 
-### Example converting trades
+### 转换交易数据示例
 
-The following command will convert all available trade-data in `~/.freqtrade/data/kraken` from jsongz to json.
-It'll also remove original jsongz data files (`--erase` parameter).
+以下命令将 `~/.freqtrade/data/kraken` 中所有可用的交易数据从 jsongz 转换为 json。
+它还会删除原始 jsongz 数据文件（`--erase` 参数）。
 
 ``` bash
 freqtrade convert-trade-data --format-from jsongz --format-to json --datadir ~/.freqtrade/data/kraken --erase
 ```
 
-## Sub-command trades to ohlcv
+## 子命令 trades to ohlcv
 
-When you need to use `--dl-trades` (kraken only) to download data, conversion of trades data to ohlcv data is the last step.
-This command will allow you to repeat this last step for additional timeframes without re-downloading the data.
+当您需要使用 `--dl-trades`（仅限 kraken）下载数据时，将交易数据转换为 ohlcv 数据是最后一步。
+此命令允许您为其他时间框架重复此最后一步，而无需重新下载数据。
 
 --8<-- "commands/trades-to-ohlcv.md"
 
-### Example trade-to-ohlcv conversion
+### 交易到 ohlcv 转换示例
 
 ``` bash
 freqtrade trades-to-ohlcv --exchange kraken -t 5m 1h 1d --pairs BTC/EUR ETH/EUR
 ```
 
-## Sub-command list-data
+## 子命令 list-data
 
-You can get a list of downloaded data using the `list-data` sub-command.
+您可以使用 `list-data` 子命令获取已下载数据的列表。
 
 --8<-- "commands/list-data.md"
 
-### Example list-data
+### list-data 示例
 
 ```bash
 > freqtrade list-data --userdir ~/.freqtrade/user_data/
 
-              Found 33 pair / timeframe combinations.
+              找到 33 个交易对 / 时间框架组合。
 ┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━┓
-┃          Pair ┃                                 Timeframe ┃ Type ┃
+┃          交易对 ┃                                 时间框架 ┃ 类型 ┃
 ┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━┩
 │       ADA/BTC │     5m, 15m, 30m, 1h, 2h, 4h, 6h, 12h, 1d │ spot │
 │       ADA/ETH │     5m, 15m, 30m, 1h, 2h, 4h, 6h, 12h, 1d │ spot │
@@ -238,45 +238,45 @@ You can get a list of downloaded data using the `list-data` sub-command.
 
 ```
 
-Show all trades data including from/to timerange
+显示所有交易数据，包括从/到时间范围
 
 ``` bash
 > freqtrade list-data --show --trades
-                     Found trades data for 1 pair.                     
+                     找到 1 个交易对的交易数据。                     
 ┏━━━━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
-┃    Pair ┃ Type ┃                From ┃                  To ┃ Trades ┃
+┃    交易对 ┃ 类型 ┃                 从 ┃                   到 ┃  交易数 ┃
 ┡━━━━━━━━━╇━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━┩
 │ XRP/ETH │ spot │ 2019-10-11 00:00:11 │ 2019-10-13 11:19:28 │  12477 │
 └─────────┴──────┴─────────────────────┴─────────────────────┴────────┘
 
 ```
 
-## Trades (tick) data
+## 交易（tick）数据
 
-By default, `download-data` sub-command downloads Candles (OHLCV) data. Most exchanges also provide historic trade-data via their API.
-This data can be useful if you need many different timeframes, since it is only downloaded once, and then resampled locally to the desired timeframes.
+默认情况下，`download-data` 子命令下载蜡烛图（OHLCV）数据。大多数交易所还通过其 API 提供历史交易数据。
+如果您需要许多不同的时间框架，此数据可能很有用，因为它只下载一次，然后在本地重新采样到所需的时间框架。
 
-Since this data is large by default, the files use the feather file format by default. They are stored in your data-directory with the naming convention of `<pair>-trades.feather` (`ETH_BTC-trades.feather`). Incremental mode is also supported, as for historic OHLCV data, so downloading the data once per week with `--days 8` will create an incremental data-repository.
+由于此数据默认很大，文件默认使用 feather 文件格式。它们以 `<pair>-trades.feather`（`ETH_BTC-trades.feather`）的命名约定存储在您的数据目录中。还支持增量模式，就像历史 OHLCV 数据一样，因此每周使用 `--days 8` 下载一次数据将创建一个增量数据存储库。
 
-To use this mode, simply add `--dl-trades` to your call. This will swap the download method to download trades.
-If `--convert` is also provided, the resample step will happen automatically and overwrite eventually existing OHLCV data for the given pair/timeframe combinations.
+要使用此模式，只需在调用中添加 `--dl-trades`。这将交换下载方法以下载交易。
+如果还提供了 `--convert`，重新采样步骤将自动发生，并最终覆盖给定交易对/时间框架组合的现有 OHLCV 数据。
 
-!!! Warning "Do not use"
-    You should not use this unless you're a kraken user (Kraken does not provide historic OHLCV data).  
-    Most other exchanges provide OHLCV data with sufficient history, so downloading multiple timeframes through that method will still proof to be a lot faster than downloading trades data.
+!!! Warning "请勿使用"
+    除非您是 kraken 用户，否则不应使用此功能（Kraken 不提供历史 OHLCV 数据）。
+    大多数其他交易所提供具有足够历史的 OHLCV 数据，因此通过该方法下载多个时间框架仍然比下载交易数据快得多。
 
-!!! Note "Kraken user"
-    Kraken users should read [this](exchanges.md#historic-kraken-data) before starting to download data.
+!!! Note "Kraken 用户"
+    Kraken 用户在开始下载数据之前应该阅读[此内容](exchanges.md#historic-kraken-data)。
 
-Example call:
+示例调用：
 
 ```bash
 freqtrade download-data --exchange kraken --pairs XRP/EUR ETH/EUR --days 20 --dl-trades
 ```
 
-!!! Note
-    While this method uses async calls, it will be slow, since it requires the result of the previous call to generate the next request to the exchange.
+!!! Note "注意"
+    虽然此方法使用异步调用，但它会很慢，因为它需要前一个调用的结果来生成对交易所的下一个请求。
 
-## Next step
+## 下一步
 
-Great, you now have some data downloaded, so you can now start [backtesting](backtesting.md) your strategy.
+太好了，您现在已下载了一些数据，因此您现在可以开始[回测](backtesting.md)您的策略了。

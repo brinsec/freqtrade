@@ -551,28 +551,28 @@ class Telegram(RPCHandler):
             message_side = "enter" if msg["type"] == RPCMessageType.ENTRY_CANCEL else "exit"
             message = (
                 f"\N{WARNING SIGN} *{self._exchange_from_msg(msg)}:* "
-                f"Cancelling {'partial ' if msg.get('sub_trade') else ''}"
-                f"{message_side} Order for {msg['pair']} "
-                f"(#{msg['trade_id']}). Reason: {msg['reason']}."
+                f"正在取消 {'部分 ' if msg.get('sub_trade') else ''}"
+                f"{'入场' if message_side == 'enter' else '出场'}订单 {msg['pair']} "
+                f"(#{msg['trade_id']})。原因: {msg['reason']}。"
             )
 
         elif msg["type"] == RPCMessageType.PROTECTION_TRIGGER:
             message = (
-                f"*Protection* triggered due to {msg['reason']}. "
-                f"`{msg['pair']}` will be locked until `{msg['lock_end_time']}`."
+                f"*保护*功能因 {msg['reason']} 触发。"
+                f"`{msg['pair']}` 将被锁定直到 `{msg['lock_end_time']}`。"
             )
 
         elif msg["type"] == RPCMessageType.PROTECTION_TRIGGER_GLOBAL:
             message = (
-                f"*Protection* triggered due to {msg['reason']}. "
-                f"*All pairs* will be locked until `{msg['lock_end_time']}`."
+                f"*保护*功能因 {msg['reason']} 触发。"
+                f"*所有交易对*将被锁定直到 `{msg['lock_end_time']}`。"
             )
 
         elif msg["type"] == RPCMessageType.STATUS:
-            message = f"*Status:* `{msg['status']}`"
+            message = f"*状态:* `{msg['status']}`"
 
         elif msg["type"] == RPCMessageType.WARNING:
-            message = f"\N{WARNING SIGN} *Warning:* `{msg['status']}`"
+            message = f"\N{WARNING SIGN} *警告:* `{msg['status']}`"
         elif msg["type"] == RPCMessageType.EXCEPTION:
             # Errors will contain exceptions, which are wrapped in triple ticks.
             message = f"\N{WARNING SIGN} *ERROR:* \n {msg['status']}"

@@ -1,118 +1,118 @@
-# Strategy Customization
+# 策略自定义
 
-This page explains how to customize your strategies, add new indicators and set up trading rules.
+本页介绍如何自定义策略、添加新指标和设置交易规则。
 
-If you haven't already, please familiarize yourself with:
+如果您还没有，请先熟悉：
 
-- the [Freqtrade strategy 101](strategy-101.md), which provides a quick start to strategy development
-- the [Freqtrade bot basics](bot-basics.md), which provides overall info on how the bot operates
+- [Freqtrade 策略 101](strategy-101.md)，提供策略开发的快速入门
+- [Freqtrade 机器人基础知识](bot-basics.md)，提供机器人如何运行的整体信息
 
-## Develop your own strategy
+## 开发您自己的策略
 
-The bot includes a default strategy file.
+机器人包含一个默认策略文件。
 
-Also, several other strategies are available in the [strategy repository](https://github.com/freqtrade/freqtrade-strategies).
+此外，[策略仓库](https://github.com/freqtrade/freqtrade-strategies)中还有几个其他策略可用。
 
-You will however most likely have your own idea for a strategy.
+但是，您很可能对自己的策略有自己的想法。
 
-This document intends to help you convert your ideas into a working strategy.
+本文档旨在帮助您将想法转换为可行的策略。
 
-### Generating a strategy template
+### 生成策略模板
 
-To get started, you can use the command:
+要开始，您可以使用命令：
 
 ```bash
 freqtrade new-strategy --strategy AwesomeStrategy
 ```
 
-This will create a new strategy called `AwesomeStrategy` from a template, which will be located using the filename `user_data/strategies/AwesomeStrategy.py`.
+这将从模板创建一个名为 `AwesomeStrategy` 的新策略，将使用文件名 `user_data/strategies/AwesomeStrategy.py` 定位。
 
-!!! Note
-    There is a difference between the *name* of the strategy and the filename. In most commands, Freqtrade uses the *name* of the strategy, *not the filename*.
+!!! Note "注意"
+    策略的*名称*和文件名之间存在差异。在大多数命令中，Freqtrade 使用策略的*名称*，*而不是文件名*。
 
-!!! Note
-    The `new-strategy` command generates starting examples which will not be profitable out of the box.
+!!! Note "注意"
+    `new-strategy` 命令生成的起始示例在开箱即用的情况下不会盈利。
 
-??? Hint "Different template levels"
-    `freqtrade new-strategy` has an additional parameter, `--template`, which controls the amount of pre-build information you get in the created strategy. Use `--template minimal` to get an empty strategy without any indicator examples, or `--template advanced` to get a template with more complicated features defined.
+??? Hint "不同的模板级别"
+    `freqtrade new-strategy` 有一个附加参数 `--template`，它控制您在创建的策略中获得预构建信息的数量。使用 `--template minimal` 获得没有任何指标示例的空策略，或使用 `--template advanced` 获得定义了更复杂功能的模板。
 
-### Anatomy of a strategy
+### 策略的组成
 
-A strategy file contains all the information needed to build the strategy logic:
+策略文件包含构建策略逻辑所需的所有信息：
 
-- Candle data in OHLCV format
-- Indicators
-- Entry logic
-  - Signals
-- Exit logic
-  - Signals
-  - Minimal ROI
-  - Callbacks ("custom functions")
-- Stoploss
-  - Fixed/absolute
-  - Trailing
-  - Callbacks ("custom functions")
-- Pricing [optional]
-- Position adjustment [optional]
+- OHLCV 格式的蜡烛数据
+- 指标
+- 入场逻辑
+  - 信号
+- 出场逻辑
+  - 信号
+  - 最小 ROI
+  - 回调（"自定义函数"）
+- 止损
+  - 固定/绝对
+  - 追踪
+  - 回调（"自定义函数"）
+- 定价 [可选]
+- 头寸调整 [可选]
 
-The bot includes a sample strategy called `SampleStrategy` that you can use as a basis: `user_data/strategies/sample_strategy.py`.
-You can test it with the parameter: `--strategy SampleStrategy`. Remember that you use the strategy class name, not the filename.
+机器人包含一个名为 `SampleStrategy` 的示例策略，您可以用作基础：`user_data/strategies/sample_strategy.py`。
+您可以使用参数 `--strategy SampleStrategy` 对其进行测试。请记住，您使用策略类名，而不是文件名。
 
-Additionally, there is an attribute called `INTERFACE_VERSION`, which defines the version of the strategy interface the bot should use.
-The current version is 3 - which is also the default when it's not set explicitly in the strategy.
+此外，还有一个名为 `INTERFACE_VERSION` 的属性，它定义机器人应使用的策略接口版本。
+当前版本是 3 - 这也是未在策略中显式设置时的默认值。
 
-You may see older strategies set to interface version 2, and these will need to be updated to v3 terminology as future versions will require this to be set.
+您可能会看到设置为接口版本 2 的旧策略，这些需要更新为 v3 术语，因为未来的版本将需要设置此值。
 
-Starting the bot in dry or live mode is accomplished using the `trade` command:
+使用 `trade` 命令以模拟或实盘模式启动机器人：
 
 ```bash
 freqtrade trade --strategy AwesomeStrategy
 ```
 
-### Bot modes
+### 机器人模式
 
-Freqtrade strategies can be processed by the Freqtrade bot in 5 main modes:
+Freqtrade 策略可以在 Freqtrade 机器人的 5 种主要模式下处理：
 
-- backtesting
-- hyperopting
-- dry ("forward testing")
-- live
-- FreqAI (not covered here)
+- 回测
+- 超参数优化
+- 模拟（"前向测试"）
+- 实盘
+- FreqAI（此处未涵盖）
 
-Check the [configuration documentation](configuration.md) about how to set the bot to dry or live mode.
+查看[配置文档](configuration.md)了解如何将机器人设置为模拟或实盘模式。
 
-**Always use dry mode when testing as this gives you an idea of how your strategy will work in reality without risking capital.**
+**在测试时始终使用模拟模式，因为这可以让您了解策略在现实中的工作方式，而不会冒资金风险。**
 
-## Diving in deeper
+## 深入了解
 
-**For the following section we will use the [user_data/strategies/sample_strategy.py](https://github.com/freqtrade/freqtrade/blob/develop/freqtrade/templates/sample_strategy.py)
-file as reference.**
+**对于以下部分，我们将使用 [user_data/strategies/sample_strategy.py](https://github.com/freqtrade/freqtrade/blob/develop/freqtrade/templates/sample_strategy.py)
+文件作为参考。**
 
-!!! Note "Strategies and Backtesting"
-    To avoid problems and unexpected differences between backtesting and dry/live modes, please be aware
-    that during backtesting the full time range is passed to the `populate_*()` methods at once.
-    It is therefore best to use vectorized operations (across the whole dataframe, not loops) and
-    avoid index referencing (`df.iloc[-1]`), but instead use `df.shift()` to get to the previous candle.
+!!! Note "策略和回测"
+    为了避免回测和模拟/实盘模式之间的问题和意外差异，请注意
+    在回测期间，完整的时间范围一次传递给 `populate_*()` 方法。
+    因此最好使用向量化操作（跨整个 dataframe，而不是循环）并
+    避免索引引用（`df.iloc[-1]`），而是使用 `df.shift()` 获取上一个蜡烛。
 
-!!! Warning "Warning: Using future data"
-    Since backtesting passes the full time range to the `populate_*()` methods, the strategy author
-    needs to take care to avoid having the strategy utilize data from the future.
-    Some common patterns for this are listed in the [Common Mistakes](#common-mistakes-when-developing-strategies) section of this document.
+!!! Warning "警告：使用未来数据"
+    由于回测将完整的时间范围传递给 `populate_*()` 方法，策略作者
+    需要注意避免策略利用未来的数据。
+    一些常见的模式列在本文档的[常见错误](#common-mistakes-when-developing-strategies)部分中。
 
-??? Hint "Lookahead and recursive analysis"
-    Freqtrade includes two helpful commands to help assess common lookahead (using future data) and
-    recursive bias (variance in indicator values) issues. Before running a strategy in dry or live more,
-    you should always use these commands first. Please check the relevant documentation for
-    [lookahead](lookahead-analysis.md) and [recursive](recursive-analysis.md) analysis.
+??? Hint "前瞻和递归分析"
+    Freqtrade 包含两个有用的命令来帮助评估常见的前瞻（使用未来数据）和
+    递归偏差（指标值的方差）问题。在模拟或实盘中运行策略之前，
+    您应该首先使用这些命令。请查看相关的文档
+    [前瞻](lookahead-analysis.md) 和 [递归](recursive-analysis.md) 分析。
 
 ### Dataframe
 
-Freqtrade uses [pandas](https://pandas.pydata.org/) to store/provide the candlestick (OHLCV) data.
-Pandas is a great library developed for processing large amounts of data in tabular format.
+Freqtrade 使用 [pandas](https://pandas.pydata.org/) 存储/提供蜡烛图（OHLCV）数据。
+Pandas 是为处理表格格式的大量数据而开发的优秀库。
 
-Each row in a dataframe corresponds to one candle on a chart, with the latest complete candle always being the last in the dataframe (sorted by date).
+dataframe 中的每一行对应于图表上的一个蜡烛，最新的完整蜡烛始终是 dataframe 中的最后一个（按日期排序）。
 
-If we were to look at the first few rows of the main dataframe using the pandas `head()` function, we would see:
+如果我们使用 pandas `head()` 函数查看主 dataframe 的前几行，我们会看到：
 
 ```output
 > dataframe.head()
@@ -124,16 +124,16 @@ If we were to look at the first few rows of the main dataframe using the pandas 
 4 2021-11-09 23:45:00+00:00  67160.48  67160.48  66901.26  66943.37  111.39292
 ```
 
-A dataframe is a table where columns are not single values, but a series of data values. As such, simple python comparisons like the following will not work:
+Dataframe 是一个表，其中列不是单个值，而是一系列数据值。因此，以下简单的 python 比较将不起作用：
 
 ``` python
     if dataframe['rsi'] > 30:
         dataframe['enter_long'] = 1
 ```
 
-The above section will fail with `The truth value of a Series is ambiguous [...]`.
+上面的部分将失败，并显示 `The truth value of a Series is ambiguous [...]`。
 
-This must instead be written in a pandas-compatible way, so the operation is performed across the whole dataframe, i.e. `vectorisation`.
+这必须改为以 pandas 兼容的方式编写，因此操作跨整个 dataframe 执行，即 `向量化`。
 
 ``` python
     dataframe.loc[
@@ -141,13 +141,13 @@ This must instead be written in a pandas-compatible way, so the operation is per
     , 'enter_long'] = 1
 ```
 
-With this section, you have a new column in your dataframe, which has `1` assigned whenever RSI is above 30.
+使用此部分，您的 dataframe 中有一个新列，当 RSI 高于 30 时分配 `1`。
 
-Freqtrade uses this new column as an entry signal, where it is assumed that a trade will subsequently open on the next open candle.
+Freqtrade 使用此新列作为入场信号，假定交易将在下一个开盘蜡烛上随后打开。
 
-Pandas provides fast ways to calculate metrics, i.e. "vectorisation". To benefit from this speed, it is advised to not use loops, but use vectorized methods instead.
+Pandas 提供了快速计算指标的方法，即"向量化"。为了从这种速度中受益，建议不要使用循环，而是使用向量化方法。
 
-Vectorized operations perform calculations across the whole range of data and are therefore, compared to looping through each row, a lot faster when calculating indicators.
+向量化操作跨整个数据范围执行计算，因此，与逐行循环相比，在计算指标时速度要快得多。
 
 ??? Hint "Signals vs Trades"
     - Signals are generated from indicators at candle close, and are intentions to enter a trade.
