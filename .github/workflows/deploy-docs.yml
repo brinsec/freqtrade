@@ -9,7 +9,8 @@ on:
 
 
 # disable permissions for all of the available permissions
-permissions: {}
+permissions:
+  contents: write  #  for mike to push
 
 
 jobs:
