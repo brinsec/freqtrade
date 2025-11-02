@@ -134,5 +134,5 @@ plugins:
   - search:
       enabled: true
   - mike:
-      deploy_prefix: 'en'
+      deploy_prefix: 'zh'
       canonical_version: 'stable'
