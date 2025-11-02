@@ -1,5 +1,5 @@
 site_name: Freqtrade
-site_url: !ENV [READTHEDOCS_CANONICAL_URL, 'https://www.freqtrade.io/zh/']
+site_url: !ENV [READTHEDOCS_CANONICAL_URL, 'https://brinsec.github.io/freqtrade']
 site_description: Freqtrade 是一个用 Python 编写的免费开源加密货币交易机器人，支持所有主要交易所，可通过 Telegram 或内置 Web UI 进行控制
 repo_url: https://github.com/brinsec/freqtrade
 edit_uri: edit/develop/docs/
@@ -134,5 +134,5 @@ plugins:
   - search:
       enabled: true
   - mike:
-      deploy_prefix: 'zh'
+      deploy_prefix: ''
       canonical_version: 'stable'
