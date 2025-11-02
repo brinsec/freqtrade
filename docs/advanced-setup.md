@@ -30,9 +30,9 @@ freqtrade trade -c MyConfig.json -s MyStrategy
 freqtrade trade -c MyConfig.json -s MyStrategy --db-url sqlite:///tradesv3.dryrun.sqlite
 ```
 
-It means that if you are running the trade command in two different terminals, for example to test your strategy both for trades in USDT and in another instance for trades in BTC, you will have to run them with different databases.
+这意味着如果您在两个不同的终端中运行交易命令，例如测试以 USDT 交易的策略，在另一个实例中测试以 BTC 交易的策略，您将需要使用不同的数据库运行它们。
 
-If you specify the URL of a database which does not exist, freqtrade will create one with the name you specified. So to test your custom strategy with BTC and USDT stake currencies, you could use the following commands (in 2 separate terminals):
+如果您指定一个不存在的数据库 URL，freqtrade 将使用您指定的名称创建一个新数据库。因此，要使用 BTC 和 USDT 作为投注货币测试您的自定义策略，您可以使用以下命令（在 2 个单独的终端中）：
 
 ``` bash
 # Terminal 1:
@@ -41,7 +41,7 @@ freqtrade trade -c MyConfigBTC.json -s MyCustomStrategy --db-url sqlite:///user_
 freqtrade trade -c MyConfigUSDT.json -s MyCustomStrategy --db-url sqlite:///user_data/tradesUSDT.dryrun.sqlite
 ```
 
-Conversely, if you wish to do the same thing in production mode, you will also have to create at least one new database (in addition to the default one) and specify the path to the "live" databases, for example:
+相反，如果您希望在生产模式下执行相同的操作，您还需要创建至少一个新数据库（除了默认数据库之外）并指定"实盘"数据库的路径，例如：
 
 ``` bash
 # Terminal 1:
@@ -50,11 +50,11 @@ freqtrade trade -c MyConfigBTC.json -s MyCustomStrategy --db-url sqlite:///user_
 freqtrade trade -c MyConfigUSDT.json -s MyCustomStrategy --db-url sqlite:///user_data/tradesUSDT.live.sqlite
 ```
 
-For more information regarding usage of the sqlite databases, for example to manually enter or remove trades, please refer to the [SQL Cheatsheet](sql_cheatsheet.md).
+有关使用 sqlite 数据库的更多信息，例如手动输入或删除交易，请参阅 [SQL 速查表](sql_cheatsheet.md)。
 
-### Multiple instances using docker
+### 使用 docker 运行多个实例
 
-To run multiple instances of freqtrade using docker you will need to edit the docker-compose.yml file and add all the instances you want as separate services. Remember, you can separate your configuration into multiple files, so it's a good idea to think about making them modular, then if you need to edit something common to all bots, you can do that in a single config file. 
+要使用 docker 运行多个 freqtrade 实例，您需要编辑 docker-compose.yml 文件，并将所有需要的实例添加为单独的服务。请记住，您可以将配置分离到多个文件中，因此考虑使它们模块化是个好主意，然后如果您需要对所有机器人的共同内容进行编辑，可以在单个配置文件中完成。 
 ``` yml
 ---
 version: '3'
@@ -115,89 +115,84 @@ services:
 
 ```
 
-You can use whatever naming convention you want, freqtrade1 and 2 are arbitrary. Note, that you will need to use different database files, port mappings and telegram configurations for each instance, as mentioned above. 
+您可以使用任何命名约定，freqtrade1 和 2 是任意的。请注意，如上所述，您需要为每个实例使用不同的数据库文件、端口映射和 Telegram 配置。
 
-## Use a different database system
+## 使用不同的数据库系统
 
-Freqtrade is using SQLAlchemy, which supports multiple different database systems. As such, a multitude of database systems should be supported.
-Freqtrade does not depend or install any additional database driver. Please refer to the [SQLAlchemy docs](https://docs.sqlalchemy.org/en/14/core/engines.html#database-urls) on installation instructions for the respective database systems.
+Freqtrade 使用 SQLAlchemy，它支持多种不同的数据库系统。因此，应支持多种数据库系统。
+Freqtrade 不依赖或安装任何额外的数据库驱动程序。请在 [SQLAlchemy 文档](https://docs.sqlalchemy.org/en/14/core/engines.html#database-urls) 中查阅各个数据库系统的安装说明。
 
-The following systems have been tested and are known to work with freqtrade:
+以下系统已经过测试并已知可与 freqtrade 一起使用：
 
-* sqlite (default)
+* sqlite（默认）
 * PostgreSQL
 * MariaDB
 
 !!! Warning
-    By using one of the below database systems, you acknowledge that you know how to manage such a system. The freqtrade team will not provide any support with setup or maintenance (or backups) of the below database systems.
+    通过使用以下数据库系统之一，您承认您了解如何管理这样的系统。freqtrade 团队不会提供有关以下数据库系统的设置或维护（或备份）的任何支持。
 
 ### PostgreSQL
 
-Installation:
+安装：
 `pip install "psycopg[binary]"`
 
-Usage:
+用法：
 `... --db-url postgresql+psycopg://<username>:<password>@localhost:5432/<database>`
 
-Freqtrade will automatically create the tables necessary upon startup.
+Freqtrade 将在启动时自动创建必要的表。
 
-If you're running different instances of Freqtrade, you must either setup one database per Instance or use different users / schemas for your connections.
+如果您运行不同的 Freqtrade 实例，您必须为每个实例设置一个数据库，或者为连接使用不同的用户/架构。
 
 ### MariaDB / MySQL
 
-Freqtrade supports MariaDB by using SQLAlchemy, which supports multiple different database systems.
+Freqtrade 通过使用 SQLAlchemy 支持 MariaDB，该工具支持多种不同的数据库系统。
 
-Installation:
+安装：
 `pip install pymysql`
 
-Usage:
+用法：
 `... --db-url mysql+pymysql://<username>:<password>@localhost:3306/<database>`
 
 
 
-## Configure the bot running as a systemd service
+## 将机器人配置为作为 systemd 服务运行
 
-Copy the `freqtrade.service` file to your systemd user directory (usually `~/.config/systemd/user`) and update `WorkingDirectory` and `ExecStart` to match your setup.
+将 `freqtrade.service` 文件复制到您的 systemd 用户目录（通常是 `~/.config/systemd/user`）并更新 `WorkingDirectory` 和 `ExecStart` 以匹配您的设置。
 
 !!! Note
-    Certain systems (like Raspbian) don't load service unit files from the user directory. In this case, copy `freqtrade.service` into `/etc/systemd/user/` (requires superuser permissions).
+    某些系统（如 Raspbian）不会从用户目录加载服务单元文件。在这种情况下，将 `freqtrade.service` 复制到 `/etc/systemd/user/`（需要超级用户权限）。
 
-After that you can start the daemon with:
+然后，您可以使用以下命令启动守护进程：
 
 ```bash
 systemctl --user start freqtrade
 ```
 
-For this to be persistent (run when user is logged out) you'll need to enable `linger` for your freqtrade user.
+要使此操作持久化（在用户注销时运行），您需要为您的 freqtrade 用户启用 `linger`。
 
 ```bash
 sudo loginctl enable-linger "$USER"
 ```
 
-If you run the bot as a service, you can use systemd service manager as a software watchdog monitoring freqtrade bot 
-state and restarting it in the case of failures. If the `internals.sd_notify` parameter is set to true in the 
-configuration or the `--sd-notify` command line option is used, the bot will send keep-alive ping messages to systemd 
-using the sd_notify (systemd notifications) protocol and will also tell systemd its current state (Running, Paused or Stopped) 
-when it changes. 
+如果您将机器人作为服务运行，您可以使用 systemd 服务管理器作为软件看门狗来监控 freqtrade 机器人状态，并在发生故障时重新启动它。如果配置中的 `internals.sd_notify` 参数设置为 true，或使用 `--sd-notify` 命令行选项，机器人将使用 sd_notify（systemd 通知）协议向 systemd 发送保持活动 ping 消息，并在状态更改时告诉 systemd 其当前状态（运行中、暂停或停止）。
 
-The `freqtrade.service.watchdog` file contains an example of the service unit configuration file which uses systemd 
-as the watchdog.
+`freqtrade.service.watchdog` 文件包含一个使用 systemd 作为看门狗的服务单元配置示例。
 
 !!! Note
-    The sd_notify communication between the bot and the systemd service manager will not work if the bot runs in a Docker container.
+    如果机器人在 Docker 容器中运行，机器人与 systemd 服务管理器之间的 sd_notify 通信将不起作用。
 
-## Advanced Logging
+## 高级日志
 
-Freqtrade uses the default logging module provided by python.
-Python allows for extensive [logging configuration](https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig) in this regard - way more than what can be covered here.
+Freqtrade 使用 Python 提供的默认日志模块。
+Python 允许在这方面进行广泛的[日志配置](https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig)——远超此处可涵盖的内容。
 
-Default logging format (coloured terminal output) is set up by default if no `log_config` is provided in your freqtrade configuration.
-Using `--logfile logfile.log` will enable the RotatingFileHandler.
+如果您的 freqtrade 配置中未提供 `log_config`，则默认设置彩色终端输出的日志格式。
+使用 `--logfile logfile.log` 将启用 RotatingFileHandler。
 
-If you're not content with the log format, or with the default settings provided for the RotatingFileHandler, you can customize logging to your liking by adding the `log_config` configuration to your freqtrade configuration file(s).
+如果您对日志格式或为 RotatingFileHandler 提供的默认设置不满意，可以通过向 freqtrade 配置文件添加 `log_config` 配置来自定义日志。
 
-The default configuration looks roughly like the below, with the file handler being provided but not enabled as the `filename` is commented out.
-Uncomment this line and supply a valid path/filename to enable it.
+默认配置大致如下，提供文件处理程序但未启用，因为 `filename` 被注释掉了。
+取消注释此行并提供有效的路径/文件名以启用它。
 
 ``` json hl_lines="5-7 13-16 27"
 {
@@ -236,23 +231,23 @@ Uncomment this line and supply a valid path/filename to enable it.
 ```
 
 !!! Note "highlighted lines"
-    Highlighted lines in the above code-block define the Rich handler and belong together.
-    The formatter "standard" and "file" will belong to the FileHandler.
+    以上代码块中高亮的行定义了 Rich 处理器，它们属于一起。
+    格式化器 "standard" 和 "file" 将属于 FileHandler。
 
-Each handler must use one of the defined formatters (by name), its class must be available, and must be a valid logging class.
-To actually use a handler, it must be in the "handlers" section inside the "root" segment.
-If this section is left out, freqtrade will provide no output (in the non-configured handler, anyway).
+每个处理器必须使用定义的格式化器之一（按名称），其类必须可用，并且必须是有效的日志类。
+要实际使用处理器，它必须在 "root" 段内的 "handlers" 部分。
+如果省略此部分，freqtrade 将不提供任何输出（在未配置的处理器中，无论如何）。
 
-!!! Tip "Explicit log configuration"
-    We recommend to extract the logging configuration from your main freqtrade configuration file, and provide it to your bot via [multiple configuration files](configuration.md#multiple-configuration-files) functionality. This will avoid unnecessary code duplication.
+!!! Tip "显式日志配置"
+    我们建议从主 freqtrade 配置文件中提取日志配置，并通过[多个配置文件](configuration.md#multiple-configuration-files)功能将其提供给您的机器人。这将避免不必要的代码重复。
 
 ---
 
-On many Linux systems the bot can be configured to send its log messages to `syslog` or `journald` system services. Logging to a remote `syslog` server is also available on Windows. The special values for the `--logfile` command line option can be used for this.
+在许多 Linux 系统上，可以将机器人配置为将其日志消息发送到 `syslog` 或 `journald` 系统服务。在 Windows 上也可以记录到远程 `syslog` 服务器。`--logfile` 命令行选项的特殊值可用于此目的。
 
-### Logging to syslog
+### 日志记录到 syslog
 
-To send Freqtrade log messages to a local or remote `syslog` service use the `"log_config"` setup option to configure logging.
+要将 Freqtrade 日志消息发送到本地或远程 `syslog` 服务，请使用 `"log_config"` 设置选项来配置日志记录。
 
 ``` json
 {
@@ -285,61 +280,61 @@ To send Freqtrade log messages to a local or remote `syslog` service use the `"l
 }
 ```
 
-[Additional log-handlers](#advanced-logging) may need to be configured to for example also have log output in the console.
+可能需要配置[额外的日志处理器](#advanced-logging)，例如在控制台中也有日志输出。
 
-#### Syslog usage
+#### Syslog 使用
 
-Log messages are send to `syslog` with the `user` facility. So you can see them with the following commands:
+日志消息以 `user` 设施发送到 `syslog`。因此，您可以使用以下命令查看它们：
 
-* `tail -f /var/log/user`, or
-* install a comprehensive graphical viewer (for instance, 'Log File Viewer' for Ubuntu).
+* `tail -f /var/log/user`，或
+* 安装一个全面的图形查看器（例如，Ubuntu 的 'Log File Viewer'）。
 
-On many systems `syslog` (`rsyslog`) fetches data from `journald` (and vice versa), so both syslog or journald can be used and the messages be viewed with both `journalctl` and a syslog viewer utility. You can combine this in any way which suites you better.
+在许多系统上，`syslog` (`rsyslog`) 从 `journald` 获取数据（反之亦然），因此可以使用 syslog 或 journald，并通过 `journalctl` 和 syslog 查看器实用程序查看消息。您可以用任何更适合的方式组合这些。
 
-For `rsyslog` the messages from the bot can be redirected into a separate dedicated log file. To achieve this, add
+对于 `rsyslog`，来自机器人的消息可以重定向到单独的专用日志文件。要实现此目的，请添加
 
 ```
 if $programname startswith "freqtrade" then -/var/log/freqtrade.log
 ```
 
-to one of the rsyslog configuration files, for example at the end of the `/etc/rsyslog.d/50-default.conf`.
+到 rsyslog 配置文件之一，例如在 `/etc/rsyslog.d/50-default.conf` 的末尾。
 
-For `syslog` (`rsyslog`), the reduction mode can be switched on. This will reduce the number of repeating messages. For instance, multiple bot Heartbeat messages will be reduced to a single message when nothing else happens with the bot. To achieve this, set in `/etc/rsyslog.conf`:
+对于 `syslog` (`rsyslog`)，可以开启缩减模式。这将减少重复消息的数量。例如，当机器人没有其他事情发生时，多个机器人心跳消息将缩减为单个消息。要实现此目的，请在 `/etc/rsyslog.conf` 中设置：
 
 ```
 # Filter duplicated messages
 $RepeatedMsgReduction on
 ```
 
-#### Syslog addressing
+#### Syslog 寻址
 
-The syslog address can be either a Unix domain socket (socket filename) or a UDP socket specification, consisting of IP address and UDP port, separated by the `:` character.
+syslog 地址可以是 Unix 域套接字（套接字文件名）或 UDP 套接字规范，由 IP 地址和 UDP 端口组成，用 `:` 字符分隔。
 
-So, the following are the examples of possible addresses:
+因此，以下是一些可能的地址示例：
 
-* `"address": "/dev/log"` -- log to syslog (rsyslog) using the `/dev/log` socket, suitable for most systems.
-* `"address": "/var/run/syslog"` -- log to syslog (rsyslog) using the `/var/run/syslog` socket. Use this on MacOS.
-* `"address": "localhost:514"` -- log to local syslog using UDP socket, if it listens on port 514.
-* `"address": "<ip>:514"` -- log to remote syslog at IP address and port 514. This may be used on Windows for remote logging to an external syslog server.
+* `"address": "/dev/log"` -- 使用 `/dev/log` 套接字记录到 syslog (rsyslog)，适用于大多数系统。
+* `"address": "/var/run/syslog"` -- 使用 `/var/run/syslog` 套接字记录到 syslog (rsyslog)。在 MacOS 上使用此选项。
+* `"address": "localhost:514"` -- 使用 UDP 套接字记录到本地 syslog，如果它在端口 514 上监听。
+* `"address": "<ip>:514"` -- 在 IP 地址和端口 514 上记录到远程 syslog。这在 Windows 上可用于远程记录到外部 syslog 服务器。
 
-??? Info "Deprecated - configure syslog via command line"
-    `--logfile syslog:<syslog_address>` -- send log messages to `syslog` service using the `<syslog_address>` as the syslog address.
+??? Info "已弃用 - 通过命令行配置 syslog"
+    `--logfile syslog:<syslog_address>` -- 使用 `<syslog_address>` 作为 syslog 地址将日志消息发送到 `syslog` 服务。
 
-    The syslog address can be either a Unix domain socket (socket filename) or a UDP socket specification, consisting of IP address and UDP port, separated by the `:` character.
+    syslog 地址可以是 Unix 域套接字（套接字文件名）或 UDP 套接字规范，由 IP 地址和 UDP 端口组成，用 `:` 字符分隔。
 
-    So, the following are the examples of possible usages:
+    因此，以下是一些可能用法的示例：
 
-    * `--logfile syslog:/dev/log` -- log to syslog (rsyslog) using the `/dev/log` socket, suitable for most systems.
-    * `--logfile syslog` -- same as above, the shortcut for `/dev/log`.
-    * `--logfile syslog:/var/run/syslog` -- log to syslog (rsyslog) using the `/var/run/syslog` socket. Use this on MacOS.
-    * `--logfile syslog:localhost:514` -- log to local syslog using UDP socket, if it listens on port 514.
-    * `--logfile syslog:<ip>:514` -- log to remote syslog at IP address and port 514. This may be used on Windows for remote logging to an external syslog server.
+    * `--logfile syslog:/dev/log` -- 使用 `/dev/log` 套接字记录到 syslog (rsyslog)，适用于大多数系统。
+    * `--logfile syslog` -- 同上，是 `/dev/log` 的快捷方式。
+    * `--logfile syslog:/var/run/syslog` -- 使用 `/var/run/syslog` 套接字记录到 syslog (rsyslog)。在 MacOS 上使用此选项。
+    * `--logfile syslog:localhost:514` -- 使用 UDP 套接字记录到本地 syslog，如果它在端口 514 上监听。
+    * `--logfile syslog:<ip>:514` -- 在 IP 地址和端口 514 上记录到远程 syslog。这在 Windows 上可用于远程记录到外部 syslog 服务器。
 
-### Logging to journald
+### 日志记录到 journald
 
-This needs the `cysystemd` python package installed as dependency (`pip install cysystemd`), which is not available on Windows. Hence, the whole journald logging functionality is not available for a bot running on Windows.
+这需要安装 `cysystemd` python 包作为依赖项（`pip install cysystemd`），该包在 Windows 上不可用。因此，整个 journald 日志记录功能不适用于在 Windows 上运行的机器人。
 
-To send Freqtrade log messages to `journald` system service, add the following configuration snippet to your configuration.
+要将 Freqtrade 日志消息发送到 `journald` 系统服务，请将以下配置片段添加到您的配置中。
 
 ``` json
 {
@@ -370,29 +365,29 @@ To send Freqtrade log messages to `journald` system service, add the following c
 }
 ```
 
-[Additional log-handlers](#advanced-logging) may need to be configured to for example also have log output in the console.
+可能需要配置[额外的日志处理器](#advanced-logging)，例如在控制台中也有日志输出。
 
-Log messages are send to `journald` with the `user` facility. So you can see them with the following commands:
+日志消息以 `user` 设施发送到 `journald`。因此，您可以使用以下命令查看它们：
 
-* `journalctl -f` -- shows Freqtrade log messages sent to `journald` along with other log messages fetched by `journald`.
-* `journalctl -f -u freqtrade.service` -- this command can be used when the bot is run as a `systemd` service.
+* `journalctl -f` -- 显示发送到 `journald` 的 Freqtrade 日志消息以及由 `journald` 获取的其他日志消息。
+* `journalctl -f -u freqtrade.service` -- 当机器人作为 `systemd` 服务运行时，可以使用此命令。
 
-There are many other options in the `journalctl` utility to filter the messages, see manual pages for this utility.
+`journalctl` 实用程序中有许多其他选项可过滤消息，请参阅该实用程序的手册页。
 
-On many systems `syslog` (`rsyslog`) fetches data from `journald` (and vice versa), so both `--logfile syslog` or `--logfile journald` can be used and the messages be viewed with both `journalctl` and a syslog viewer utility. You can combine this in any way which suites you better.
+在许多系统上，`syslog` (`rsyslog`) 从 `journald` 获取数据（反之亦然），因此可以使用 `--logfile syslog` 或 `--logfile journald`，并通过 `journalctl` 和 syslog 查看器实用程序查看消息。您可以用任何更适合的方式组合这些。
 
-??? Info "Deprecated - configure journald via command line"
-    To send Freqtrade log messages to `journald` system service use the `--logfile` command line option with the value in the following format:
+??? Info "已弃用 - 通过命令行配置 journald"
+    要将 Freqtrade 日志消息发送到 `journald` 系统服务，请使用 `--logfile` 命令行选项，格式如下：
 
-    `--logfile journald` -- send log messages to `journald`.
+    `--logfile journald` -- 将日志消息发送到 `journald`。
 
-### Log format as JSON
+### JSON 日志格式
 
-You can also configure the default output stream to use JSON format instead.
-The "fmt_dict" attribute defines the keys for the json output - as well as the [python logging LogRecord attributes](https://docs.python.org/3/library/logging.html#logrecord-attributes).
+您还可以将默认输出流配置为使用 JSON 格式。
+"fmt_dict" 属性定义 JSON 输出的键——以及 [python 日志 LogRecord 属性](https://docs.python.org/3/library/logging.html#logrecord-attributes)。
 
-The below configuration will change the default output to JSON. The same formatter could however also be used in combination with the `RotatingFileHandler`.
-We recommend to keep one format in human readable form.
+以下配置将默认输出更改为 JSON。但是，也可以将相同的格式化器与 `RotatingFileHandler` 结合使用。
+我们建议保留一种人类可读的格式。
 
 ``` json
 {

@@ -45,19 +45,19 @@
 回测支持 [动态投注金额](configuration.md#dynamic-stake-amount)，通过将 `stake_amount` 配置为 `"unlimited"`，这将把起始余额分成 `max_open_trades` 份。
 早期交易的利润将导致后续更高的投注金额，从而在回测期间产生复利效应。
 
-### Example backtesting commands
+### 回测命令示例
 
-With 5 min candle (OHLCV) data (per default)
+使用 5 分钟蜡烛图（OHLCV）数据（默认）
 
 ```bash
 freqtrade backtesting --strategy AwesomeStrategy
 ```
 
-Where `--strategy AwesomeStrategy` / `-s AwesomeStrategy` refers to the class name of the strategy, which is within a python file in the `user_data/strategies` directory.
+其中 `--strategy AwesomeStrategy` / `-s AwesomeStrategy` 指的是策略的类名，该类位于 `user_data/strategies` 目录中的 python 文件中。
 
 ---
 
-With 1 min candle (OHLCV) data
+使用 1 分钟蜡烛图（OHLCV）数据
 
 ```bash
 freqtrade backtesting --strategy AwesomeStrategy --timeframe 1m
@@ -65,7 +65,7 @@ freqtrade backtesting --strategy AwesomeStrategy --timeframe 1m
 
 ---
 
-Providing a custom starting balance of 1000 (in stake currency)
+提供 1000 的自定义起始余额（以投注货币计价）
 
 ```bash
 freqtrade backtesting --strategy AwesomeStrategy --dry-run-wallet 1000
@@ -73,10 +73,10 @@ freqtrade backtesting --strategy AwesomeStrategy --dry-run-wallet 1000
 
 ---
 
-Using a different on-disk historical candle (OHLCV) data source
+使用不同的磁盘历史蜡烛图（OHLCV）数据源
 
-Assume you downloaded the history data from the Binance exchange and kept it in the `user_data/data/binance-20180101` directory. 
-You can then use this data for backtesting as follows:
+假设您从 Binance 交易所下载了历史数据并将其保存在 `user_data/data/binance-20180101` 目录中。
+然后您可以按以下方式使用此数据进行回测：
 
 ```bash
 freqtrade backtesting --strategy AwesomeStrategy --datadir user_data/data/binance-20180101 
@@ -84,27 +84,27 @@ freqtrade backtesting --strategy AwesomeStrategy --datadir user_data/data/binanc
 
 ---
 
-Comparing multiple Strategies
+比较多个策略
 
 ```bash
 freqtrade backtesting --strategy-list SampleStrategy1 AwesomeStrategy --timeframe 5m
 ```
 
-Where `SampleStrategy1` and `AwesomeStrategy` refer to class names of strategies.
+其中 `SampleStrategy1` 和 `AwesomeStrategy` 指的是策略的类名。
 
 ---
 
-Prevent exporting trades to file
+防止将交易导出到文件
 
 ```bash
 freqtrade backtesting --strategy backtesting --export none --config config.json 
 ```
 
-Only use this if you're sure you'll not want to plot or analyze your results further.
+仅当您确定不想进一步绘制或分析结果时才使用此选项。
 
 ---
 
-Exporting trades to file specifying a custom directory
+导出交易到文件指定自定义目录
 
 ```bash
 freqtrade backtesting --strategy backtesting --export trades --backtest-directory=user_data/custom-backtest-results
@@ -112,51 +112,51 @@ freqtrade backtesting --strategy backtesting --export trades --backtest-director
 
 ---
 
-Please also read about the [strategy startup period](strategy-customization.md#strategy-startup-period).
+还请阅读 [策略启动周期](strategy-customization.md#strategy-startup-period)。
 
 ---
 
-Supplying custom fee value
+提供自定义手续费值
 
-Sometimes your account has certain fee rebates (fee reductions starting with a certain account size or monthly volume), which are not visible to ccxt.
-To account for this in backtesting, you can use the `--fee` command line option to supply this value to backtesting.
-This fee must be a ratio, and will be applied twice (once for trade entry, and once for trade exit).
+有时您的账户有某些手续费折扣（从某个账户规模或月交易量开始的手续费减免），ccxt 看不到这些。
+为了在回测中考虑这一点，您可以使用 `--fee` 命令行选项向回测提供此值。
+此手续费必须是比率，并且将应用两次（一次在交易入场时，一次在交易出场时）。
 
-For example, if the commission fee per order is 0.1% (i.e., 0.001 written as ratio), then you would run backtesting as the following:
+例如，如果每单手续费为 0.1%（即，比率形式为 0.001），则您将按以下方式运行回测：
 
 ```bash
 freqtrade backtesting --fee 0.001
 ```
 
 !!! Note
-    Only supply this option (or the corresponding configuration parameter) if you want to experiment with different fee values. By default, Backtesting fetches the default fee from the exchange pair/market info.
+    仅当您想试验不同的手续费值时才提供此选项（或相应的配置参数）。默认情况下，回测从交易所交易对/市场信息中获取默认手续费。
 
 ---
 
-Running backtest with smaller test-set by using timerange
+使用 timerange 使用较小的测试集运行回测
 
-Use the `--timerange` argument to change how much of the test-set you want to use.
+使用 `--timerange` 参数更改要使用多少测试集。
 
-For example, running backtesting with the `--timerange=20190501-` option will use all available data starting with May 1st, 2019 from your input data.
+例如，使用 `--timerange=20190501-` 选项运行回测将从输入数据中使用从 2019 年 5 月 1 日开始的所有可用数据。
 
 ```bash
 freqtrade backtesting --timerange=20190501-
 ```
 
-You can also specify particular date ranges.
+您也可以指定特定的日期范围。
 
-The full timerange specification:
+完整的 timerange 规范：
 
-- Use data until 2018/01/31: `--timerange=-20180131`
-- Use data since 2018/01/31: `--timerange=20180131-`
-- Use data since 2018/01/31 till 2018/03/01 : `--timerange=20180131-20180301`
-- Use data between POSIX / epoch timestamps 1527595200 1527618600: `--timerange=1527595200-1527618600`
+- 使用直到 2018/01/31 的数据：`--timerange=-20180131`
+- 使用从 2018/01/31 开始的数据：`--timerange=20180131-`
+- 使用从 2018/01/31 到 2018/03/01 的数据：`--timerange=20180131-20180301`
+- 使用 POSIX / epoch 时间戳 1527595200 1527618600 之间的数据：`--timerange=1527595200-1527618600`
 
-## Understand the backtesting result
+## 理解回测结果
 
-The most important in the backtesting is to understand the result.
+回测中最重要的的是理解结果。
 
-A backtesting result will look like that:
+回测结果将如下所示：
 
 ```
                                                  BACKTESTING REPORT                                                  
@@ -272,27 +272,27 @@ Backtested 2025-07-01 00:00:00 -> 2025-08-01 00:00:00 | Max open trades : 3
 └────────────────┴────────┴──────────────┴─────────────────┴──────────────┴──────────────┴────────────────────────┴────────────────────┘
 ```
 
-### Backtesting report table
+### 回测报告表
 
-The first table contains all trades the bot made, including "left open trades".
+第一个表包含机器人所做的所有交易，包括"未平仓交易"。
 
-The last line will give you the overall performance of your strategy,
-here:
+最后一行将为您提供策略的整体性能，
+这里：
 
 ```
 │         TOTAL │     77 │         0.22 │          54.774 │         5.48 │        22:12:00 │   67     0    10  87.0 │
 ```
 
-The bot has made `77` trades for an average duration of `22:12:00`, with a performance of `5.48%` (profit), that means it has earned a total of `54.774 USDT` starting with a capital of 1000 USDT.
+机器人进行了 `77` 次交易，平均持续时间为 `22:12:00`，性能为 `5.48%`（利润），这意味着它以 1000 USDT 的资本总额赚取了 `54.774 USDT`。
 
-The column `Avg Profit %` shows the average profit for all trades made.
-The column `Tot Profit %` shows instead the total profit % in relation to the starting balance.
+`Avg Profit %` 列显示所有已做交易的平均利润。
+`Tot Profit %` 列显示相对于起始余额的总利润百分比。
 
-In the above results, we have a starting balance of 1000 USDT and an absolute profit of 54.774 USDT - so the `Tot Profit %` will be `(54.774 / 1000) * 100 ~= 5.48%`.
+在上述结果中，我们有 1000 USDT 的起始余额和 54.774 USDT 的绝对利润——因此 `Tot Profit %` 将为 `(54.774 / 1000) * 100 ~= 5.48%`。
 
-Your strategy performance is influenced by your entry strategy, your exit strategy, and also by the `minimal_roi` and `stop_loss` you have set.
+您的策略性能受到入场策略、出场策略以及您设置的 `minimal_roi` 和 `stop_loss` 的影响。
 
-For example, if your `minimal_roi` is only `"0":  0.01` you cannot expect the bot to make more profit than 1% (because it will exit every time a trade reaches 1%).
+例如，如果您的 `minimal_roi` 仅为 `"0":  0.01`，您不能期望机器人获得超过 1% 的利润（因为每次交易达到 1% 时它就会退出）。
 
 ```json
 "minimal_roi": {
@@ -300,32 +300,32 @@ For example, if your `minimal_roi` is only `"0":  0.01` you cannot expect the bo
 },
 ```
 
-On the other hand, if you set a too high `minimal_roi` like `"0":  0.55`
-(55%), there is almost no chance that the bot will ever reach this profit.
-Hence, keep in mind that your performance is an integral mix of all different elements of the strategy, your configuration, and the crypto-currency pairs you have set up.
+另一方面，如果您设置过高的 `minimal_roi`，如 `"0":  0.55`
+(55%)，机器人几乎不可能达到此利润。
+因此，请记住，您的性能是策略的所有不同元素、您的配置以及您设置的加密货币交易对的综合混合。
 
-### Left open trades table
+### 未平仓交易表
 
-The second table contains all trades the bot had to `force_exit` at the end of the backtesting period to present you the full picture.
-This is necessary to simulate realistic behavior, since the backtest period has to end at some point, while realistically, you could leave the bot running forever.
-These trades are also included in the first table, but are also shown separately in this table for clarity.
+第二个表包含机器人在回测期结束时必须 `force_exit` 的所有交易，以向您呈现全貌。
+这对于模拟真实行为是必要的，因为回测期必须在某个时刻结束，而在现实中，您可以让机器人永远运行。
+这些交易也包含在第一个表中，但也单独显示在此表中以提高清晰度。
 
-### Enter tag stats table
+### 入场标签统计表
 
-The third table provides a breakdown of trades by their entry tags (e.g., `enter_long`, `enter_short`), showing the number of entries, average profit percentage, total profit in the stake currency, total profit percentage, average duration, and the number of wins, draws, and losses for each tag.
+第三个表按入场标签（例如，`enter_long`、`enter_short`）提供交易的细分，显示每个标签的入场次数、平均利润百分比、投注货币的总利润、总利润百分比、平均持续时间以及胜、平、败的次数。
 
-### Exit reason stats table
+### 出场原因统计表
 
-The fourth table contains a recap of exit reasons (e.g., `exit_signal`, `roi`, `stop_loss`, `force_exit`). This table can tell you which area needs additional work (e.g., if many `exit_signal` trades are losses, you should work on improving the exit signal or consider disabling it).
+第四个表包含出场原因的摘要（例如，`exit_signal`、`roi`、`stop_loss`、`force_exit`）。该表可以告诉您哪个领域需要额外的工作（例如，如果许多 `exit_signal` 交易是亏损的，您应该致力于改进出场信号或考虑禁用它）。
 
-### Mixed tag stats table
+### 混合标签统计表
 
-The fifth table combines entry tags and exit reasons, providing a detailed view of how different entry tags performed with specific exit reasons. This can help identify which combinations of entry and exit strategies are most effective.
+第五个表结合入场标签和出场原因，提供不同入场标签与特定出场原因表现的详细视图。这可以帮助识别哪些入场和出场策略组合最有效。
 
-### Summary metrics
+### 摘要指标
 
-The last element of the backtest report is the summary metrics table.
-It contains key metrics about the performance of your strategy on backtesting data.
+回测报告的最后一个元素是摘要指标表。
+它包含关于您的策略在回测数据上表现的关键指标。
 
 ```
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -378,49 +378,49 @@ It contains key metrics about the performance of your strategy on backtesting da
 └───────────────────────────────┴─────────────────────────────────┘
 ```
 
-- `Backtesting from` / `Backtesting to`: Backtesting range (usually defined with the `--timerange` option).
-- `Trading Mode`: Spot or Futures trading.
-- `Max open trades`: Setting of `max_open_trades` (or `--max-open-trades`) - or number of pairs in the pairlist (whatever is lower).
-- `Total/Daily Avg Trades`: Identical to the total trades of the backtest output table / Total trades divided by the backtesting duration in days (this will give you information about how many trades to expect from the strategy).
-- `Starting balance`: Start balance - as given by dry-run-wallet (config or command line).
-- `Final balance`: Final balance - starting balance + absolute profit.
-- `Absolute profit`: Profit made in stake currency.
-- `Total profit %`: Total profit. Aligned to the `TOTAL` row's `Tot Profit %` from the first table. Calculated as `(End capital − Starting capital) / Starting capital`.
-- `CAGR %`: Compound annual growth rate.
-- `Sortino`: Annualized Sortino ratio.
-- `Sharpe`: Annualized Sharpe ratio.
-- `Calmar`: Annualized Calmar ratio.
-- `SQN`: System Quality Number (SQN) - by Van Tharp.
-- `Profit factor`: Sum of the profits of all winning trades divided by the sum of the losses of all losing trades.
-- `Expectancy (Ratio)`: Expectancy ratio, which is the average profit or loss per trade. A negative expectancy ratio means that your strategy is not profitable.
-- `Avg. daily profit`: Average profit per day, calculated as `(Total Profit / Backtest Days)`.
-- `Avg. stake amount`: Average stake amount, either `stake_amount` or the average when using dynamic stake amount.
-- `Total trade volume`: Volume generated on the exchange to reach the above profit.
-- `Long / Short trades`: Split long/short trade counts (only shown when short trades were made).
-- `Long / Short profit %`: Profit percentage for long and short trades (only shown when short trades were made).
-- `Long / Short profit USDT`: Profit in stake currency for long and short trades (only shown when short trades were made).
-- `Best Pair` / `Worst Pair`: Best and worst performing pair (based on total profit percentage), and its corresponding `Tot Profit %`.
-- `Best trade` / `Worst trade`: Biggest single winning trade and biggest single losing trade.
-- `Best day` / `Worst day`: Best and worst day based on daily profit.
-- `Days win/draw/lose`: Winning / Losing days (draws are usually days without closed trades).
-- `Min/Max/Avg. Duration Winners`: Minimum, maximum, and average durations for winning trades.
-- `Min/Max/Avg. Duration Losers`: Minimum, maximum, and average durations for losing trades.
-- `Max Consecutive Wins / Loss`: Maximum consecutive wins/losses in a row.
-- `Rejected Entry signals`: Trade entry signals that could not be acted upon due to `max_open_trades` being reached.
-- `Entry/Exit Timeouts`: Entry/exit orders which did not fill (only applicable if custom pricing is used).
-- `Min balance` / `Max balance`: Lowest and Highest Wallet balance during the backtest period.
-- `Max % of account underwater`: Maximum percentage your account has decreased from the top since the simulation started. Calculated as the maximum of `(Max Balance - Current Balance) / (Max Balance)`.
-- `Absolute drawdown`: Maximum absolute drawdown experienced, including percentage relative to the account calculated as `(Absolute Drawdown) / (DrawdownHigh + startingBalance)`..
-- `Drawdown duration`: Duration of the largest drawdown period.
-- `Profit at drawdown start` / `Profit at drawdown end`: Profit at the beginning and end of the largest drawdown period.
-- `Drawdown start` / `Drawdown end`: Start and end datetime for the largest drawdown (can also be visualized via the `plot-dataframe` sub-command).
-- `Market change`: Change of the market during the backtest period. Calculated as the average of all pairs' changes from the first to the last candle using the "close" column.
+- `Backtesting from` / `Backtesting to`：回测范围（通常使用 `--timerange` 选项定义）。
+- `Trading Mode`：现货或期货交易。
+- `Max open trades`：`max_open_trades`（或 `--max-open-trades`）的设置——或交易对列表中的交易对数量（取较小值）。
+- `Total/Daily Avg Trades`：与回测输出表的总交易数相同 / 总交易数除以回测天数（这将为您提供有关从策略中预期多少交易的信息）。
+- `Starting balance`：起始余额——由 dry-run-wallet（配置或命令行）给出。
+- `Final balance`：最终余额——起始余额 + 绝对利润。
+- `Absolute profit`：以投注货币计的利润。
+- `Total profit %`：总利润。与第一个表的 `TOTAL` 行的 `Tot Profit %` 对齐。计算公式为 `(期末资本 − 起始资本) / 起始资本`。
+- `CAGR %`：复合年增长率。
+- `Sortino`：年化 Sortino 比率。
+- `Sharpe`：年化 Sharpe 比率。
+- `Calmar`：年化 Calmar 比率。
+- `SQN`：系统质量数（SQN）——由 Van Tharp 提出。
+- `Profit factor`：所有盈利交易的利润总和除以所有亏损交易的亏损总和。
+- `Expectancy (Ratio)`：期望比率，即每次交易的平均利润或亏损。负期望比率意味着您的策略不盈利。
+- `Avg. daily profit`：平均每日利润，计算公式为 `(总利润 / 回测天数)`。
+- `Avg. stake amount`：平均投注金额，可以是 `stake_amount` 或使用动态投注金额时的平均值。
+- `Total trade volume`：在交易所上产生的交易量以达到上述利润。
+- `Long / Short trades`：多头/空头交易数量分布（仅在进行了空头交易时显示）。
+- `Long / Short profit %`：多头和空头交易的利润百分比（仅在进行了空头交易时显示）。
+- `Long / Short profit USDT`：多头和空头交易的利润（以投注货币计价，仅在进行了空头交易时显示）。
+- `Best Pair` / `Worst Pair`：表现最好和最差的交易对（基于总利润百分比）及其相应的 `Tot Profit %`。
+- `Best trade` / `Worst trade`：最大的单笔盈利交易和最大的单笔亏损交易。
+- `Best day` / `Worst day`：基于每日利润的最佳和最差日期。
+- `Days win/draw/lose`：盈利/平/亏损天数（平通常是没有任何已平仓交易的天数）。
+- `Min/Max/Avg. Duration Winners`：盈利交易的最小、最大和平均持续时间。
+- `Min/Max/Avg. Duration Losers`：亏损交易的最小、最大和平均持续时间。
+- `Max Consecutive Wins / Loss`：最大连续盈利/亏损次数。
+- `Rejected Entry signals`：由于达到 `max_open_trades` 而无法执行的交易入场信号。
+- `Entry/Exit Timeouts`：未成交的入场/出场订单（仅在使用自定义定价时适用）。
+- `Min balance` / `Max balance`：回测期间的最低和最高钱包余额。
+- `Max % of account underwater`：自模拟开始以来，您的账户从最高点下降的最大百分比。计算公式为 `(最高余额 - 当前余额) / (最高余额)` 的最大值。
+- `Absolute drawdown`：经历的最大绝对回撤，包括相对于账户的百分比，计算公式为 `(绝对回撤) / (回撤高点 + 起始余额)`。
+- `Drawdown duration`：最大回撤期的持续时间。
+- `Profit at drawdown start` / `Profit at drawdown end`：最大回撤期开始和结束时的利润。
+- `Drawdown start` / `Drawdown end`：最大回撤的开始和结束日期时间（也可以通过 `plot-dataframe` 子命令可视化）。
+- `Market change`：回测期间的市场变化。使用"收盘"列计算所有交易对从第一根到最后一根蜡烛的平均变化。
 
-### Daily / Weekly / Monthly / Yearly breakdown
+### 每日 / 每周 / 每月 / 每年细分
 
-You can get an overview over daily, weekly, monthly, or yearly results by using the `--breakdown <>` switch.
+您可以使用 `--breakdown <>` 开关获取每日、每周、每月或每年结果的概览。
 
-To visualize monthly and yearly breakdowns, you can use the following:
+要可视化每月和每年的细分，您可以使用以下命令：
 
 ``` bash
 freqtrade backtesting --strategy MyAwesomeStrategy --breakdown month year
@@ -455,134 +455,134 @@ freqtrade backtesting --strategy MyAwesomeStrategy --breakdown month year
 └────────────┴────────┴─────────────────┴───────────────┴────────────────────────┘
 ```
 
-The output will display tables containing the realized absolute profit (in stake currency) for the selected period, along with additional statistics such as number of trades, profit factor, and distribution of wins, draws, and losses that materialized (closed) on this period.
+输出将显示包含所选期间已实现绝对利润（以投注货币计价）的表格，以及额外统计信息，例如交易次数、利润因子以及在此期间实现（已平仓）的胜、平、败分布。
 
-### Backtest result caching
+### 回测结果缓存
 
-To save time, by default backtest will reuse a cached result from within the last day when the backtested strategy and config match that of a previous backtest. To force a new backtest despite existing result for an identical run specify `--cache none` parameter.
+为了节省时间，默认情况下，当回测的策略和配置与先前回测匹配时，回测将重用最后一天内的缓存结果。尽管存在相同运行的现有结果，但要强制进行新的回测，请指定 `--cache none` 参数。
 
 !!! Warning
-    Caching is automatically disabled for open-ended timeranges (`--timerange 20210101-`), as freqtrade cannot ensure reliably that the underlying data didn't change. It can also use cached results where it shouldn't if the original backtest had missing data at the end, which was fixed by downloading more data.
-    In this instance, please use `--cache none` once to force a fresh backtest.
+    对于开放式时间范围（`--timerange 20210101-`），缓存会自动禁用，因为 freqtrade 无法可靠地确保基础数据没有更改。如果原始回测在末尾有缺失数据，而通过下载更多数据修复了该问题，它也可能在不应使用的地方使用缓存结果。
+    在这种情况下，请使用 `--cache none` 一次以强制进行新的回测。
 
-### Further backtest-result analysis
+### 进一步的回测结果分析
 
-To further analyze your backtest results, freqtrade will export the trades to file by default.
-You can then load the trades to perform further analysis as shown in the [data analysis](strategy_analysis_example.md#load-backtest-results-to-pandas-dataframe) backtesting section.
+为了进一步分析您的回测结果，freqtrade 默认会将交易导出到文件。
+然后您可以加载交易以执行进一步的分析，如[数据分析](strategy_analysis_example.md#load-backtest-results-to-pandas-dataframe)回测部分所示。
 
-Also, you can use freqtrade in [webserver mode](freq-ui.md#backtesting) to visualize the backtest results in a web interface.
-This mode also allows you to load existing backtest results, so you can analyze them without running the backtest again.  
-For this mode - `--notes "<notes>"` can be used to add notes to the backtest results, which will be shown in the web interface.
+此外，您可以在[webserver 模式](freq-ui.md#backtesting)中使用 freqtrade 在 Web 界面中可视化回测结果。
+此模式还允许您加载现有的回测结果，因此您可以在不再次运行回测的情况下分析它们。
+对于此模式——可以使用 `--notes "<notes>"` 向回测结果添加注释，这些注释将显示在 Web 界面中。
 
-### Backtest output file
+### 回测输出文件
 
-The output file freqtrade produces is a zip file containing the following files:
+freqtrade 生成的输出文件是一个 zip 文件，包含以下文件：
 
-- The backtest report in json format
-- The market change data in feather format
-- A copy of the strategy file
-- A copy of the strategy parameters (if a parameter file was used)
-- A sanitized copy of the config file
+- 以 json 格式的回测报告
+- 以 feather 格式的市场变化数据
+- 策略文件的副本
+- 策略参数的副本（如果使用了参数文件）
+- 配置文件的清理副本
 
-This will ensure results are reproducible - under the assumption that the same data is available.
+这将确保结果可重现——在假设可用相同数据的前提下。
 
-Only the strategy file and the config file are included in the zip file, eventual dependencies are not included.
+只有策略文件和配置文件包含在 zip 文件中，不包含最终依赖项。
 
-## Assumptions made by backtesting
+## 回测做出的假设
 
-Since backtesting lacks some detailed information about what happens within a candle, it needs to take a few assumptions:
+由于回测缺少关于蜡烛图内发生情况的某些详细信息，它需要做出一些假设：
 
-- Exchange [trading limits](#trading-limits-in-backtesting) are respected
-- Entries happen at open-price unless a custom price logic has been specified
-- All orders are filled at the requested price (no slippage) as long as the price is within the candle's high/low range
-- Exit-signal exits happen at open-price of the consecutive candle
-- Exits free their trade slot for a new trade with a different pair
-- Exit-signal is favored over Stoploss, because exit-signals are assumed to trigger on candle's open
+- 遵守交易所[交易限制](#trading-limits-in-backtesting)
+- 入场发生在开盘价，除非指定了自定义价格逻辑
+- 只要价格在蜡烛图的高点/低点范围内，所有订单都以请求的价格成交（无滑点）
+- 出场信号出场发生在下一个蜡烛图的开盘价
+- 出场为其交易槽位腾出空间用于不同交易对的新交易
+- 出场信号优先于止损，因为假设出场信号在蜡烛图开盘时触发
 - ROI
-  - Exits are compared to high - but the ROI value is used (e.g. ROI = 2%, high=5% - so the exit will be at 2%)
-  - Exits are never "below the candle", so a ROI of 2% may result in an exit at 2.4% if low was at 2.4% profit
-  - ROI entries which came into effect on the triggering candle (e.g. `120: 0.02` for 1h candles, from `60: 0.05`) will use the candle's open as exit rate
-  - Force-exits caused by `<N>=-1` ROI entries use low as exit value, unless N falls on the candle open (e.g. `120: -1` for 1h candles)
-- Stoploss exits happen exactly at stoploss price, even if low was lower, but the loss will be `2 * fees` higher than the stoploss price
-- Stoploss is evaluated before ROI within one candle. So you can often see more trades with the `stoploss` exit reason comparing to the results obtained with the same strategy in the Dry Run/Live Trade modes
-- Low happens before high for stoploss, protecting capital first
-- Trailing stoploss
-  - Trailing Stoploss is only adjusted if it's below the candle's low (otherwise it would be triggered)
-  - On trade entry candles that trigger trailing stoploss, the "minimum offset" (`stop_positive_offset`) is assumed (instead of high) - and the stop is calculated from this point. This rule is NOT applicable to custom-stoploss scenarios, since there's no information about the stoploss logic available.
-  - High happens first - adjusting stoploss
-  - Low uses the adjusted stoploss (so exits with large high-low difference are backtested correctly)
-  - ROI applies before trailing-stop, ensuring profits are "top-capped" at ROI if both ROI and trailing stop applies
-- Exit-reason does not explain if a trade was positive or negative, just what triggered the exit (this can look odd if negative ROI values are used)
-- Evaluation sequence (if multiple signals happen on the same candle)
-  - Exit-signal
-  - Stoploss
+  - 出场与高点进行比较——但使用 ROI 值（例如 ROI = 2%，高点=5%——因此出场将为 2%）
+  - 出场永远不会"低于蜡烛图"，因此如果低点为 2.4% 利润，则 2% 的 ROI 可能导致在 2.4% 出场
+  - 在触发蜡烛图上生效的 ROI 条目（例如，对于 1h 蜡烛图，`120: 0.02`，从 `60: 0.05`）将使用蜡烛图的开盘作为出场率
+  - 由 `<N>=-1` ROI 条目引起的强制出场使用低点作为出场值，除非 N 落在蜡烛图开盘（例如，对于 1h 蜡烛图，`120: -1`）
+- 止损出场正好发生在止损价格，即使低点更低，但亏损将比止损价格高 `2 * 手续费`
+- 在一个蜡烛图内，先评估止损再评估 ROI。因此，与在模拟运行/实盘交易模式中使用相同策略获得的结果相比，您经常会看到更多带有 `stoploss` 出场原因的交易
+- 对于止损，低点先于高点发生，首先保护资本
+- 追踪止损
+  - 仅在追踪止损低于蜡烛图低点时才会调整（否则将被触发）
+  - 在触发追踪止损的交易入场蜡烛图上，假设"最小偏移量"（`stop_positive_offset`）（而不是高点）——并从这一点计算止损。此规则不适用于自定义止损场景，因为无法获得关于止损逻辑的信息。
+  - 高点先发生——调整止损
+  - 低点使用调整后的止损（因此，具有大高低差异的出场将被正确回测）
+  - 在追踪止损之前应用 ROI，确保如果 ROI 和追踪止损都适用，则利润被 ROI"上限封顶"
+- 出场原因不解释交易是盈利还是亏损，只是说明触发出场的原因（如果使用负 ROI 值，这可能看起来很奇特）
+- 评估序列（如果同一根蜡烛图上发生多个信号）
+  - 出场信号
+  - 止损
   - ROI
-  - Trailing stoploss
-- Position reversals (futures only) happen if an entry signal in the other direction than the closing trade triggers at the candle the existing trade closes.
+  - 追踪止损
+- 如果与平仓交易相反方向的入场信号在现有交易平仓的蜡烛图上触发，则会发生持仓反转（仅限期货）。
 
-Taking these assumptions, backtesting tries to mirror real trading as closely as possible. However, backtesting will **never** replace running a strategy in dry-run mode.
-Also, keep in mind that past results don't guarantee future success.
+采用这些假设，回测试图尽可能接近地镜像真实交易。但是，回测将**永远不会**替代在模拟运行模式下运行策略。
+此外，请记住，过去的结果不能保证未来的成功。
 
-In addition to the above assumptions, strategy authors should carefully read the [Common Mistakes](strategy-customization.md#common-mistakes-when-developing-strategies) section, to avoid using data in backtesting which is not available in real market conditions.
+除上述假设外，策略作者应仔细阅读[常见错误](strategy-customization.md#common-mistakes-when-developing-strategies)部分，以避免在回测中使用在真实市场条件下不可用的数据。
 
-### Trading limits in backtesting
+### 回测中的交易限制
 
-Exchanges have certain trading limits, like minimum (and maximum) base currency, or minimum/maximum stake (quote) currency.
-These limits are usually listed in the exchange documentation as "trading rules" or similar and can be quite different between different pairs.
+交易所有某些交易限制，例如最小（和最大）基础货币或最小/最大投注（报价）货币。
+这些限制通常列在交易所文档中作为"交易规则"或类似内容，并且在不同交易对之间可能存在很大差异。
 
-Backtesting (as well as live and dry-run) does honor these limits, and will ensure that a stoploss can be placed below this value - so the value will be slightly higher than what the exchange specifies.
-Freqtrade has however no information about historic limits.
+回测（以及实盘和模拟运行）确实遵守这些限制，并将确保可以在该值下方放置止损——因此该值将略高于交易所指定的值。
+但是，Freqtrade 没有关于历史限制的信息。
 
-This can lead to situations where trading-limits are inflated by using a historic price, resulting in minimum amounts > 50\$.
+这可能导致交易限制因使用历史价格而被夸大，导致最小金额 > 50 美元的情况。
 
-For example:
+例如：
 
-BTC minimum tradable amount is 0.001.
-BTC trades at 22.000\$ today (0.001 BTC is related to this) - but the backtesting period includes prices as high as 50.000\$.
-Today's minimum would be `0.001 * 22_000` - or 22\$.  
-However the limit could also be 50$ - based on `0.001 * 50_000` in some historic setting.
+BTC 最小可交易数量为 0.001。
+BTC 今天以 22,000 美元交易（0.001 BTC 与此相关）——但回测期包括高达 50,000 美元的价格。
+今天的最小值将是 `0.001 * 22_000`——或 22 美元。
+但是，限制也可能是 50 美元——基于某些历史设置中的 `0.001 * 50_000`。
 
-#### Trading precision limits
+#### 交易精度限制
 
-Most exchanges pose precision limits on both price and amounts, so you cannot buy 1.0020401 of a pair, or at a price of 1.24567123123.  
-Instead, these prices and amounts will be rounded or truncated (based on the exchange definition) to the defined trading precision.
-The above values may for example be rounded to an amount of 1.002, and a price of 1.24567.
+大多数交易所在价格和数量上都设置了精度限制，因此您不能以 1.0020401 的数量或以 1.24567123123 的价格购买交易对。
+相反，这些价格和数量将根据定义（基于交易所定义）四舍五入或截断为定义的交易精度。
+例如，上述值可能四舍五入为 1.002 的数量和 1.24567 的价格。
 
-These precision values are based on current exchange limits (as described in the [above section](#trading-limits-in-backtesting)), as historic precision limits are not available.
+这些精度值基于当前交易所限制（如[上述部分](#trading-limits-in-backtesting)所述），因为历史精度限制不可用。
 
-## Improved backtest accuracy
+## 改进回测准确性
 
-One big limitation of backtesting is it's inability to know how prices moved intra-candle (was high before close, or vice-versa?).
-So assuming you run backtesting with a 1h timeframe, there will be 4 prices for that candle (Open, High, Low, Close).
+回测的一个主要限制是它无法知道价格在蜡烛图内的移动方式（高点是在收盘前，还是反之？）。
+因此，假设您使用 1h 时间框架运行回测，该蜡烛图将有 4 个价格（开盘、高点、低点、收盘）。
 
-While backtesting does take some assumptions (read above) about this - this can never be perfect, and will always be biased in one way or the other.
-To mitigate this, freqtrade can use a lower (faster) timeframe to simulate intra-candle movements.
+虽然回测确实对此做出了一些假设（见上文）——但这永远不可能是完美的，并且总会偏向于一个方向或另一个方向。
+为了缓解这个问题，freqtrade 可以使用较低（更快）的时间框架来模拟蜡烛图内移动。
 
-To utilize this, you can append `--timeframe-detail 5m` to your regular backtesting command.
+要利用此功能，您可以在常规回测命令后附加 `--timeframe-detail 5m`。
 
 ``` bash
 freqtrade backtesting --strategy AwesomeStrategy --timeframe 1h --timeframe-detail 5m
 ```
 
-This will load 1h data (the main timeframe) as well as 5m data (detail timeframe) for the selected timerange.
-The strategy will be analyzed with the 1h timeframe.
-Candles where activity may take place (there's an active signal, the pair is in a trade) are evaluated at the 5m timeframe.
-This will allow for a more accurate simulation of intra-candle movements - and can lead to different results, especially on higher timeframes.
+这将为所选时间范围加载 1h 数据（主要时间框架）以及 5m 数据（详细时间框架）。
+策略将使用 1h 时间框架进行分析。
+可能发生活动的蜡烛图（有活动信号，交易对处于交易中）将在 5m 时间框架上评估。
+这将允许更准确地模拟蜡烛图内移动——并且可能导致不同的结果，特别是在较高的时间框架上。
 
-Entries will generally still happen at the main candle's open, however freed trade slots may be freed earlier (if the exit signal is triggered on the 5m candle), which can then be used for a new trade of a different pair.
+入场通常仍然发生在主蜡烛图的开盘价，但是释放的交易槽位可能会更早释放（如果出场信号在 5m 蜡烛图上触发），然后可以用于不同交易对的新交易。
 
-All callback functions (`custom_exit()`, `custom_stoploss()`, ... ) will be running for each 5m candle once the trade is opened (so 12 times in the above example of 1h timeframe, and 5m detailed timeframe).
+所有回调函数（`custom_exit()`、`custom_stoploss()`……）将在交易开启后为每个 5m 蜡烛图运行（因此在上面的 1h 时间框架和 5m 详细时间框架示例中运行 12 次）。
 
-`--timeframe-detail` must be smaller than the original timeframe, otherwise backtesting will fail to start.
+`--timeframe-detail` 必须小于原始时间框架，否则回测将无法启动。
 
-Obviously this will require more memory (5m data is bigger than 1h data), and will also impact runtime (depending on the amount of trades and trade durations).
-Also, data must be available / downloaded already.
+显然，这将需要更多内存（5m 数据比 1h 数据大），并且还会影响运行时间（取决于交易数量和交易持续时间）。
+此外，数据必须可用/已下载。
 
 !!! Tip
-    You can use this function as the last part of strategy development, to ensure your strategy is not exploiting one of the [backtesting assumptions](#assumptions-made-by-backtesting). Strategies that perform similarly well with this mode have a good chance to perform well in dry/live modes too (although only forward-testing (dry-mode) can really confirm a strategy).
+    您可以将此函数用作策略开发的最后一部分，以确保您的策略不会利用[回测假设](#assumptions-made-by-backtesting)之一。在此模式下表现良好的策略也有很大机会在模拟/实盘模式中表现良好（尽管只有前向测试（模拟模式）才能真正确认策略）。
 
-??? Sample "Extreme Difference Example"
-    Using `--timeframe-detail` on an extreme example (all below pairs have the 10:00 candle with an entry signal) may lead to the following backtesting Trade sequence with 1 max_open_trades:
+??? Sample "极端差异示例"
+    在极端示例上使用 `--timeframe-detail`（以下所有交易对在 10:00 蜡烛图上都有入场信号）可能会导致以下回测交易序列，max_open_trades 为 1：
 
     | Pair | Entry Time | Exit Time | Duration |
     |------|------------|-----------| -------- |
@@ -592,32 +592,31 @@ Also, data must be available / downloaded already.
     | SOL/USDT | 2024-01-01 10:15:00 | 2021-01-01 11:05:00 | 50m |
     | BTC/USDT | 2024-01-01 11:05:00 | 2021-01-01 12:00:00 | 55m |
 
-    Without timeframe-detail, this would look like:
+    如果没有 timeframe-detail，这将如下所示：
 
     | Pair | Entry Time | Exit Time | Duration |
     |------|------------|-----------| -------- |
     | BTC/USDT | 2024-01-01 10:00:00 | 2021-01-01 11:00:00 | 1h |
     | BTC/USDT | 2024-01-01 11:00:00 | 2021-01-01 12:00:00 | 1h |
 
-    The difference is significant, as without detail data, only the first `max_open_trades` signals per candle are evaluated, and the trade slots are only freed at the end of the candle, allowing for a new trade to be opened at the next candle.
+    差异是显著的，因为如果没有详细数据，每根蜡烛图只评估第一个 `max_open_trades` 信号，并且交易槽位只在蜡烛图结束时释放，允许在下一根蜡烛图打开新交易。
 
 
-## Backtesting multiple strategies
+## 回测多个策略
 
-To compare multiple strategies, a list of Strategies can be provided to backtesting.
+为了比较多个策略，可以向回测提供一个策略列表。
 
-This is limited to 1 timeframe value per run. However, data is only loaded once from disk so if you have multiple
-strategies you'd like to compare, this will give a nice runtime boost.
+这限制为每次运行 1 个时间框架值。但是，数据只从磁盘加载一次，因此如果您有多个想要比较的策略，这将提供很好的运行时间提升。
 
-All listed Strategies need to be in the same directory, unless also `--recursive-strategy-search` is specified, where sub-directories within the strategy directory are also considered.
+所有列出的策略都需要在同一目录中，除非还指定了 `--recursive-strategy-search`，其中策略目录内的子目录也会被考虑。
 
 ``` bash
 freqtrade backtesting --timerange 20180401-20180410 --timeframe 5m --strategy-list Strategy001 Strategy002 --export trades
 ```
 
-This will save the results to `user_data/backtest_results/backtest-result-<datetime>.json`, including results for both `Strategy001` and `Strategy002`.
-There will be an additional table comparing win/losses of the different strategies (identical to the "Total" row in the first table).
-Detailed output for all strategies one after the other will be available, so make sure to scroll up to see the details per strategy.
+这会将结果保存到 `user_data/backtest_results/backtest-result-<datetime>.json`，包括 `Strategy001` 和 `Strategy002` 的结果。
+将有一个额外的表格比较不同策略的胜/败（与第一个表中的"总计"行相同）。
+所有策略的详细输出将按顺序可用，因此请确保向上滚动以查看每个策略的详细信息。
 
 ```
 ================================================== STRATEGY SUMMARY ===================================================================
@@ -627,7 +626,7 @@ Detailed output for all strategies one after the other will be available, so mak
 | Strategy2   |    1487 |          -0.13 |      -0.00988917 |         -98.79 | 4:43:00        |   662 |      0 |    825 |     241.68 |
 ```
 
-## Next step
+## 下一步
 
-Great, your strategy is profitable. What if the bot can give you the optimal parameters to use for your strategy?
-Your next step is to learn [how to find optimal parameters with Hyperopt](hyperopt.md)
+很好，您的策略盈利了。如果机器人可以为您提供用于策略的最优参数会怎样？
+您的下一步是学习[如何使用 Hyperopt 找到最优参数](hyperopt.md)
