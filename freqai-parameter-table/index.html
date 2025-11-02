@@ -1,0 +1,2406 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Freqtrade 是一个用 Python 编写的免费开源加密货币交易机器人，支持所有主要交易所，可通过 Telegram 或内置 Web UI 进行控制">
+      
+      
+      
+        <link rel="canonical" href="https://brinsec.github.io/freqtrade/freqai-parameter-table/">
+      
+      
+        <link rel="prev" href="../freqai-configuration/">
+      
+      
+        <link rel="next" href="../freqai-feature-engineering/">
+      
+      
+      <link rel="icon" href="../images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>参数表 - Freqtrade</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ft.extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-VH170LG9M5"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-VH170LG9M5",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-VH170LG9M5",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="Freqtrade" class="md-header__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Freqtrade
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              参数表
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/brinsec/freqtrade" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+
+  <!-- Main navigation -->
+  
+  
+  <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Freqtrade" class="md-nav__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    Freqtrade
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/brinsec/freqtrade" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    首页
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Docker 快速开始
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    安装
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            安装
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/MacOS/Raspberry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Freqtrade 基础
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略快速开始
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略自定义
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略回调
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stoploss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    止损
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    插件
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    启动机器人
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    控制机器人
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            控制机器人
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telegram-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Telegram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freq-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    freqUI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rest-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REST API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webhook-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Hook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-download/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    数据下载
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    回测
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    超参数优化
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    FreqAI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            FreqAI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    简介
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    参数表
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    参数表
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      通用配置参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      特征参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据拆分参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      模型训练参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      强化学习参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytorch" class="md-nav__link">
+    <span class="md-ellipsis">
+      PyTorch 参数
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PyTorch 参数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      通用
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trainer_kwargs" class="md-nav__link">
+    <span class="md-ellipsis">
+      trainer_kwargs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      附加参数
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-feature-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    特征工程
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    运行 FreqAI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-reinforcement-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    强化学习
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-developers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    开发者指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../leverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    杠杆交易
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实用子命令
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    绘图
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exchanges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    交易所特定说明
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_21" >
+        
+          
+          <label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    数据分析
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_21_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_21">
+            <span class="md-nav__icon md-icon"></span>
+            数据分析
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jupyter Notebooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_analysis_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略分析
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    回测分析
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_22" >
+        
+          
+          <label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    高级主题
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_22_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_22">
+            <span class="md-nav__icon md-icon"></span>
+            高级主题
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    高级安装后任务
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trade-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    交易对象
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lookahead-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    前瞻性分析
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursive-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    递归分析
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    高级策略
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    高级超参数优化
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-orderflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    订单流
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../producer-consumer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    生产者/消费者模式
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL 速查表
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    常见问题
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略迁移
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    更新 Freqtrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deprecated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    已弃用功能
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    贡献者指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_28" >
+        
+          
+          <label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    汉化总结
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_28_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_28">
+            <span class="md-nav__icon md-icon"></span>
+            汉化总结
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%B1%89%E5%8C%96%E6%80%BB%E7%BB%93/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    概述
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../README_%E6%B1%89%E5%8C%96/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    详细指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Table of contents -->
+  
+  
+  <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      通用配置参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      特征参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据拆分参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      模型训练参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      强化学习参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytorch" class="md-nav__link">
+    <span class="md-ellipsis">
+      PyTorch 参数
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PyTorch 参数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      通用
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trainer_kwargs" class="md-nav__link">
+    <span class="md-ellipsis">
+      trainer_kwargs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      附加参数
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/brinsec/freqtrade/edit/develop/docs/freqai-parameter-table.md" title="编辑此页" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="_1">参数表<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>下表将列出 FreqAI 的所有可用配置参数。一些参数在 <code>config_examples/config_freqai.example.json</code> 中有示例。</p>
+<p>必需参数标记为 <strong>必需</strong>，必须以建议的方式之一进行设置。</p>
+<h3 id="_2">通用配置参数<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong><code>config.freqai</code> 树内的通用配置参数</strong></td>
+</tr>
+<tr>
+<td><code>freqai</code></td>
+<td><strong>必需。</strong> <br> 包含所有用于控制 FreqAI 的参数的主字典。 <br> <strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>train_period_days</code></td>
+<td><strong>必需。</strong> <br> 用于训练数据的天数（滑动窗口的宽度）。 <br> <strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>backtest_period_days</code></td>
+<td><strong>必需。</strong> <br> 在滑动上述定义的 <code>train_period_days</code> 窗口并在回测期间重训练模型之前，从训练模型进行推理的天数（更多信息见<a href="../freqai-running/#backtesting">这里</a>）。这可以是小数天数，但请注意，提供的 <code>timerange</code> 将除以该数字以产生完成回测所需的训练次数。 <br> <strong>数据类型：</strong> 浮点数。</td>
+</tr>
+<tr>
+<td><code>identifier</code></td>
+<td><strong>必需。</strong> <br> 当前模型的唯一 ID。如果模型保存到磁盘，<code>identifier</code> 允许重新加载特定的预训练模型/数据。 <br> <strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>live_retrain_hours</code></td>
+<td>在模拟/实盘运行期间重训练的频率。 <br> <strong>数据类型：</strong> 浮点数 &gt; 0。 <br> 默认值：<code>0</code>（模型尽可能频繁地重训练）。</td>
+</tr>
+<tr>
+<td><code>expiration_hours</code></td>
+<td>如果模型超过 <code>expiration_hours</code> 小时，则避免进行预测。 <br> <strong>数据类型：</strong> 正整数。 <br> 默认值：<code>0</code>（模型永不过期）。</td>
+</tr>
+<tr>
+<td><code>purge_old_models</code></td>
+<td>保留在磁盘上的模型数量（与回测无关）。默认值为 2，这意味着模拟/实盘运行将在磁盘上保留最新的 2 个模型。设置为 0 将保留所有模型。此参数还接受布尔值以保持向后兼容性。 <br> <strong>数据类型：</strong> 整数。 <br> 默认值：<code>2</code>。</td>
+</tr>
+<tr>
+<td><code>save_backtest_models</code></td>
+<td>在运行回测时将模型保存到磁盘。通过保存预测数据并直接在后续运行中重用它们（当您希望调整入场/出场参数时），回测可以最高效地运行。将回测模型保存到磁盘还允许使用相同的模型文件启动具有相同模型 <code>identifier</code> 的模拟/实盘实例。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code>（不保存模型）。</td>
+</tr>
+<tr>
+<td><code>fit_live_predictions_candles</code></td>
+<td>用于从预测数据而不是从训练数据集计算目标（标签）统计信息的历史 K 线数量（更多信息可在<a href="../freqai-configuration/#creating-a-dynamic-target-threshold">这里</a>找到）。 <br> <strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>continual_learning</code></td>
+<td>使用最近训练的模型的最终状态作为新模型的起点，允许增量学习（更多信息可在<a href="../freqai-running/#continual-learning">这里</a>找到）。请注意，这目前是增量学习的一种简单方法，当市场偏离您的模型时，它有很高的过拟合/陷入局部最小值的概率。我们在这里进行连接主要是为了实验目的，并为更成熟的方法做好准备，用于像加密市场这样的混沌系统中的持续学习。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code>。</td>
+</tr>
+<tr>
+<td><code>write_metrics_to_disk</code></td>
+<td>在 json 文件中收集训练计时、推理计时和 cpu 使用情况。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code></td>
+</tr>
+<tr>
+<td><code>data_kitchen_thread_count</code></td>
+<td><br> 指定要用于数据处理（异常值方法、归一化等）的线程数。这对用于训练的线程数没有影响。如果用户不设置它（默认），FreqAI 将使用最大线程数 - 2（为 Freqtrade 机器人和 FreqUI 保留 1 个物理核心）。 <br> <strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>activate_tensorboard</code></td>
+<td><br> 指示是否为启用 tensorboard 的模块激活 tensorboard（目前包括强化学习、XGBoost、Catboost 和 PyTorch）。Tensorboard 需要安装 Torch，这意味着您需要 torch/RL docker 镜像，或者您需要在安装问题中回答"yes"关于是否要安装 Torch。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>True</code>。</td>
+</tr>
+<tr>
+<td><code>wait_for_training_iteration_on_reload</code></td>
+<td><br> 使用 /reload 或 ctrl-c 时，等待当前训练迭代完成后再完成优雅关闭。如果设置为 <code>False</code>，FreqAI 将中断当前训练迭代，允许您更快地优雅关闭，但您将失去当前训练迭代。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>True</code>。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_3">特征参数<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong><code>freqai.feature_parameters</code> 子字典内的特征参数</strong></td>
+</tr>
+<tr>
+<td><code>feature_parameters</code></td>
+<td>包含用于构建特征集的参数的字典。详细信息和示例显示在<a href="../freqai-feature-engineering/">这里</a>。 <br> <strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>include_timeframes</code></td>
+<td><code>feature_engineering_expand_*()</code> 中所有指标将为其创建的时间框架列表。该列表作为特征添加到基础指标数据集。 <br> <strong>数据类型：</strong> 时间框架列表（字符串）。</td>
+</tr>
+<tr>
+<td><code>include_corr_pairlist</code></td>
+<td>FreqAI 将作为附加特征添加到所有 <code>pair_whitelist</code> 币种的相关币种列表。在特征工程期间在 <code>feature_engineering_expand_*()</code> 中设置的所有指标（详细信息见<a href="../freqai-feature-engineering/">这里</a>）将为每个相关币种创建。相关币种特征被添加到基础指标数据集。 <br> <strong>数据类型：</strong> 资产列表（字符串）。</td>
+</tr>
+<tr>
+<td><code>label_period_candles</code></td>
+<td>标签为其创建的未来 K 线数量。这可以在 <code>set_freqai_targets()</code> 中使用（详细用法见 <code>templates/FreqaiExampleStrategy.py</code>）。此参数不一定必需，您可以创建自定义标签并选择是否使用此参数。请参见 <code>templates/FreqaiExampleStrategy.py</code> 以查看示例用法。 <br> <strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>include_shifted_candles</code></td>
+<td>将先前 K 线的特征添加到后续 K 线，目的是添加历史信息。如果使用，FreqAI 将复制并移动来自 <code>include_shifted_candles</code> 先前 K 线的所有特征，以便后续 K 线可以使用该信息。 <br> <strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>weight_factor</code></td>
+<td>根据训练数据点的新近程度进行加权（详细信息见<a href="../freqai-feature-engineering/#weighting-features-for-temporal-importance">这里</a>）。 <br> <strong>数据类型：</strong> 正浮点数（通常 &lt; 1）。</td>
+</tr>
+<tr>
+<td><code>indicator_max_period_candles</code></td>
+<td><strong>不再使用 (#7325)</strong>。已替换为在<a href="../freqai-configuration/#building-a-freqai-strategy">策略</a>中设置的 <code>startup_candle_count</code>。<code>startup_candle_count</code> 与时间框架无关，并定义在 <code>feature_engineering_*()</code> 中用于指标创建的最大<em>周期</em>。FreqAI 使用此参数与 <code>include_time_frames</code> 中的最大时间框架一起计算要下载的数据点数量，以便第一个数据点不包含 NaN。 <br> <strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>indicator_periods_candles</code></td>
+<td>计算指标的时间周期。指标被添加到基础指标数据集。 <br> <strong>数据类型：</strong> 正整数列表。</td>
+</tr>
+<tr>
+<td><code>principal_component_analysis</code></td>
+<td>使用主成分分析自动降低数据集的维度。工作原理的详细信息见<a href="../freqai-feature-engineering/#data-dimensionality-reduction-with-principal-component-analysis">这里</a> <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code>。</td>
+</tr>
+<tr>
+<td><code>plot_feature_importances</code></td>
+<td>为每个模型创建顶部/底部 <code>plot_feature_importances</code> 数量的特征的特征重要性图。图表存储在 <code>user_data/models/&lt;identifier&gt;/sub-train-&lt;COIN&gt;_&lt;timestamp&gt;.html</code>。 <br> <strong>数据类型：</strong> 整数。 <br> 默认值：<code>0</code>。</td>
+</tr>
+<tr>
+<td><code>DI_threshold</code></td>
+<td>当设置为 &gt; 0 时，激活使用相异性指数进行异常值检测。工作原理的详细信息见<a href="../freqai-feature-engineering/#identifying-outliers-with-the-dissimilarity-index-di">这里</a>。 <br> <strong>数据类型：</strong> 正浮点数（通常 &lt; 1）。</td>
+</tr>
+<tr>
+<td><code>use_SVM_to_remove_outliers</code></td>
+<td>训练支持向量机以检测并移除训练数据集和传入数据点中的异常值。工作原理的详细信息见<a href="../freqai-feature-engineering/#identifying-outliers-using-a-support-vector-machine-svm">这里</a>。 <br> <strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>svm_params</code></td>
+<td>Sklearn 的 <code>SGDOneClassSVM()</code> 中可用的所有参数。一些选定参数的详细信息见<a href="../freqai-feature-engineering/#identifying-outliers-using-a-support-vector-machine-svm">这里</a>。 <br> <strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>use_DBSCAN_to_remove_outliers</code></td>
+<td>使用 DBSCAN 算法对数据进行聚类，以识别并移除训练和预测数据中的异常值。工作原理的详细信息见<a href="../freqai-feature-engineering/#identifying-outliers-with-dbscan">这里</a>。 <br> <strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>noise_standard_deviation</code></td>
+<td>如果设置，FreqAI 会向训练特征添加噪声，目的是防止过拟合。FreqAI 从标准差为 <code>noise_standard_deviation</code> 的高斯分布生成随机偏差，并将它们添加到所有数据点。<code>noise_standard_deviation</code> 应相对于归一化空间保持，即在 -1 和 1 之间。换句话说，由于 FreqAI 中的数据始终归一化在 -1 和 1 之间，<code>noise_standard_deviation: 0.05</code> 将导致 32% 的数据随机增加/减少超过 2.5%（即落在第一个标准差内的数据百分比）。 <br> <strong>数据类型：</strong> 整数。 <br> 默认值：<code>0</code>。</td>
+</tr>
+<tr>
+<td><code>outlier_protection_percentage</code></td>
+<td>启用以防止异常值检测方法丢弃过多数据。如果 SVM 或 DBSCAN 检测到超过 <code>outlier_protection_percentage</code> % 的点为异常值，FreqAI 将记录警告消息并忽略异常值检测，即原始数据集将保持完整。如果触发异常值保护，将不会基于训练数据集进行预测。 <br> <strong>数据类型：</strong> 浮点数。 <br> 默认值：<code>30</code>。</td>
+</tr>
+<tr>
+<td><code>reverse_train_test_order</code></td>
+<td>拆分特征数据集（见下文），并使用最新的数据拆分进行训练，在历史数据拆分上进行测试。这允许模型训练到最新的数据点，同时避免过拟合。但是，在使用此参数之前，您应该小心理解其非传统性质。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code>（不反转）。</td>
+</tr>
+<tr>
+<td><code>shuffle_after_split</code></td>
+<td>将数据拆分为训练集和测试集，然后分别对两个集合进行洗牌。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code>。</td>
+</tr>
+<tr>
+<td><code>buffer_train_data_candles</code></td>
+<td>在填充指标<em>之后</em>，从训练数据的开始和结束处切掉 <code>buffer_train_data_candles</code>。主要示例用途是在预测最大值和最小值时，argrelextrema 函数无法知道时间范围边缘的最大值/最小值。为了提高模型精度，最好在整个时间范围上计算 argrelextrema，然后使用此函数按核切掉边缘（缓冲区）。在另一种情况下，如果目标设置为移位的价格变动，则此缓冲区是不必要的，因为时间范围末端的移位 K 线将为 NaN，FreqAI 将自动从训练数据集中切掉这些。 <br> <strong>数据类型：</strong> 整数。 <br> 默认值：<code>0</code>。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_4">数据拆分参数<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong><code>freqai.data_split_parameters</code> 子字典内的数据拆分参数</strong></td>
+</tr>
+<tr>
+<td><code>data_split_parameters</code></td>
+<td>包含 scikit-learn <code>test_train_split()</code> 中可用的任何附加参数，这些参数显示在<a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html">这里</a>（外部网站）。 <br> <strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>test_size</code></td>
+<td>应用于测试而不是训练的数据比例。 <br> <strong>数据类型：</strong> 正浮点数 &lt; 1。</td>
+</tr>
+<tr>
+<td><code>shuffle</code></td>
+<td>在训练期间洗牌训练数据点。通常，为了不在时间序列预测中移除数据的 chronological 顺序，这设置为 <code>False</code>。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code>。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_5">模型训练参数<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong><code>freqai.model_training_parameters</code> 子字典内的模型训练参数</strong></td>
+</tr>
+<tr>
+<td><code>model_training_parameters</code></td>
+<td>一个灵活的字典，包括所选模型库可用的所有参数。例如，如果您使用 <code>LightGBMRegressor</code>，此字典可以包含 <code>LightGBMRegressor</code> 在<a href="https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMRegressor.html">这里</a>（外部网站）可用的任何参数。如果您选择不同的模型，此字典可以包含该模型的任何参数。当前可用模型的列表可以在<a href="../freqai-configuration/#using-different-prediction-models">这里</a>找到。 <br> <strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>n_estimators</code></td>
+<td>在模型训练中拟合的提升树数量。 <br> <strong>数据类型：</strong> 整数。</td>
+</tr>
+<tr>
+<td><code>learning_rate</code></td>
+<td>模型训练期间的提升学习率。 <br> <strong>数据类型：</strong> 浮点数。</td>
+</tr>
+<tr>
+<td><code>n_jobs</code>, <code>thread_count</code>, <code>task_type</code></td>
+<td>设置并行处理的线程数和 <code>task_type</code>（<code>gpu</code> 或 <code>cpu</code>）。不同的模型库使用不同的参数名称。 <br> <strong>数据类型：</strong> 浮点数。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_6">强化学习参数<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong><code>freqai.rl_config</code> 子字典内的强化学习参数</strong></td>
+</tr>
+<tr>
+<td><code>rl_config</code></td>
+<td>包含强化学习模型控制参数的字典。 <br> <strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>train_cycles</code></td>
+<td>训练时间步长将基于 <code>train_cycles * 训练数据点数量</code> 设置。 <br> <strong>数据类型：</strong> 整数。</td>
+</tr>
+<tr>
+<td><code>max_trade_duration_candles</code></td>
+<td>指导智能体训练将交易保持在所需长度以下。示例用法显示在 <code>prediction_models/ReinforcementLearner.py</code> 中的可自定义 <code>calculate_reward()</code> 函数内。 <br> <strong>数据类型：</strong> int。</td>
+</tr>
+<tr>
+<td><code>model_type</code></td>
+<td>来自 stable_baselines3 或 SBcontrib 的模型字符串。可用字符串包括：<code>'TRPO', 'ARS', 'RecurrentPPO', 'MaskablePPO', 'PPO', 'A2C', 'DQN'</code>。用户应通过访问其文档确保 <code>model_training_parameters</code> 与相应的 stable_baselines3 模型可用参数匹配。<a href="https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html">PPO 文档</a>（外部网站） <br> <strong>数据类型：</strong> string。</td>
+</tr>
+<tr>
+<td><code>policy_type</code></td>
+<td>stable_baselines3 中可用的策略类型之一 <br> <strong>数据类型：</strong> string。</td>
+</tr>
+<tr>
+<td><code>max_training_drawdown_pct</code></td>
+<td>智能体在训练期间允许经历的最大回撤。 <br> <strong>数据类型：</strong> float。 <br> 默认值：0.8</td>
+</tr>
+<tr>
+<td><code>cpu_count</code></td>
+<td>专用于强化学习训练过程的线程/cpu 数量（取决于是否选择了 <code>ReinforcementLearner_multiproc</code>）。建议保持不变，默认情况下，此值设置为物理核心总数减 1。 <br> <strong>数据类型：</strong> int。</td>
+</tr>
+<tr>
+<td><code>model_reward_parameters</code></td>
+<td>在 <code>ReinforcementLearner.py</code> 中的可自定义 <code>calculate_reward()</code> 函数内使用的参数 <br> <strong>数据类型：</strong> int。</td>
+</tr>
+<tr>
+<td><code>add_state_info</code></td>
+<td>告诉 FreqAI 在用于训练和推理的特征集中包含状态信息。当前状态变量包括交易持续时间、当前利润、交易头寸。这仅在模拟/实盘运行中可用，并且在回测中自动切换为 false。 <br> <strong>数据类型：</strong> bool。 <br> 默认值：<code>False</code>。</td>
+</tr>
+<tr>
+<td><code>net_arch</code></td>
+<td>网络架构，在 <a href="https://stable-baselines3.readthedocs.io/en/master/guide/custom_policy.html#examples"><code>stable_baselines3</code> 文档</a>中有详细描述。总结：<code>[&lt;共享层&gt;, dict(vf=[&lt;非共享价值网络层&gt;], pi=[&lt;非共享策略网络层&gt;])]</code>。默认情况下，这设置为 <code>[128, 128]</code>，定义 2 个共享隐藏层，每层 128 个单位。 <br> <strong>数据类型：</strong> 列表或字典。 <br> 默认值：<code>[128, 128]</code>。</td>
+</tr>
+<tr>
+<td><code>randomize_starting_position</code></td>
+<td>随机化每个情节的起始点以避免过拟合。 <br> <strong>数据类型：</strong> bool。 <br> 默认值：<code>False</code>。</td>
+</tr>
+<tr>
+<td><code>drop_ohlc_from_features</code></td>
+<td>在训练期间传递给智能体的特征集中不包括归一化的 ohlc 数据（在所有情况下，ohlc 仍将用于驱动环境） <br> <strong>数据类型：</strong> 布尔值。 <br> <strong>默认值：</strong> <code>False</code></td>
+</tr>
+<tr>
+<td><code>progress_bar</code></td>
+<td>显示进度条，包含当前进度、已用时间和估计剩余时间。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code>。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pytorch">PyTorch 参数<a class="headerlink" href="#pytorch" title="Permanent link">&para;</a></h3>
+<h4 id="_7">通用<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong><code>freqai.model_training_parameters</code> 子字典内的模型训练参数</strong></td>
+</tr>
+<tr>
+<td><code>learning_rate</code></td>
+<td>传递给优化器的学习率。 <br> <strong>数据类型：</strong> float。 <br> 默认值：<code>3e-4</code>。</td>
+</tr>
+<tr>
+<td><code>model_kwargs</code></td>
+<td>传递给模型类的参数。 <br> <strong>数据类型：</strong> dict。 <br> 默认值：<code>{}</code>。</td>
+</tr>
+<tr>
+<td><code>trainer_kwargs</code></td>
+<td>传递给训练器类的参数。 <br> <strong>数据类型：</strong> dict。 <br> 默认值：<code>{}</code>。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="trainer_kwargs">trainer_kwargs<a class="headerlink" href="#trainer_kwargs" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong><code>freqai.model_training_parameters.model_kwargs</code> 子字典内的模型训练参数</strong></td>
+</tr>
+<tr>
+<td><code>n_epochs</code></td>
+<td><code>n_epochs</code> 参数是 PyTorch 训练循环中的关键设置，它确定将使用整个训练数据集更新模型参数的次数。一个 epoch 表示完整遍历整个训练数据集一次。覆盖 <code>n_steps</code>。必须设置 <code>n_epochs</code> 或 <code>n_steps</code> 之一。 <br><br> <strong>数据类型：</strong> int。可选。 <br> 默认值：<code>10</code>。</td>
+</tr>
+<tr>
+<td><code>n_steps</code></td>
+<td>设置 <code>n_epochs</code> 的替代方法 - 要运行的训练迭代次数。这里的迭代是指我们调用 <code>optimizer.step()</code> 的次数。如果设置了 <code>n_epochs</code>，则忽略此参数。函数的简化版本： <br><br> n_epochs = n_steps / (n_obs / batch_size) <br><br> 这里的动机是 <code>n_steps</code> 更容易优化并保持在不同 n_obs（数据点数量）之间的稳定性。 <br> <br> <strong>数据类型：</strong> int。可选。 <br> 默认值：<code>None</code>。</td>
+</tr>
+<tr>
+<td><code>batch_size</code></td>
+<td>训练期间使用的批次大小。 <br><br> <strong>数据类型：</strong> int。 <br> 默认值：<code>64</code>。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_8">附加参数<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong>额外参数</strong></td>
+</tr>
+<tr>
+<td><code>freqai.keras</code></td>
+<td>如果所选模型使用 Keras（典型的是基于 TensorFlow 的预测模型），则需要激活此标志，以便模型保存/加载遵循 Keras 标准。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code>。</td>
+</tr>
+<tr>
+<td><code>freqai.conv_width</code></td>
+<td>神经网络输入张量的宽度。这通过将历史数据点作为张量的第二维度输入来取代移动 K 线（<code>include_shifted_candles</code>）的需要。从技术上讲，此参数也可以用于回归器，但它只会增加计算开销，不会改变模型训练/预测。 <br> <strong>数据类型：</strong> 整数。 <br> 默认值：<code>2</code>。</td>
+</tr>
+<tr>
+<td><code>freqai.reduce_df_footprint</code></td>
+<td>将所有数字列重新转换为 float32/int32，目的是减少 ram/磁盘使用并减少训练/推理时间。此参数在 Freqtrade 配置文件的主级别（不在 FreqAI 内部）设置。 <br> <strong>数据类型：</strong> 布尔值。 <br> 默认值：<code>False</code>。</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+    
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../freqai-configuration/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 配置">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                配置
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../freqai-feature-engineering/" class="md-footer__link md-footer__link--next" aria-label="下一页: 特征工程">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                特征工程
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "search.share", "content.code.copy", "content.action.edit", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

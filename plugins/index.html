@@ -1,0 +1,3177 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Freqtrade 是一个用 Python 编写的免费开源加密货币交易机器人，支持所有主要交易所，可通过 Telegram 或内置 Web UI 进行控制">
+      
+      
+      
+        <link rel="canonical" href="https://brinsec.github.io/freqtrade/plugins/">
+      
+      
+        <link rel="prev" href="../stoploss/">
+      
+      
+        <link rel="next" href="../bot-usage/">
+      
+      
+      <link rel="icon" href="../images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>插件 - Freqtrade</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ft.extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-VH170LG9M5"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-VH170LG9M5",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-VH170LG9M5",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plugins" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="Freqtrade" class="md-header__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Freqtrade
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              插件
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/brinsec/freqtrade" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+
+  <!-- Main navigation -->
+  
+  
+  <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Freqtrade" class="md-nav__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    Freqtrade
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/brinsec/freqtrade" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    首页
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Docker 快速开始
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    安装
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            安装
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/MacOS/Raspberry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Freqtrade 基础
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略快速开始
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略自定义
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略回调
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stoploss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    止损
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    插件
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    插件
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易对列表和交易对列表处理器
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="交易对列表和交易对列表处理器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易对黑名单
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      可用的交易对列表处理器
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="可用的交易对列表处理器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      静态交易对列表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      成交量交易对列表
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="成交量交易对列表">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#volumepairlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      VolumePairList 高级模式
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      百分比变化交易对列表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#producerpairlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      ProducerPairList
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remotepairlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      RemotePairList
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#marketcappairlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      MarketCapPairList
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agefilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      AgeFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delistfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      DelistFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fulltradesfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      FullTradesFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#offsetfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      OffsetFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performancefilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      PerformanceFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precisionfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      PrecisionFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pricefilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      PriceFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shufflefilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      ShuffleFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spreadfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      SpreadFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rangestabilityfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      RangeStabilityFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volatilityfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      VolatilityFilter
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易对列表处理器的完整示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      保护
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="保护">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      可用的保护
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      所有保护的通用设置
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="所有保护的通用设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      止损保护
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      最大回撤
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      低利润交易对
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      冷却期
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      保护的完整示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    启动机器人
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    控制机器人
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            控制机器人
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telegram-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Telegram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freq-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    freqUI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rest-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REST API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webhook-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Hook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-download/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    数据下载
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    回测
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    超参数优化
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    FreqAI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            FreqAI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    简介
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    配置
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-parameter-table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    参数表
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-feature-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    特征工程
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    运行 FreqAI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-reinforcement-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    强化学习
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-developers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    开发者指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../leverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    杠杆交易
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    实用子命令
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    绘图
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exchanges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    交易所特定说明
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_21" >
+        
+          
+          <label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    数据分析
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_21_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_21">
+            <span class="md-nav__icon md-icon"></span>
+            数据分析
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jupyter Notebooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_analysis_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略分析
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    回测分析
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_22" >
+        
+          
+          <label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    高级主题
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_22_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_22">
+            <span class="md-nav__icon md-icon"></span>
+            高级主题
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    高级安装后任务
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trade-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    交易对象
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lookahead-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    前瞻性分析
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursive-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    递归分析
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    高级策略
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    高级超参数优化
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-orderflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    订单流
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../producer-consumer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    生产者/消费者模式
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL 速查表
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    常见问题
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    策略迁移
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    更新 Freqtrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deprecated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    已弃用功能
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    贡献者指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_28" >
+        
+          
+          <label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    汉化总结
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_28_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_28">
+            <span class="md-nav__icon md-icon"></span>
+            汉化总结
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%B1%89%E5%8C%96%E6%80%BB%E7%BB%93/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    概述
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../README_%E6%B1%89%E5%8C%96/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    详细指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Table of contents -->
+  
+  
+  <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易对列表和交易对列表处理器
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="交易对列表和交易对列表处理器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易对黑名单
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      可用的交易对列表处理器
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="可用的交易对列表处理器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      静态交易对列表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      成交量交易对列表
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="成交量交易对列表">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#volumepairlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      VolumePairList 高级模式
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      百分比变化交易对列表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#producerpairlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      ProducerPairList
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remotepairlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      RemotePairList
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#marketcappairlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      MarketCapPairList
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agefilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      AgeFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delistfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      DelistFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fulltradesfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      FullTradesFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#offsetfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      OffsetFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performancefilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      PerformanceFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precisionfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      PrecisionFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pricefilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      PriceFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shufflefilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      ShuffleFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spreadfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      SpreadFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rangestabilityfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      RangeStabilityFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volatilityfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      VolatilityFilter
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易对列表处理器的完整示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      保护
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="保护">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      可用的保护
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      所有保护的通用设置
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="所有保护的通用设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      止损保护
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      最大回撤
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      低利润交易对
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      冷却期
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      保护的完整示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/brinsec/freqtrade/edit/develop/docs/plugins.md" title="编辑此页" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="plugins">Plugins<a class="headerlink" href="#plugins" title="Permanent link">&para;</a></h1>
+<h2 id="_1">交易对列表和交易对列表处理器<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>交易对列表处理器定义机器人应该交易的交易对列表（pairlist）。它们在配置设置的 <code>pairlists</code> 部分中配置。</p>
+<p>在您的配置中，您可以使用静态交易对列表（由 <a href="#static-pair-list"><code>StaticPairList</code></a> 交易对列表处理器定义）和动态交易对列表（由 <a href="#volume-pair-list"><code>VolumePairList</code></a> 和 <a href="#percent-change-pair-list"><code>PercentChangePairList</code></a> 交易对列表处理器定义）。</p>
+<p>此外，<a href="#agefilter"><code>AgeFilter</code></a>、<a href="#delistfilter"><code>DelistFilter</code></a>、<a href="#precisionfilter"><code>PrecisionFilter</code></a>、<a href="#pricefilter"><code>PriceFilter</code></a>、<a href="#shufflefilter"><code>ShuffleFilter</code></a>、<a href="#spreadfilter"><code>SpreadFilter</code></a> 和 <a href="#volatilityfilter"><code>VolatilityFilter</code></a> 充当交易对列表过滤器，删除某些交易对和/或移动它们在交易对列表中的位置。</p>
+<p>如果使用多个交易对列表处理器，它们会被链接，所有交易对列表处理器的组合形成机器人用于交易和回测的最终交易对列表。交易对列表处理器按照它们配置的顺序执行。您可以将 <code>StaticPairList</code>、<code>VolumePairList</code>、<code>ProducerPairList</code>、<code>RemotePairList</code>、<code>MarketCapPairList</code> 或 <code>PercentChangePairList</code> 定义为起始交易对列表处理器。</p>
+<p>非活跃市场总是从最终交易对列表中删除。明确列入黑名单的交易对（<code>pair_blacklist</code> 配置设置中的那些）也总是从最终交易对列表中删除。</p>
+<h3 id="_2">交易对黑名单<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>交易对黑名单（通过配置中的 <code>exchange.pair_blacklist</code> 配置）禁止某些交易对进行交易。
+这可以简单到排除 <code>DOGE/BTC</code> - 这将完全删除此交易对。</p>
+<p>交易对黑名单还支持通配符（正则表达式风格）- 因此 <code>BNB/.*</code> 将排除所有以 BNB 开头的交易对。
+您也可以使用类似 <code>.*DOWN/BTC</code> 或 <code>.*UP/BTC</code> 的内容来排除杠杆代币（请检查您交易所的交易对命名约定！）</p>
+<h3 id="_3">可用的交易对列表处理器<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="#static-pair-list"><code>StaticPairList</code></a>（默认，如果未另行配置）</li>
+<li><a href="#volume-pair-list"><code>VolumePairList</code></a></li>
+<li><a href="#percent-change-pair-list"><code>PercentChangePairList</code></a></li>
+<li><a href="#producerpairlist"><code>ProducerPairList</code></a></li>
+<li><a href="#remotepairlist"><code>RemotePairList</code></a></li>
+<li><a href="#marketcappairlist"><code>MarketCapPairList</code></a></li>
+<li><a href="#agefilter"><code>AgeFilter</code></a></li>
+<li><a href="#delistfilter"><code>DelistFilter</code></a></li>
+<li><a href="#fulltradesfilter"><code>FullTradesFilter</code></a></li>
+<li><a href="#offsetfilter"><code>OffsetFilter</code></a></li>
+<li><a href="#performancefilter"><code>PerformanceFilter</code></a></li>
+<li><a href="#precisionfilter"><code>PrecisionFilter</code></a></li>
+<li><a href="#pricefilter"><code>PriceFilter</code></a></li>
+<li><a href="#shufflefilter"><code>ShuffleFilter</code></a></li>
+<li><a href="#spreadfilter"><code>SpreadFilter</code></a></li>
+<li><a href="#rangestabilityfilter"><code>RangeStabilityFilter</code></a></li>
+<li><a href="#volatilityfilter"><code>VolatilityFilter</code></a></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">测试交易对列表</p>
+<p>交易对列表配置可能很难正确配置。最好在 <a href="../freq-ui/#webserver-mode">webserver 模式</a> 中使用 freqUI 或使用 <a href="../utils/#test-pairlist"><code>test-pairlist</code></a> 实用子命令快速测试您的交易对列表配置。</p>
+</div>
+<h4 id="_4">静态交易对列表<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<p>默认情况下，使用 <code>StaticPairList</code> 方法，它使用配置中静态定义的交易对白名单。交易对列表还支持通配符（正则表达式风格）- 因此 <code>.*/BTC</code> 将包括所有以 BTC 作为抵押的交易对。</p>
+<p>它使用来自 <code>exchange.pair_whitelist</code> 和 <code>exchange.pair_blacklist</code> 的配置，在下面的示例中，将交易 BTC/USDT 和 ETH/USDT - 并阻止 BNB/USDT 交易。</p>
+<p><code>pair_*list</code> 参数都支持正则表达式 - 因此像 <code>.*/USDT</code> 这样的值将启用交易不在黑名单中的所有交易对。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// ... </span>
+<span class="w">    </span><span class="nt">&quot;pair_whitelist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;BTC/USDT&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;ETH/USDT&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;pair_blacklist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;BNB/USDT&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">},</span>
+<span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;StaticPairList&quot;</span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<p>默认情况下，只允许当前启用的交易对。
+要跳过对活跃市场的交易对验证，请在 <code>StaticPairList</code> 配置中设置 <code>"allow_inactive": true</code>。
+这对于回测过期的交易对（如季度现货市场）很有用。</p>
+<p>当在"后续"位置使用（例如在 VolumePairlist 之后）时，<code>'pair_whitelist'</code> 中的所有交易对将被添加到交易对列表的末尾。</p>
+<h4 id="_5">成交量交易对列表<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p><code>VolumePairList</code> 根据交易对的交易量进行排序/过滤。它根据 <code>sort_key</code>（只能是 <code>quoteVolume</code>）选择 <code>number_assets</code> 个顶级交易对。</p>
+<p>当在交易对列表处理器链中的非主要位置使用（在 StaticPairList 和其他交易对列表过滤器之后）时，<code>VolumePairList</code> 考虑先前交易对列表处理器的输出，根据交易量添加其排序/选择的交易对。</p>
+<p>当在交易对列表处理器链的主要位置使用时，<code>pair_whitelist</code> 配置设置将被忽略。相反，<code>VolumePairList</code> 从交易所上所有可用市场中匹配抵押货币的顶级资产中选择。</p>
+<p><code>refresh_period</code> 设置允许定义交易对列表刷新的周期（以秒为单位）。默认为 1800 秒（30 分钟）。
+<code>VolumePairList</code> 上的交易对列表缓存（<code>refresh_period</code>）仅适用于生成交易对列表。
+过滤实例（列表中的非第一个位置）不会应用任何缓存（除了在高级模式下缓存蜡烛持续时间内的蜡烛），并将始终使用最新数据。</p>
+<p><code>VolumePairList</code> 默认基于交易所的行情数据，如 ccxt 库报告的那样：</p>
+<ul>
+<li><code>quoteVolume</code> 是过去 24 小时内交易的报价（抵押）货币数量（买入或卖出）。</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VolumePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;sort_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quoteVolume&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;max_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000000</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<p>您可以使用 <code>min_value</code> 定义最小成交量 - 这将过滤掉在指定时间范围内成交量低于指定值的交易对。
+此外，您还可以使用 <code>max_value</code> 定义最大成交量 - 这将过滤掉在指定时间范围内成交量高于指定值的交易对。</p>
+<h5 id="volumepairlist">VolumePairList 高级模式<a class="headerlink" href="#volumepairlist" title="Permanent link">&para;</a></h5>
+<p><code>VolumePairList</code> 还可以在高级模式下运行，以在指定蜡烛大小的给定时间范围内构建成交量。它利用交易所历史蜡烛数据，构建典型价格（通过 (open+high+low)/3 计算），并将典型价格与每个蜡烛的成交量相乘。总和是给定范围内的 <code>quoteVolume</code>。这允许不同的场景，当使用更长范围与更大的蜡烛大小时，可以获得更平滑的成交量，或者当使用短范围与小蜡烛时则相反。</p>
+<p>为了方便，可以指定 <code>lookback_days</code>，这将意味着将使用 1d 蜡烛进行回看。在下面的示例中，交易对列表将基于过去 7 天创建：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VolumePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;sort_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quoteVolume&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">范围回看和刷新周期</p>
+<p>当与 <code>lookback_days</code> 和 <code>lookback_timeframe</code> 结合使用时，<code>refresh_period</code> 不能小于以秒为单位的蜡烛大小。因为这会导致对交易所 API 的不必要请求。</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">使用回看范围时的性能影响</p>
+<p>如果在第一个位置与回看结合使用，基于范围的成交量计算可能会消耗时间和资源，因为它会为所有可交易对下载蜡烛。因此，强烈建议使用标准方法配合 <code>VolumeFilter</code> 缩小交易对列表以进行进一步的范围成交量计算。</p>
+</div>
+<details class="tip">
+<summary>不支持的交易所</summary>
+<p>在某些交易所（如 Gemini），常规 VolumePairList 不起作用，因为 API 本身不提供 24 小时成交量。这可以通过使用蜡烛数据构建成交量来解决。
+要大致模拟 24 小时成交量，您可以使用以下配置。
+请注意，这些交易对列表每天只会刷新一次。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VolumePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;sort_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quoteVolume&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+</details>
+<p>可以使用更复杂的方法，通过使用 <code>lookback_timeframe</code> 作为蜡烛大小和指定蜡烛数量的 <code>lookback_period</code>。此示例将基于 3 天的 1 小时蜡烛滚动周期构建成交量交易对：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VolumePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;sort_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quoteVolume&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1h&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">72</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p><code>VolumePairList</code> 不支持回测模式。</p>
+</div>
+<h4 id="_6">百分比变化交易对列表<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<p><code>PercentChangePairList</code> 根据交易对在过去 24 小时或任何定义的时间框架内的价格百分比变化来过滤和排序交易对，作为高级选项的一部分。这允许交易者专注于经历了显著价格波动的资产，无论是正面的还是负面的。</p>
+<p><strong>配置选项</strong></p>
+<ul>
+<li><code>number_assets</code>：指定基于 24 小时百分比变化选择的顶级交易对数量。</li>
+<li><code>min_value</code>：设置最小百分比变化阈值。百分比变化低于此值的交易对将被过滤掉。</li>
+<li><code>max_value</code>：设置最大百分比变化阈值。百分比变化高于此值的交易对将被过滤掉。</li>
+<li><code>sort_direction</code>：指定根据百分比变化对交易对进行排序的顺序。接受两个值：<code>asc</code> 表示升序，<code>desc</code> 表示降序。</li>
+<li><code>refresh_period</code>：定义交易对列表刷新的间隔（以秒为单位）。默认值为 1800 秒（30 分钟）。</li>
+<li><code>lookback_days</code>：要回看的天数。选择 <code>lookback_days</code> 时，<code>lookback_timeframe</code> 默认为 1 天。</li>
+<li><code>lookback_timeframe</code>：用于回看周期的时间框架。</li>
+<li><code>lookback_period</code>：要回看的周期数。</li>
+</ul>
+<p>当 PercentChangePairList 在其他交易对列表处理器之后使用时，它将对那些处理器的输出进行操作。如果它是主要的交易对列表处理器，它将从所有可用市场中选择具有指定抵押货币的交易对。</p>
+<p><code>PercentChangePairList</code> 使用来自交易所的行情数据，通过 ccxt 库提供：
+百分比变化计算为过去 24 小时内的价格变化。</p>
+<details class="note">
+<summary>不支持的交易所</summary>
+<p>在某些交易所（如 HTX），常规 PercentChangePairList 不起作用，因为 API 本身不提供 24 小时价格百分比变化。这可以通过使用蜡烛数据计算百分比变化来解决。要大致模拟 24 小时百分比变化，您可以使用以下配置。请注意，这些交易对列表每天只会刷新一次。
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PercentChangePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div></p>
+</details>
+<p><strong>从行情读取的示例配置</strong></p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PercentChangePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;max_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<p>在此配置中：</p>
+<ol>
+<li>根据过去 24 小时内价格百分比变化最高的交易对选择前 15 个交易对。</li>
+<li>只考虑百分比变化在 -10% 和 50% 之间的交易对。</li>
+</ol>
+<p><strong>从蜡烛读取的示例配置</strong></p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PercentChangePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;sort_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;percentage&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1h&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">72</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<p>此示例通过使用 <code>lookback_timeframe</code> 作为蜡烛大小和指定蜡烛数量的 <code>lookback_period</code>，基于 3 天的 1 小时蜡烛滚动周期构建百分比变化交易对。</p>
+<p>价格百分比变化使用以下公式计算，该公式表示当前蜡烛收盘价与前一蜡烛收盘价之间的百分比差异，由指定的时间框架和回看周期定义：</p>
+<div class="arithmatex">\[ Percent Change = (\frac{Current Close - Previous Close}{Previous Close}) * 100 \]</div>
+<div class="admonition warning">
+<p class="admonition-title">范围回看和刷新周期</p>
+<p>当与 <code>lookback_days</code> 和 <code>lookback_timeframe</code> 结合使用时，<code>refresh_period</code> 不能小于以秒为单位的蜡烛大小。因为这会导致对交易所 API 的不必要请求。</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">使用回看范围时的性能影响</p>
+<p>如果在第一个位置与回看结合使用，基于范围的百分比变化计算可能会消耗时间和资源，因为它会为所有可交易对下载蜡烛。因此，强烈建议使用标准方法配合 <code>PercentChangePairList</code> 缩小交易对列表以进行进一步的百分比变化计算。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">回测</p>
+<p><code>PercentChangePairList</code> 不支持回测模式。</p>
+</div>
+<h4 id="producerpairlist">ProducerPairList<a class="headerlink" href="#producerpairlist" title="Permanent link">&para;</a></h4>
+<p>使用 <code>ProducerPairList</code>，您可以重用来自<a href="../producer-consumer/">生产者</a>的交易对列表，而无需在每个消费者上显式定义交易对列表。</p>
+<p>此交易对列表需要<a href="../producer-consumer/">消费者模式</a>才能工作。</p>
+<p>交易对列表将对活动交易对执行检查，以针对当前交易所配置，避免尝试在无效市场上交易。</p>
+<p>您可以使用可选参数 <code>number_assets</code> 限制交易对列表的长度。使用 <code>"number_assets"=0</code> 或省略此键将导致重用当前设置有效的所有生产者交易对。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ProducerPairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;producer_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">组合交易对列表</p>
+<p>此交易对列表可以与所有其他交易对列表和过滤器组合以进一步减少交易对列表，也可以作为"附加"交易对列表，在已定义的交易对之上。
+<code>ProducerPairList</code> 也可以多次顺序使用，组合来自多个生产者的交易对。
+显然，在这种复杂配置中，生产者可能不会为所有交易对提供数据，因此策略必须适合此情况。</p>
+</div>
+<h4 id="remotepairlist">RemotePairList<a class="headerlink" href="#remotepairlist" title="Permanent link">&para;</a></h4>
+<p>它允许用户从远程服务器或 freqtrade 目录内本地存储的 json 文件获取交易对列表，从而实现动态更新和交易对列表的自定义。</p>
+<p>RemotePairList 在配置设置的 pairlists 部分中定义。它使用以下配置选项：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RemotePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;whitelist&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;processing_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;filter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;pairlist_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/pairlist&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;keep_pairlist_on_failure&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;read_timeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;bearer_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-bearer-token&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;save_to_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user_data/filename.json&quot;</span><span class="w"> </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>可选的 <code>mode</code> 选项指定交易对列表应作为 <code>blacklist</code> 还是 <code>whitelist</code> 使用。默认值为 "whitelist"。</p>
+<p>RemotePairList 配置中的可选 <code>processing_mode</code> 选项确定如何处理检索到的交易对列表。它可以有两个值："filter" 或 "append"。默认值为 "filter"。</p>
+<p>在 "filter" 模式下，检索到的交易对列表用作过滤器。只有同时存在于原始交易对列表和检索到的交易对列表中的交易对才会包含在最终交易对列表中。其他交易对被过滤掉。</p>
+<p>在 "append" 模式下，检索到的交易对列表会添加到原始交易对列表中。两个列表中的所有交易对都包含在最终交易对列表中，无需任何过滤。</p>
+<p><code>pairlist_url</code> 选项指定交易对列表所在的远程服务器的 URL，或本地文件的路径（如果前缀为 file:///）。这允许用户使用远程服务器或本地文件作为交易对列表的源。</p>
+<p>当提供有效文件名时，<code>save_to_file</code> 选项将处理后的交易对列表以 JSON 格式保存到该文件。此选项是可选的，默认情况下，交易对列表不会保存到文件。</p>
+<details class="example">
+<summary>多机器人共享交易对列表示例</summary>
+<p>可以使用 <code>save_to_file</code> 将交易对列表保存到 Bot1 的文件中：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RemotePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;whitelist&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;pairlist_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/pairlist&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;keep_pairlist_on_failure&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;read_timeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;save_to_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user_data/filename.json&quot;</span><span class="w"> </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>此保存的交易对列表文件可以由 Bot2 或任何具有此配置的附加机器人加载：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RemotePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;whitelist&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;pairlist_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file:///user_data/filename.json&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;keep_pairlist_on_failure&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+</details>
+<p>用户负责提供返回以下结构的 JSON 对象的服务器或本地文件：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;pairs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;XRP/USDT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ETH/USDT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;LTC/USDT&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>pairs</code> 属性应包含机器人要使用的交易对字符串列表。<code>refresh_period</code> 属性是可选的，指定交易对列表在刷新之前应缓存的秒数。</p>
+<p>可选的 <code>keep_pairlist_on_failure</code> 指定如果远程服务器无法访问或返回错误，是否应使用先前接收的交易对列表。默认值为 true。</p>
+<p>可选的 <code>read_timeout</code> 指定等待远程源响应的最长时间（以秒为单位），默认值为 60。</p>
+<p>可选的 <code>bearer_token</code> 将包含在请求的 Authorization Header 中。</p>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>如果服务器出错，如果 <code>keep_pairlist_on_failure</code> 设置为 true，将保留最后接收的交易对列表，如果设置为 false，则返回空交易对列表。</p>
+</div>
+<h4 id="marketcappairlist">MarketCapPairList<a class="headerlink" href="#marketcappairlist" title="Permanent link">&para;</a></h4>
+<p><code>MarketCapPairList</code> 根据 CoinGecko 的市值排名对交易对进行排序/过滤。返回的交易对列表将根据其市值排名进行排序。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MarketCapPairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;max_rank&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;categories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;layer-1&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p><code>number_assets</code> 定义交易对列表返回的最大交易对数量。<code>max_rank</code> 将确定在创建/过滤交易对列表时使用的最大排名。预计在排名前 <code>max_rank</code> 市值中的一些币种不会包含在结果交易对列表中，因为并非所有交易对在您首选的市场/抵押/交易所组合中都有活跃的交易对。
+虽然支持使用大于 250 的 <code>max_rank</code>，但不推荐，因为它会导致对 CoinGecko 进行多次 API 调用，这可能导致速率限制问题。</p>
+<p><code>refresh_period</code> 设置定义刷新市值排名数据的间隔（以秒为单位）。默认为 86,400 秒（1 天）。交易对列表缓存（<code>refresh_period</code>）适用于生成交易对列表（在列表中的第一个位置时）和过滤实例（不在列表中的第一个位置时）。</p>
+<p><code>categories</code> 设置指定从哪些 <a href="https://www.coingecko.com/en/categories">coingecko 类别</a> 中选择币种。默认为空列表 <code>[]</code>，意味着不应用类别过滤。
+如果选择了错误的类别字符串，插件将打印来自 CoinGecko 的可用类别并失败。类别应该是类别的 ID，例如，对于 <code>https://www.coingecko.com/en/categories/layer-1</code>，类别 ID 将是 <code>layer-1</code>。您可以传递多个类别，例如 <code>["layer-1", "meme-token"]</code>，以从多个类别中进行选择。</p>
+<p>像 1000PEPE/USDT 或 KPEPE/USDT:USDT 这样的币种是在尽力而为的基础上检测的，使用前缀 <code>1000</code> 和 <code>K</code> 来识别它们。</p>
+<div class="admonition warning">
+<p class="admonition-title">多个类别</p>
+<p>每个添加的类别对应一次对 CoinGecko 的 API 调用。您添加的类别越多，交易对列表生成所需的时间越长，可能导致速率限制问题。</p>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">coingecko 中的重复符号</p>
+<p>Coingecko 经常有重复符号，同一符号用于不同的币种。Freqtrade 将按原样使用符号并尝试在交易所上搜索它。如果符号存在 - 它将被使用。但是，Freqtrade 不会检查<em>预期的</em>符号是否是 coingecko 指的那个。这有时可能导致意外结果，特别是在低交易量币种或 meme 币类别中。</p>
+</div>
+<h4 id="agefilter">AgeFilter<a class="headerlink" href="#agefilter" title="Permanent link">&para;</a></h4>
+<p>删除在交易所上市少于 <code>min_days_listed</code> 天（默认为 <code>10</code>）或超过 <code>max_days_listed</code> 天（默认为 <code>None</code> 表示无限）的交易对。</p>
+<p>当交易对首次在交易所上市时，它们可能在最初几天经历巨大的价格下跌和波动
+在交易对经历价格发现期间。机器人经常
+在交易对完成价格下跌之前就被抓住买入。</p>
+<p>此过滤器允许 freqtrade 忽略交易对，直到它们至少上市 <code>min_days_listed</code> 天并在 <code>max_days_listed</code> 之前上市。</p>
+<h4 id="delistfilter">DelistFilter<a class="headerlink" href="#delistfilter" title="Permanent link">&para;</a></h4>
+<p>删除将在从现在起最多 <code>max_days_from_now</code> 天内在交易所下市的交易对（默认为 <code>0</code>，这将删除所有未来下市的交易对，无论距离现在多远）。目前此过滤器仅支持以下交易所：</p>
+<div class="admonition note">
+<p class="admonition-title">可用交易所</p>
+<p>下市过滤器仅在 Binance 上可用，其中 Binance Futures 将在模拟和实盘模式下工作，而 Binance Spot 仅限于实盘模式（由于技术原因）。</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">回测</p>
+<p><code>DelistFilter</code> 不支持回测模式。</p>
+</div>
+<h4 id="fulltradesfilter">FullTradesFilter<a class="headerlink" href="#fulltradesfilter" title="Permanent link">&para;</a></h4>
+<p>当交易槽位已满时（当配置中 <code>max_open_trades</code> 未设置为 <code>-1</code> 时），将白名单缩小为仅包含交易中的交易对。</p>
+<p>当交易槽位已满时，无需计算其余交易对的指标（信息性交易对除外），因为无法打开新交易。通过将白名单缩小为仅交易中的交易对，您可以提高计算速度并减少 CPU 使用。当交易槽位空闲时（交易关闭或配置中的 <code>max_open_trades</code> 值增加），白名单将恢复正常状态。</p>
+<p>当使用多个交易对列表过滤器时，建议将此过滤器放在主要交易对列表下方的第二个位置，这样当交易槽位已满时，机器人不必为其余过滤器下载数据。</p>
+<div class="admonition warning">
+<p class="admonition-title">回测</p>
+<p><code>FullTradesFilter</code> 不支持回测模式。</p>
+</div>
+<h4 id="offsetfilter">OffsetFilter<a class="headerlink" href="#offsetfilter" title="Permanent link">&para;</a></h4>
+<p>通过给定的 <code>offset</code> 值偏移传入的交易对列表。</p>
+<p>例如，它可以与 <code>VolumeFilter</code> 结合使用以删除前 X 个成交量交易对。或者将更大的交易对列表拆分为两个机器人实例。</p>
+<p>示例删除交易对列表中的前 10 个交易对，并取接下来的 20 个（取初始列表的项目 10-30）：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OffsetFilter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;offset&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>当 <code>OffsetFilter</code> 与 <code>VolumeFilter</code> 结合用于在多个机器人之间拆分更大的交易对列表时
+不能保证交易对不会重叠，因为 <code>VolumeFilter</code> 的刷新间隔略有不同。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>大于传入交易对列表总长度的偏移将导致空交易对列表。</p>
+</div>
+<h4 id="performancefilter">PerformanceFilter<a class="headerlink" href="#performancefilter" title="Permanent link">&para;</a></h4>
+<p>按过去的交易表现对交易对进行排序，如下：</p>
+<ol>
+<li>正表现。</li>
+<li>尚未有已关闭交易。</li>
+<li>负表现。</li>
+</ol>
+<p>交易计数用作决胜局。</p>
+<p>您可以使用 <code>minutes</code> 参数仅考虑过去 X 分钟的表现（滚动窗口）。
+不定义此参数（或将其设置为 0）将使用全时表现。</p>
+<p>可选的 <code>min_profit</code>（作为比率 -&gt; 设置为 <code>0.01</code> 对应于 1%）参数定义交易对必须具有的最小利润才能被考虑。
+低于此水平的交易对将被过滤掉。
+强烈不鼓励在没有 <code>minutes</code> 的情况下使用此参数，因为这可能导致空交易对列表且无法恢复。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PerformanceFilter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;minutes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1440</span><span class="p">,</span><span class="w">  </span><span class="c1">// 滚动 24 小时</span>
+<span class="w">        </span><span class="nt">&quot;min_profit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="w">  </span><span class="c1">// 最小利润 1%</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<p>由于此过滤器使用机器人的过去表现，它会有一些启动期 - 应该仅在机器人数据库中有几百笔交易后使用。</p>
+<div class="admonition warning">
+<p class="admonition-title">回测</p>
+<p><code>PerformanceFilter</code> 不支持回测模式。</p>
+</div>
+<h4 id="precisionfilter">PrecisionFilter<a class="headerlink" href="#precisionfilter" title="Permanent link">&para;</a></h4>
+<p>过滤不允许设置止损的低价值币种。</p>
+<p>即，如果止损价格的 1% 或更多差异是由交易所的精度舍入引起的，即 <code>rounded(stop_price) &lt;= rounded(stop_price * 0.99)</code>，则交易对被列入黑名单。这样做的目的是避免价值非常接近其较低交易边界的币种，不允许设置适当的止损。</p>
+<div class="admonition tip">
+<p class="admonition-title">PrecisionFilter 对期货交易毫无意义</p>
+<p>以上不适用于空头。对于多头，理论上交易将首先被清算。</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">回测</p>
+<p><code>PrecisionFilter</code> 不支持使用多个策略的回测模式。</p>
+</div>
+<h4 id="pricefilter">PriceFilter<a class="headerlink" href="#pricefilter" title="Permanent link">&para;</a></h4>
+<p><code>PriceFilter</code> 允许按价格过滤交易对。目前支持以下价格过滤器：</p>
+<ul>
+<li><code>min_price</code></li>
+<li><code>max_price</code></li>
+<li><code>max_value</code></li>
+<li><code>low_price_ratio</code></li>
+</ul>
+<p><code>min_price</code> 设置删除价格低于指定价格的交易对。如果您希望避免交易非常低价的交易对，这很有用。
+默认情况下禁用此选项，仅在设置为 &gt; 0 时适用。</p>
+<p><code>max_price</code> 设置删除价格高于指定价格的交易对。如果您希望仅交易低价交易对，这很有用。
+默认情况下禁用此选项，仅在设置为 &gt; 0 时适用。</p>
+<p><code>max_value</code> 设置删除最小价值变化高于指定值的交易对。
+当交易所具有不平衡限制时，这很有用。例如，如果步长 = 1（因此您只能买入 1、2 或 3，但不能买入 1.1 个币）- 并且价格相当高（如 20 美元），因为币自上次限制调整以来急剧上涨。
+由于上述原因，您只能以 20 美元或 40 美元购买 - 但不能以 25 美元购买。
+在从接收货币中扣除费用的交易所（例如 binance）上 - 这可能导致高价值币/金额无法出售，因为金额略低于限制。</p>
+<p><code>low_price_ratio</code> 设置删除价格上涨 1 个价格单位（点）高于 <code>low_price_ratio</code> 比率的交易对。
+默认情况下禁用此选项，仅在设置为 &gt; 0 时适用。</p>
+<p>对于 <code>PriceFilter</code>，必须应用其 <code>min_price</code>、<code>max_price</code> 或 <code>low_price_ratio</code> 设置中的至少一个。</p>
+<p>计算示例：</p>
+<p>SHITCOIN/BTC 的最小价格精度为 8 位小数。如果其价格为 0.00000011 - 一个价格步骤向上将是 0.00000012，这比先前的价格值高约 9%。您可以通过将 PriceFilter 与设置为 0.09（9%）的 <code>low_price_ratio</code> 或相应地设置为 0.00000011 的 <code>min_price</code> 来过滤掉此交易对。</p>
+<div class="admonition warning">
+<p class="admonition-title">低价交易对</p>
+<p>具有高"1 点变动"的低价交易对是危险的，因为它们通常缺乏流动性，并且也可能无法设置所需的止损，这通常可能导致高损失，因为价格需要舍入到下一个可交易价格 - 因此，不是有 -5% 的止损，您可能会因为价格舍入而最终有 -9% 的止损。</p>
+</div>
+<h4 id="shufflefilter">ShuffleFilter<a class="headerlink" href="#shufflefilter" title="Permanent link">&para;</a></h4>
+<p>随机打乱交易对列表中的交易对。当您希望所有交易对以相同优先级处理时，可用于防止机器人更频繁地交易某些交易对。</p>
+<p>默认情况下，ShuffleFilter 将每个蜡烛打乱一次交易对。
+要在每次迭代时打乱，将 <code>"shuffle_frequency"</code> 设置为 <code>"iteration"</code>，而不是默认的 <code>"candle"</code>。</p>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ShuffleFilter&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;shuffle_frequency&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;candle&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;seed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span>
+<span class="w">    </span><span class="p">}</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">提示</p>
+<p>您可以为此交易对列表设置 <code>seed</code> 值以获得可重现的结果，这对于重复的回测会话很有用。如果未设置 <code>seed</code>，交易对将以不可重复的随机顺序打乱。ShuffleFilter 会自动检测运行模式，并且仅在有 <code>seed</code> 值设置时，将 <code>seed</code> 应用于回测模式。</p>
+</div>
+<h4 id="spreadfilter">SpreadFilter<a class="headerlink" href="#spreadfilter" title="Permanent link">&para;</a></h4>
+<p>删除买卖价差高于指定比率 <code>max_spread_ratio</code>（默认为 <code>0.005</code>）的交易对。</p>
+<p>示例：</p>
+<p>如果 <code>DOGE/BTC</code> 最大买价为 0.00000026，最小卖价为 0.00000027，则比率计算为：<code>1 - bid/ask ~= 0.037</code>，即 <code>&gt; 0.005</code>，此交易对将被过滤掉。</p>
+<h4 id="rangestabilityfilter">RangeStabilityFilter<a class="headerlink" href="#rangestabilityfilter" title="Permanent link">&para;</a></h4>
+<p>删除在过去 <code>lookback_days</code> 天内最低低点和最高高点之间的差异低于 <code>min_rate_of_change</code> 或高于 <code>max_rate_of_change</code> 的交易对。由于这是一个需要额外数据的过滤器，结果将缓存 <code>refresh_period</code>。</p>
+<p>在下面的示例中：
+如果过去 10 天的交易范围 &lt;1% 或 &gt;99%，则从白名单中删除该交易对。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RangeStabilityFilter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_rate_of_change&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;max_rate_of_change&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.99</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>添加 <code>"sort_direction": "asc"</code> 或 <code>"sort_direction": "desc"</code> 为此交易对列表启用排序。</p>
+<div class="admonition tip">
+<p class="admonition-title">提示</p>
+<p>此过滤器可用于自动删除稳定币交易对，这些交易对的交易范围非常低，因此极难盈利交易。
+此外，它还可以用于自动删除在给定时间内具有极高/极低方差的交易对。</p>
+</div>
+<h4 id="volatilityfilter">VolatilityFilter<a class="headerlink" href="#volatilityfilter" title="Permanent link">&para;</a></h4>
+<p>波动率是交易对随时间的历史变化程度，通过对数日收益的标准差来测量。收益假设为正态分布，尽管实际分布可能不同。在正态分布中，68% 的观测值落在一个标准差内，95% 的观测值落在两个标准差内。假设波动率为 0.05 意味着预期 30 天中有 20 天的收益预期小于 5%（一个标准差）。波动率是预期收益偏差的正比率，可以大于 1.00。请参阅维基百科的<a href="https://en.wikipedia.org/wiki/Volatility_(finance)"><code>波动率</code></a>定义。</p>
+<p>如果过去 <code>lookback_days</code> 天的平均波动率低于 <code>min_volatility</code> 或高于 <code>max_volatility</code>，此过滤器将删除交易对。由于这是一个需要额外数据的过滤器，结果将缓存 <code>refresh_period</code>。</p>
+<p>此过滤器可用于将您的交易对缩小到某个波动率或避免非常波动的交易对。</p>
+<p>在下面的示例中：
+如果过去 10 天的波动率不在 0.05-0.50 范围内，则从白名单中删除该交易对。过滤器每 24 小时应用一次。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VolatilityFilter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_volatility&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;max_volatility&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.50</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>添加 <code>"sort_direction": "asc"</code> 或 <code>"sort_direction": "desc"</code> 为此交易对列表启用排序模式。</p>
+<h3 id="_7">交易对列表处理器的完整示例<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>下面的示例将 <code>BNB/BTC</code> 列入黑名单，使用 <code>VolumePairList</code>，有 <code>20</code> 个资产，按 <code>quoteVolume</code> 对交易对进行排序，然后使用 <a href="#delistfilter"><code>DelistFilter</code></a> 和 <a href="#agefilter"><code>AgeFilter</code></a> 过滤未来下市的交易对，删除上市少于 10 天的交易对。之后应用 <a href="#precisionfilter"><code>PrecisionFilter</code></a> 和 <a href="#pricefilter"><code>PriceFilter</code></a>，过滤所有 1 个价格单位 &gt; 1% 的资产。然后应用 <a href="#spreadfilter"><code>SpreadFilter</code></a> 和 <a href="#volatilityfilter"><code>VolatilityFilter</code></a>，最后使用设置为某个预定义值的随机种子对交易对进行打乱。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;pair_whitelist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">&quot;pair_blacklist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;BNB/BTC&quot;</span><span class="p">]</span>
+<span class="p">},</span>
+<span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VolumePairList&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;sort_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quoteVolume&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DelistFilter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;max_days_from_now&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AgeFilter&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min_days_listed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PrecisionFilter&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PriceFilter&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;low_price_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SpreadFilter&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max_spread_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.005</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RangeStabilityFilter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_rate_of_change&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VolatilityFilter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;min_volatility&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;max_volatility&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.50</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ShuffleFilter&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;seed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+<h2 id="_8">保护<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<p>保护将通过暂时停止一个交易对或所有交易对的交易来保护您的策略免受意外事件和市场条件的影响。
+所有保护结束时间都会向上舍入到下一个蜡烛，以避免突然、意外的蜡烛内买入。</p>
+<div class="admonition tip">
+<p class="admonition-title">使用提示</p>
+<p>并非所有保护都适用于所有策略，需要为您的策略调整参数以提高性能。</p>
+<p>每个保护都可以使用不同参数配置多次，以允许不同级别的保护（短期/长期）。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">回测</p>
+<p>回测和超参数优化支持保护，但必须通过使用 <code>--enable-protections</code> 标志显式启用。</p>
+</div>
+<h3 id="_9">可用的保护<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="#stoploss-guard"><code>StoplossGuard</code></a> 如果在某个时间窗口内发生一定数量的止损，则停止交易。</li>
+<li><a href="#maxdrawdown"><code>MaxDrawdown</code></a> 如果达到最大回撤，则停止交易。</li>
+<li><a href="#low-profit-pairs"><code>LowProfitPairs</code></a> 锁定利润较低的交易对</li>
+<li><a href="#cooldown-period"><code>CooldownPeriod</code></a> 卖出交易后不要立即进入交易。</li>
+</ul>
+<h3 id="_10">所有保护的通用设置<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>method</code></td>
+<td>要使用的保护名称。<br> <strong>数据类型：</strong> String，从<a href="#available-protections">可用的保护</a>中选择</td>
+</tr>
+<tr>
+<td><code>stop_duration_candles</code></td>
+<td>锁定应该设置多少个蜡烛？<br> <strong>数据类型：</strong> 正整数（以蜡烛为单位）</td>
+</tr>
+<tr>
+<td><code>stop_duration</code></td>
+<td>保护应该锁定多少分钟。<br>不能与 <code>stop_duration_candles</code> 一起使用。<br> <strong>数据类型：</strong> Float（以分钟为单位）</td>
+</tr>
+<tr>
+<td><code>lookback_period_candles</code></td>
+<td>只有在过去 <code>lookback_period_candles</code> 蜡烛内完成的交易才会被考虑。某些保护可能会忽略此设置。<br> <strong>数据类型：</strong> 正整数（以蜡烛为单位）。</td>
+</tr>
+<tr>
+<td><code>lookback_period</code></td>
+<td>只有 <code>current_time - lookback_period</code> 之后完成的交易才会被考虑。<br>不能与 <code>lookback_period_candles</code> 一起使用。<br>某些保护可能会忽略此设置。<br> <strong>数据类型：</strong> Float（以分钟为单位）</td>
+</tr>
+<tr>
+<td><code>trade_limit</code></td>
+<td>所需的最少交易数（并非所有保护都使用）。<br> <strong>数据类型：</strong> 正整数</td>
+</tr>
+<tr>
+<td><code>unlock_at</code></td>
+<td>交易将定期解锁的时间（并非所有保护都使用）。<br> <strong>数据类型：</strong> string <br><strong>输入格式：</strong> "HH:MM"（24 小时制）</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">持续时间</p>
+<p>持续时间（<code>stop_duration*</code> 和 <code>lookback_period*</code> 可以用分钟或蜡烛定义）。
+为了在测试不同时间框架时获得更大的灵活性，下面的所有示例都将使用"蜡烛"定义。</p>
+</div>
+<h4 id="_11">止损保护<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h4>
+<p><code>StoplossGuard</code> 选择在 <code>lookback_period</code> 分钟内（或使用 <code>lookback_period_candles</code> 时的蜡烛数内）的所有交易。
+如果 <code>trade_limit</code> 或更多交易导致止损，交易将停止 <code>stop_duration</code> 分钟（或使用 <code>stop_duration_candles</code> 时的蜡烛数，或使用 <code>unlock_at</code> 时直到设定时间）。</p>
+<p>这适用于所有交易对，除非 <code>only_per_pair</code> 设置为 true，这将一次只查看一个交易对。</p>
+<p>同样，此保护默认将查看所有交易（多头和空头）。对于期货机器人，设置 <code>only_per_side</code> 将使机器人只考虑一侧，然后只锁定这一侧，允许例如在一系列多头止损后继续空头。</p>
+<p><code>required_profit</code> 将确定止损考虑所需的相对利润（或损失）。这通常不应该设置，默认为 0.0 - 这意味着所有亏损的止损都将触发锁定。</p>
+<p>下面的示例如果机器人在过去 24 个蜡烛内触发了 4 次止损，则在最后一次交易后停止所有交易对交易 4 个蜡烛。</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@property</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">protections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;StoplossGuard&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lookback_period_candles&quot;</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+            <span class="s2">&quot;trade_limit&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s2">&quot;stop_duration_candles&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s2">&quot;required_profit&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;only_per_pair&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;only_per_side&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p><code>StoplossGuard</code> 考虑所有结果为 <code>"stop_loss"</code>、<code>"stoploss_on_exchange"</code> 和 <code>"trailing_stop_loss"</code> 的交易，如果结果利润为负。
+<code>trade_limit</code> 和 <code>lookback_period</code> 需要为您的策略进行调整。</p>
+</div>
+<h4 id="_12">最大回撤<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h4>
+<p><code>MaxDrawdown</code> 使用 <code>lookback_period</code> 分钟内（或使用 <code>lookback_period_candles</code> 时的蜡烛数内）的所有交易来确定最大回撤。如果回撤低于 <code>max_allowed_drawdown</code>，交易将在最后一次交易后停止 <code>stop_duration</code> 分钟（或使用 <code>stop_duration_candles</code> 时的蜡烛数）- 假设机器人需要一些时间让市场恢复。</p>
+<p>下面的示例如果在过去 48 个蜡烛内考虑所有交易对 - 最少 <code>trade_limit</code> 笔交易 - 最大回撤 &gt; 20%，则停止交易 12 个蜡烛。如果需要，可以使用 <code>lookback_period</code> 和/或 <code>stop_duration</code>。</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@property</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">protections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span>  <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;MaxDrawdown&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lookback_period_candles&quot;</span><span class="p">:</span> <span class="mi">48</span><span class="p">,</span>
+            <span class="s2">&quot;trade_limit&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+            <span class="s2">&quot;stop_duration_candles&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="s2">&quot;max_allowed_drawdown&quot;</span><span class="p">:</span> <span class="mf">0.2</span>
+        <span class="p">},</span>
+    <span class="p">]</span>
+</code></pre></div>
+<h4 id="_13">低利润交易对<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h4>
+<p><code>LowProfitPairs</code> 使用交易对在 <code>lookback_period</code> 分钟内（或使用 <code>lookback_period_candles</code> 时的蜡烛数内）的所有交易来确定总体利润比率。
+如果该比率低于 <code>required_profit</code>，该交易对将被锁定 <code>stop_duration</code> 分钟（或使用 <code>stop_duration_candles</code> 时的蜡烛数，或使用 <code>unlock_at</code> 时直到设定时间）。</p>
+<p>对于期货机器人，设置 <code>only_per_side</code> 将使机器人只考虑一侧，然后只锁定这一侧，允许例如在一系列多头亏损后继续空头。</p>
+<p>下面的示例如果交易对在过去 6 个蜡烛内没有达到所需的 2% 利润（并且最少 2 笔交易），则将停止交易该交易对 60 分钟。</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@property</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">protections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;LowProfitPairs&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lookback_period_candles&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+            <span class="s2">&quot;trade_limit&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;stop_duration&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+            <span class="s2">&quot;required_profit&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>
+            <span class="s2">&quot;only_per_pair&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+</code></pre></div>
+<h4 id="_14">冷却期<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h4>
+<p><code>CooldownPeriod</code> 在退出后锁定交易对 <code>stop_duration</code> 分钟（或使用 <code>stop_duration_candles</code> 时的蜡烛数，或使用 <code>unlock_at</code> 时直到设定时间），避免该交易对在 <code>stop_duration</code> 分钟内重新进入。</p>
+<p>下面的示例将在关闭交易后停止交易该交易对 2 个蜡烛，允许该交易对"冷却"。</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@property</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">protections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span>  <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;CooldownPeriod&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;stop_duration_candles&quot;</span><span class="p">:</span> <span class="mi">2</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">注意</p>
+<p>此保护仅在交易对级别应用，永远不会全局锁定所有交易对。
+此保护不考虑 <code>lookback_period</code>，因为它只查看最新交易。</p>
+</div>
+<h3 id="_15">保护的完整示例<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h3>
+<p>所有保护都可以随意组合，也可以使用不同的参数，为表现不佳的交易对创建一个递增的壁垒。
+所有保护都按照它们定义的顺序进行评估。</p>
+<p>下面的示例假设时间框架为 1 小时：</p>
+<ul>
+<li>在卖出后为每个交易对额外锁定 5 个蜡烛（<code>CooldownPeriod</code>），给其他交易对一个成交的机会。</li>
+<li>如果过去 2 天（<code>48 * 1h 蜡烛</code>）有 20 笔交易，导致最大回撤超过 20%，则停止交易 4 小时（<code>4 * 1h 蜡烛</code>）。（<code>MaxDrawdown</code>）。</li>
+<li>如果所有交易对在 1 天（<code>24 * 1h 蜡烛</code>）内发生超过 4 次止损，则停止交易（<code>StoplossGuard</code>）。</li>
+<li>锁定在过去 6 小时（<code>6 * 1h 蜡烛</code>）内有 2 笔交易且合并利润比率低于 0.02（&lt;2%）的所有交易对（<code>LowProfitPairs</code>）。</li>
+<li>锁定在过去 24 小时（<code>24 * 1h 蜡烛</code>）内利润低于 0.01（&lt;1%）的所有交易对 2 个蜡烛，最少 4 笔交易。</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.strategy</span><span class="w"> </span><span class="kn">import</span> <span class="n">IStrategy</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">)</span>
+    <span class="n">timeframe</span> <span class="o">=</span> <span class="s1">&#39;1h&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;CooldownPeriod&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;stop_duration_candles&quot;</span><span class="p">:</span> <span class="mi">5</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;MaxDrawdown&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;lookback_period_candles&quot;</span><span class="p">:</span> <span class="mi">48</span><span class="p">,</span>
+                <span class="s2">&quot;trade_limit&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                <span class="s2">&quot;stop_duration_candles&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s2">&quot;max_allowed_drawdown&quot;</span><span class="p">:</span> <span class="mf">0.2</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;StoplossGuard&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;lookback_period_candles&quot;</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+                <span class="s2">&quot;trade_limit&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s2">&quot;stop_duration_candles&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;only_per_pair&quot;</span><span class="p">:</span> <span class="kc">False</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;LowProfitPairs&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;lookback_period_candles&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+                <span class="s2">&quot;trade_limit&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;stop_duration_candles&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+                <span class="s2">&quot;required_profit&quot;</span><span class="p">:</span> <span class="mf">0.02</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;LowProfitPairs&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;lookback_period_candles&quot;</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+                <span class="s2">&quot;trade_limit&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="s2">&quot;stop_duration_candles&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;required_profit&quot;</span><span class="p">:</span> <span class="mf">0.01</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="c1"># ...</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+    
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../stoploss/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 止损">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                止损
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../bot-usage/" class="md-footer__link md-footer__link--next" aria-label="下一页: 启动机器人">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                启动机器人
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "search.share", "content.code.copy", "content.action.edit", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
